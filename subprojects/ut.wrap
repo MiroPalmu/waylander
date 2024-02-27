@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/boost-ext/ut.git
+revision = v1.1.9
+depth = 1
+
+[provide]
+ut = boostut_dep
