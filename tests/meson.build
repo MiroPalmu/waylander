@@ -7,7 +7,8 @@ test_dependencies += dependency('ut')
 
 # List of tests that can run in parallel
 single_threaded_unit_tests = [
-    'test_unit_test'
+    'test_unit_test',
+    'test_byte_buff',
 ]
 
 single_threaded_test_names_and_exes = {}
