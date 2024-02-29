@@ -2,7 +2,7 @@ project(
     'meson_template',
     'cpp',
     version: '0.0.1',
-    default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++20']
+    default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++23']
 )
 
 # Directories where compiler is able to include from
@@ -24,7 +24,7 @@ subdir('src')
 subdir('tests')
 
 executable(
-    'temp_executable',
+    'guilander',
     project_sources,
     include_directories : project_include_directories,
     dependencies : project_dependencies
