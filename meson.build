@@ -15,7 +15,7 @@ ut = subproject('ut')
 project_dependencies = []
 
 # Project sources
-project_sources = []
+project_source_files = []
 
 # Subdirectors
 subdir('docs')

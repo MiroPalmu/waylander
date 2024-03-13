@@ -9,6 +9,7 @@ test_dependencies += dependency('ut')
 single_threaded_unit_tests = [
     'test_unit_test',
     'test_byte_buff',
+    'test_linux_shm_memory',
 ]
 
 single_threaded_test_names_and_exes = {}
@@ -18,7 +19,7 @@ foreach test_name : single_threaded_unit_tests
     single_threaded_test_names_and_exes += {test_name :
         executable(
             test_name,
-            files(test_name + '.cpp'),
+            files(test_name + '.cpp') + project_source_files,
             include_directories: project_include_directories,
             dependencies: test_dependencies,
             override_options: ['optimization=0'],
