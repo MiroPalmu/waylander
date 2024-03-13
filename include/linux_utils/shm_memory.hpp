@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef __linux__
+#    error "Programmed with assumption, that this error does not trigger."
+#endif
+
 #include <cstddef>
 #include <cstddef>
 #include <span>
