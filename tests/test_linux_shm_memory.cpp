@@ -11,4 +11,12 @@ int main() {
         auto _ = shm_mem(10);
         expect(true);
     };
+
+    tag("linux") / "shm_mem can accessed using span<std::byte>"_test = [] {
+        auto mem = shm_mem(10);
+        auto i   = 0uz;
+        for (auto& x : std::span<std::byte>{ mem }) { x = static_cast<std::byte>(i++); }
+        i = 0z;
+        for (const auto& x : mem.span()) { expect(x == static_cast<std::byte>(i++)); }
+    };
 }

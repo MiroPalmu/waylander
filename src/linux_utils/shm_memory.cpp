@@ -6,6 +6,7 @@
 #include <print>
 #include <random>
 #include <ranges>
+#include <span>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -87,6 +88,14 @@ shm_mem::~shm_mem() {
         std::exit(errno);
     }
 }
+
+shm_mem::operator std::span<std::byte>() {
+    if (data_ == nullptr)
+        throw std::runtime_error{ "Accessing nullptr in shm_mem::operator std::span<std::byte>" };
+    return { static_cast<std::byte*>(data_), size_ };
+}
+
+[[nodiscard]] auto shm_mem::span() -> std::span<std::byte> { return *this; }
 
 } // namespace linux
 } // namespace ger

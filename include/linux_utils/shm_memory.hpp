@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstddef>
+#include <cstddef>
+#include <span>
 
 #include <fcntl.h> /* For O_* constants */
 #include <sys/mman.h>
@@ -20,7 +22,7 @@ class shm_mem {
     fd_type fd_{};
     std::size_t size_{};
     void* data_ = nullptr;
-
+ 
   public:
     /// Create anonymous shm object.
     ///
@@ -33,6 +35,10 @@ class shm_mem {
     /// Throws if none of them is unique.
     [[nodiscard]] shm_mem(const std::size_t size);
     ~shm_mem();
+
+    [[nodiscard]] operator std::span<std::byte>();
+
+    [[nodiscard]] auto span() -> std::span<std::byte>;
 
     // Movable
     shm_mem(shm_mem&&)            = default;
