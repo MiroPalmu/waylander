@@ -10,6 +10,7 @@ single_threaded_unit_tests = [
     'test_unit_test',
     'test_byte_buff',
     'test_linux_shm_memory',
+    'test_wayland_compositor',
 ]
 
 single_threaded_test_names_and_exes = {}
