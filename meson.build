@@ -23,14 +23,6 @@ subdir('include')
 subdir('src')
 subdir('tests')
 
-executable(
-    'guilander',
-    project_sources,
-    include_directories : project_include_directories,
-    dependencies : project_dependencies
-)
-
-
 # compile_commands.json stuff:
 compdb = find_program('compdb', required : false)
 
