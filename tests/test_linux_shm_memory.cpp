@@ -5,7 +5,7 @@
 int main() {
     using namespace boost::ut;
     using namespace ger::linux;
-    using namespace std;
+    cfg<override> = { .tag = { "linux" } };
 
     tag("linux") / "shm_mem can be constrcted"_test = [] {
         auto _ = shm_mem(10);
