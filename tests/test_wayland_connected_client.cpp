@@ -10,7 +10,7 @@ int main() {
     // Run wl_tag:
     cfg<override> = { .tag = { "wayland" } };
 
-    wl_tag / "compositor object can be constructor"_test = [] {
-        expect(nothrow([] { auto _ = compositor(); }));
+    wl_tag / "connected_client object can be constructor"_test = [] {
+        expect(nothrow([] { auto _ = connected_client(); }));
     };
 }

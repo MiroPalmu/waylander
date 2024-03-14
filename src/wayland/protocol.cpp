@@ -64,7 +64,7 @@ auto connect_to_wayland_socket() -> linux::fd_type {
     return fd;
 }
 
-[[nodiscard]] compositor::compositor() { wayland_fd_ = connect_to_wayland_socket(); }
+[[nodiscard]] connected_client::connected_client() { wayland_fd_ = connect_to_wayland_socket(); }
 
 } // namespace wl
 } // namespace ger

@@ -9,12 +9,12 @@
 namespace ger {
 namespace wl {
 
-/// Represents the compositor by wrapping file descriptor connected to wayland socket.
-class compositor {
+/// Represents one connected client by wrapping the Wayland socket.
+class connected_client {
     linux::fd_type wayland_fd_{};
 
   public:
-    [[nodiscard]] compositor();
+    [[nodiscard]] connected_client();
 };
 
 } // namespace wl
