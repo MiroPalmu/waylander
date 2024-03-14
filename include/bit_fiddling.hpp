@@ -42,6 +42,20 @@ class byte_buff {
         (write_and_increment_pos(message), ...);
     }
 
+    template<typename... T>
+        requires total_memory_usage_is<N, T...> and (std::is_trivially_copyable_v<T> and ...)
+                 and (not(std::unsigned_integral<T> and ...))
+    [[nodiscard]] byte_buff(const T&... message) {
+        auto pos = std::size_t{ 0 };
+
+        [[maybe_unused]] auto write_and_increment_pos = [&]<typename U>(const U& x) {
+            std::memcpy(std::addressof(data_[pos]), std::addressof(x), sizeof(U));
+            pos += sizeof(decltype(x));
+        };
+
+        (write_and_increment_pos(message), ...);
+    }
+
     [[nodiscard]] constexpr auto bytes(this auto&& self) -> std::span<std::byte const, N> {
         return self.data_;
     }

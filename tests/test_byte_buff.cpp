@@ -177,4 +177,31 @@ int main() {
         expect(std::ranges::equal(buf_ones_c.bytes(), buf_ones_e.bytes()));
         expect(std::ranges::equal(buf_ones_c.bytes(), buf_ones_f.bytes()));
     };
-}
+
+    "byte_buff can be constructed from trivially copyable types during runtime"_test = [] {
+        struct bar {
+            std::uint16_t a{ 1 };
+            std::uint32_t b{ 2 };
+            std::uint16_t c{ 3 };
+        };
+        struct foo {
+            std::uint64_t A{ 10 };
+            std::array<std::byte, 3> arr{ std::byte{ 1 }, std::byte{ 2 }, std::byte{ 4 } };
+            bar B{};
+        };
+
+        const auto X    = foo{};
+        const auto Y    = foo{ .B = { .a = 2 } };
+        const auto buff = byte_buff<2 * sizeof(foo)>{ X, Y };
+        expect(buff.bytes().size() == 2 * sizeof(foo));
+
+        const auto correct          = std::vector{ X, Y };
+        const auto correct_as_bytes = std::as_bytes(std::span{ correct });
+
+        expect(std::ranges::equal(buff.bytes(), correct_as_bytes));
+
+        const auto incorrect          = std::vector{ X, X };
+        const auto incorrect_as_bytes = std::as_bytes(std::span{ incorrect });
+        expect(not std::ranges::equal(buff.bytes(), incorrect_as_bytes));
+    };
+};
