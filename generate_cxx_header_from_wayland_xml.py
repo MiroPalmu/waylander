@@ -1,21 +1,19 @@
+"""
+Generate C++ header from xml in Wayland xml format.
+
+As MVP currently ignores many optional attributes.
+"""
+
+
 def get_wayland_xml(wayland_xml_download_address: str = "https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml?inline=false") -> bytes:
     import subprocess
     curl_call = subprocess.run(["curl", wayland_xml_download_address], capture_output=True)
     curl_call.check_returncode()
     return curl_call.stdout
 
-
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
-
-@dataclass
-class wl_description:
-    # Required attributes:
-    summary: str
-
-    # #(PCDATA)
-    description: str
 
 class wl_arg_type(Enum):
     wl_int = 0
@@ -27,6 +25,57 @@ class wl_arg_type(Enum):
     wl_array = 6
     linux_fd = 7
 
+def get_cxx_Wtype(type: wl_arg_type, as_underlying: bool = False) -> str:
+    if type == wl_arg_type.wl_int:
+        return "Wint"
+    elif type == wl_arg_type.wl_uint:
+        return "Wuint"
+    elif type == wl_arg_type.wl_fixed:
+        return "Wfixed"
+    elif type == wl_arg_type.wl_string:
+        return "Wstring"
+    elif type == wl_arg_type.wl_object:
+        return "Wobject"
+    elif type == wl_arg_type.wl_new_id:
+        return "Wnew_id"
+    elif type == wl_arg_type.wl_array:
+        return "Warray"
+    elif type == wl_arg_type.linux_fd:
+        return "Wfd"
+    else:
+       raise RuntimeError(f"Unregonized wl_ar_type: {type}")
+
+def commentify(s: str, comment_symbol: str = "///") -> str:
+    comm = ""
+    lines = s.split("\n")
+    skip_first: bool = len(lines[0].lstrip()) == 0
+    skip_last: bool = len(lines[-1].lstrip()) == 0
+    for line in lines[int(skip_first):len(lines) - int(skip_last)]:
+        comm += comment_symbol
+        stripped_line = line.lstrip()
+        if len(stripped_line) != 0:
+            comm += " " + stripped_line
+        comm += "\n"
+    return comm
+
+@dataclass
+class wl_description:
+    # Required attributes:
+    summary: str
+
+    # #(PCDATA)
+    description: Optional[str]
+
+    def as_sphinx_comment(self, summary_prefix: str = "", indent_in_spaces: int = 0) -> str:
+        indent = ' ' * indent_in_spaces
+        header = indent + f"/// {summary_prefix}{self.summary}\n"
+        if not self.description:
+            return header
+        spacer = indent + "///\n"
+        body = commentify(self.description, comment_symbol = indent + "///")
+        return header + spacer + body
+
+
 @dataclass
 class wl_arg:
     # Required attributes:
@@ -34,12 +83,29 @@ class wl_arg:
     arg_type: wl_arg_type
 
     # Optional attributes:
+    summary: Optional[str]
     interface: Optional[str]
     allow_null: Optional[bool]
     enum: Optional[str]
 
     # (description?)
     description: Optional[wl_description]
+
+    def as_cxx_data_member(self, indent_in_spaces: int = 4) -> str:
+
+        desc = ""
+        indent = ' ' * indent_in_spaces
+        if self.summary and not self.description:
+            desc = indent + f"/// {self.summary}\n"
+
+        if self.description:
+            if self.summary:
+                desc += indent + "///\n"
+            desc = self.description.as_sphinx_comment(indent_in_spaces = indent_in_spaces)
+            desc += "\n"
+
+        cxx_type = get_cxx_Wtype(self.arg_type)
+        return f"{desc}{' ' * indent_in_spaces}{cxx_type} {self.name};\n"
 
 @dataclass
 class wl_enum_entry:
@@ -54,6 +120,22 @@ class wl_enum_entry:
     # (description?)
     description: Optional[wl_description]
 
+    def as_cxx_enum_class_entry(self, indent_in_spaces: int = 4, last = False) -> str:
+        desc = ""
+        indent = ' ' * indent_in_spaces
+        if self.summary and not self.description:
+            desc = indent + f"/// {self.summary}\n"
+
+        if self.description:
+            if self.summary:
+                desc += indent + "///\n"
+            desc = self.description.as_sphinx_comment(indent_in_spaces = indent_in_spaces)
+            desc += "\n"
+
+
+        indent = ' ' * indent_in_spaces
+        c = "" if last else ","
+        return desc + indent + f"{self.name} = {self.value}{c}\n"
 
 @dataclass
 class wl_enum:
@@ -68,6 +150,28 @@ class wl_enum:
     description: Optional[wl_description]
     entries: list[wl_enum_entry]
 
+    def as_cxx_enum_class(self) -> str:
+        sphinx_comment = ""
+        if self.description:
+            sphinx_comment = self.description.as_sphinx_comment()
+
+        wl_underlying_type = wl_arg_type.wl_uint if self.is_bitfield else wl_arg_type.wl_int
+        underlying_type = get_cxx_Wtype(wl_underlying_type) + "::integral_type"
+        header = f"enum class {self.name} : {underlying_type} {{\n"
+        body = ""
+        if len(self.entries) == 0:
+            raise RuntimeError(f"wl_enum {self.name} has no entries!")
+        for entry in self.entries[:-1]:
+            body += entry.as_cxx_enum_class_entry()
+        body += self.entries[-1].as_cxx_enum_class_entry(last = True)
+        tail = "};\n\n"
+        return sphinx_comment + header + body + tail
+
+def cxx_message_header_member(indent_in_spaces: int = 4):
+    return (" " * indent_in_spaces) + "message_header header;\n"
+def cxx_opcode_static_member(opcode: int, indent_in_spaces: int = 4):
+    indent = (" " * indent_in_spaces)
+    return indent + f"static constexpr Wopcode opcode{{ {opcode} }};\n"
 
 @dataclass
 class wl_event:
@@ -82,6 +186,17 @@ class wl_event:
     description: Optional[wl_description]
     args: list[wl_arg]
 
+    def as_cxx_struct(self, opcode: int) -> str:
+        comment = ""
+        if self.description:
+            comment = self.description.as_sphinx_comment()
+        header = f"struct {self.name} {{\n"
+        body = cxx_opcode_static_member(opcode)
+        for arg in self.args:
+            body += arg.as_cxx_data_member()
+        tail = "};\n\n"
+        return comment + header + body + tail
+
 @dataclass
 class wl_request:
     # Required attributes
@@ -95,6 +210,18 @@ class wl_request:
     description: Optional[wl_description]
     args: list[wl_arg]
 
+    def as_cxx_struct(self, opcode: int) -> str:
+        comment = ""
+        if self.description:
+            comment = self.description.as_sphinx_comment()
+        header = f"struct {self.name} {{\n"
+        body = cxx_opcode_static_member(opcode)
+        for arg in self.args:
+            body += arg.as_cxx_data_member()
+        tail = "};\n\n"
+        return comment + header + body + tail
+
+
 @dataclass
 class wl_interface:
     # Required attributes
@@ -107,6 +234,30 @@ class wl_interface:
     events: list[wl_event]
     enums: list[wl_enum]
 
+    request_opcodes: list[int]
+    event_opcodes: list[int]
+
+    def as_cxx_namespace(self) -> str:
+        comment = ""
+        if self.description:
+            comment = self.description.as_sphinx_comment()
+
+        header = f"namespace {self.name} {{\n\n"
+        body = ""
+
+        for enum in self.enums:
+            body += enum.as_cxx_enum_class()
+
+        for opcode, request in zip(self.request_opcodes, self.requests):
+            body += request.as_cxx_struct(opcode)
+
+        for opcode, event in zip(self.event_opcodes, self.events):
+            body += event.as_cxx_struct(opcode)
+
+        tail = f"}} // namespace {self.name}\n\n"
+
+        return comment + header + body + tail
+
 @dataclass
 class wl_protocol:
     # Required attributes
@@ -117,11 +268,46 @@ class wl_protocol:
     description: Optional[wl_description]
     interfaces: list[wl_interface]
 
+    def write_cxx_header(self):
+        content: str = f"// Generated from Wayland xml protocol: {self.name}\n\n"
+
+        if self.description:
+            content += self.description.as_sphinx_comment("@file ") + "\n"
+        else:
+            content += f"/// @file {self.name} xml protocol\n\n"
+
+        if self.copyright:
+            content += commentify(self.copyright) + "\n"
+
+        content += "#pragma once\n\n"
+
+        content += '#include "wayland/protocol_primitives.hpp"\n\n'
+
+        content += "namespace ger {\n"
+        content += "namespace wl {\n"
+        content += "namespace protocols {\n"
+        content += f"namespace {self.name} {{\n\n"
+
+        if len(self.interfaces) == 0:
+            raise RuntimeError(f"Protocol {self.name} has no interfaces!")
+        for interface in self.interfaces:
+            content += interface.as_cxx_namespace()
+
+        content += f"}} // namespace {self.name}\n"
+        content += "} // namespace protocols\n"
+        content += "} // namespace wl\n"
+        content += "} // namespace ger\n"
+
+        filename = f"{self.name}_protocol.hpp"
+        with open(filename, "w") as file:
+            file.write(content)
+        print(f"{filename} created!")
+
 from lxml import etree as ET
 
 def parse_wl_description(node: ET.Element) -> wl_description:
     assert "description" == node.tag, f"Expected description node, got {node.tag} at line number: {node.sourceline}"
-    return wl_description(node.attrib["summary"], str(node.text))
+    return wl_description(node.attrib["summary"], node.text)
 
 
 def parse_wl_arg(node: ET.Element) -> wl_arg:
@@ -161,6 +347,7 @@ def parse_wl_arg(node: ET.Element) -> wl_arg:
     return wl_arg(
         name = node.attrib["name"],
         arg_type = parsed_type,
+        summary = node.attrib.get("summary"),
         interface = node.attrib.get("interface"),
         allow_null = (allow_null_txt == "true"),
         enum = node.attrib.get("enum"),
@@ -186,7 +373,7 @@ def parse_wl_enum_entry(node: ET.Element) -> wl_enum_entry:
 
     return wl_enum_entry(
         name = node.attrib["name"],
-        value = int(node.attrib["value"]),
+        value = int(node.attrib["value"], 0), # 0 is for automatix hex and decimal distingushing
         summary = node.attrib.get("summary"),
         since_version = parsed_since_version,
         description = parsed_desc
@@ -201,12 +388,8 @@ def parse_wl_enum(node: ET.Element) -> wl_enum:
         parsed_since_version = int(since_version)
 
     parsed_desc = None
-    if (len(node) == 0):
-        pass
-    elif (len(node) == 1):
+    if len(node) >= 1 and node[0].tag == "description":
         parsed_desc = parse_wl_description(node[0])
-    else:
-        raise RuntimeError("enum xml node contained more than one children")
 
     potential_entries = node[int(parsed_desc is not None):]
     parsed_entries = [parse_wl_enum_entry(child) for child in potential_entries]
@@ -288,11 +471,18 @@ def parse_wl_interface(node: ET.Element) -> wl_interface:
     parsed_events: list[wl_event] = []
     parsed_enums: list[wl_enum] = []
 
+    opcode_counter = 0
+    found_request_opcodes: list[int] = []
+    found_event_opcodes: list[int] = []
     for child in non_desc_children:
         if child.tag == "request":
             parsed_requests.append(parse_wl_request(child))
+            found_request_opcodes.append(opcode_counter)
+            opcode_counter += 1
         elif child.tag == "event":
             parsed_events.append(parse_wl_event(child))
+            found_event_opcodes.append(opcode_counter)
+            opcode_counter += 1
         elif child.tag == "enum":
             parsed_enums.append(parse_wl_enum(child))
 
@@ -302,7 +492,9 @@ def parse_wl_interface(node: ET.Element) -> wl_interface:
         description = parsed_desc,
         requests = parsed_requests,
         events = parsed_events,
-        enums = parsed_enums
+        enums = parsed_enums,
+        event_opcodes = found_event_opcodes,
+        request_opcodes = found_request_opcodes,
     )
 
 def parse_wl_protocol(node: ET.Element) -> wl_protocol:
@@ -316,25 +508,37 @@ def parse_wl_protocol(node: ET.Element) -> wl_protocol:
         parsed_copyright = node[0].text
 
     parsed_desc = None
-    if (len(node) > 1):
-        index_of_desc = int(parsed_copyright is not None)
-        if (node[index_of_desc].tag == "description"):
-            parsed_desc = parse_wl_description(node[index_of_desc])
+    # Possible description is at index 0 if there is no copyright,
+    # or at index 1 if there is copyright
+    index_of_desc = int(parsed_copyright is not None)
+    if (index_of_desc < len(node) and node[index_of_desc].tag == "description"):
+        parsed_desc = parse_wl_description(node[index_of_desc])
 
     amount_of_non_interface_children = int(parsed_copyright is not None) + int(parsed_desc is not None)
     parsed_interfaces = [parse_wl_interface(x) for x in node[amount_of_non_interface_children:]]
 
+    protocol_name = node.attrib["name"]
     return wl_protocol(
-        name = node.attrib["name"],
+        name = protocol_name,
         copyright = parsed_copyright,
         description = parsed_desc,
         interfaces = parsed_interfaces
     )
 
+def remove_comment_nodes(root: ET.Element) -> None:
+    comments = root.xpath('//comment()')
+    for c in comments:
+        p = c.getparent()
+        p.remove(c)
+
 def parse_wayland_xml(xml: bytes):
     root = ET.fromstring(xml)
+    remove_comment_nodes(root)
     return parse_wl_protocol(root)
 
 if __name__ == "__main__":
-    test_address = "https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/tests.xml?ref_type=heads&inline=false"
-    print(parse_wayland_xml(get_wayland_xml(test_address)))
+    # test_address = "https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/tests.xml?ref_type=heads&inline=false"
+    # parse_wayland_xml(get_wayland_xml(test_address)).write_cxx_header()
+
+    wayland_xml_address = "https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml?ref_type=heads&inline=false"
+    parse_wayland_xml(get_wayland_xml(wayland_xml_address)).write_cxx_header()
