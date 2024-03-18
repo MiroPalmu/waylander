@@ -1,10 +1,11 @@
-Welcome to template documentation!
-==================================
+Welcome to Guilander documentation!
+===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   scope
    developing_guidelines
    doxygen_index
 
