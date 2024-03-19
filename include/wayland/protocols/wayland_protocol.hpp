@@ -34,27 +34,336 @@
 namespace ger {
 namespace wl {
 namespace protocols {
-namespace wayland {
 
-/// core global object
-///
-/// The core global object.  This is a special singleton object.  It
-/// is used for internal Wayland protocol features.
-namespace wl_display {
+/// Declare everything before they might be used.
 
+struct wl_display {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct sync;
+        struct get_registry;
+    };
+
+    struct event {
+        struct error;
+        struct delete_id;
+    };
+};
+struct wl_registry {
+    struct request {
+        struct bind;
+    };
+
+    struct event {
+        struct global;
+        struct global_remove;
+    };
+};
+struct wl_callback {
+    struct request {};
+
+    struct event {
+        struct done;
+    };
+};
+struct wl_compositor {
+    struct request {
+        struct create_surface;
+        struct create_region;
+    };
+
+    struct event {};
+};
+struct wl_shm_pool {
+    struct request {
+        struct create_buffer;
+        struct destroy;
+        struct resize;
+    };
+
+    struct event {};
+};
+struct wl_shm {
+    enum class error : Wint::integral_type;
+    enum class format : Wint::integral_type;
+
+    struct request {
+        struct create_pool;
+        struct release;
+    };
+
+    struct event {
+        struct format;
+    };
+};
+struct wl_buffer {
+    struct request {
+        struct destroy;
+    };
+
+    struct event {
+        struct release;
+    };
+};
+struct wl_data_offer {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct accept;
+        struct receive;
+        struct destroy;
+        struct finish;
+        struct set_actions;
+    };
+
+    struct event {
+        struct offer;
+        struct source_actions;
+        struct action;
+    };
+};
+struct wl_data_source {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct offer;
+        struct destroy;
+        struct set_actions;
+    };
+
+    struct event {
+        struct target;
+        struct send;
+        struct cancelled;
+        struct dnd_drop_performed;
+        struct dnd_finished;
+        struct action;
+    };
+};
+struct wl_data_device {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct start_drag;
+        struct set_selection;
+        struct release;
+    };
+
+    struct event {
+        struct data_offer;
+        struct enter;
+        struct leave;
+        struct motion;
+        struct drop;
+        struct selection;
+    };
+};
+struct wl_data_device_manager {
+    enum class dnd_action : Wuint::integral_type;
+
+    struct request {
+        struct create_data_source;
+        struct get_data_device;
+    };
+
+    struct event {};
+};
+struct wl_shell {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct get_shell_surface;
+    };
+
+    struct event {};
+};
+struct wl_shell_surface {
+    enum class resize : Wuint::integral_type;
+    enum class transient : Wuint::integral_type;
+    enum class fullscreen_method : Wint::integral_type;
+
+    struct request {
+        struct pong;
+        struct move;
+        struct resize;
+        struct set_toplevel;
+        struct set_transient;
+        struct set_fullscreen;
+        struct set_popup;
+        struct set_maximized;
+        struct set_title;
+        struct set_class;
+    };
+
+    struct event {
+        struct ping;
+        struct configure;
+        struct popup_done;
+    };
+};
+struct wl_surface {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct destroy;
+        struct attach;
+        struct damage;
+        struct frame;
+        struct set_opaque_region;
+        struct set_input_region;
+        struct commit;
+        struct set_buffer_transform;
+        struct set_buffer_scale;
+        struct damage_buffer;
+        struct offset;
+    };
+
+    struct event {
+        struct enter;
+        struct leave;
+        struct preferred_buffer_scale;
+        struct preferred_buffer_transform;
+    };
+};
+struct wl_seat {
+    enum class capability : Wuint::integral_type;
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct get_pointer;
+        struct get_keyboard;
+        struct get_touch;
+        struct release;
+    };
+
+    struct event {
+        struct capabilities;
+        struct name;
+    };
+};
+struct wl_pointer {
+    enum class error : Wint::integral_type;
+    enum class button_state : Wint::integral_type;
+    enum class axis : Wint::integral_type;
+    enum class axis_source : Wint::integral_type;
+    enum class axis_relative_direction : Wint::integral_type;
+
+    struct request {
+        struct set_cursor;
+        struct release;
+    };
+
+    struct event {
+        struct enter;
+        struct leave;
+        struct motion;
+        struct button;
+        struct axis;
+        struct frame;
+        struct axis_source;
+        struct axis_stop;
+        struct axis_discrete;
+        struct axis_value120;
+        struct axis_relative_direction;
+    };
+};
+struct wl_keyboard {
+    enum class keymap_format : Wint::integral_type;
+    enum class key_state : Wint::integral_type;
+
+    struct request {
+        struct release;
+    };
+
+    struct event {
+        struct keymap;
+        struct enter;
+        struct leave;
+        struct key;
+        struct modifiers;
+        struct repeat_info;
+    };
+};
+struct wl_touch {
+    struct request {
+        struct release;
+    };
+
+    struct event {
+        struct down;
+        struct up;
+        struct motion;
+        struct frame;
+        struct cancel;
+        struct shape;
+        struct orientation;
+    };
+};
+struct wl_output {
+    enum class subpixel : Wint::integral_type;
+    enum class transform : Wint::integral_type;
+    enum class mode : Wuint::integral_type;
+
+    struct request {
+        struct release;
+    };
+
+    struct event {
+        struct geometry;
+        struct mode;
+        struct done;
+        struct scale;
+        struct name;
+        struct description;
+    };
+};
+struct wl_region {
+    struct request {
+        struct destroy;
+        struct add;
+        struct subtract;
+    };
+
+    struct event {};
+};
+struct wl_subcompositor {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct destroy;
+        struct get_subsurface;
+    };
+
+    struct event {};
+};
+struct wl_subsurface {
+    enum class error : Wint::integral_type;
+
+    struct request {
+        struct destroy;
+        struct set_position;
+        struct place_above;
+        struct place_below;
+        struct set_sync;
+        struct set_desync;
+    };
+
+    struct event {};
+};
 /// global error values
 ///
 /// These errors are global and can be emitted in response to any
 /// server request.
-enum class error : Wint::integral_type {
+enum class wl_display::error : Wint::integral_type {
     /// server couldn't find object
-    invalid_object = 0,
+    Einvalid_object = 0,
     /// method doesn't exist on the specified interface or malformed request
-    invalid_method = 1,
+    Einvalid_method = 1,
     /// server is out of memory
-    no_memory = 2,
+    Eno_memory = 2,
     /// implementation error in compositor
-    implementation = 3
+    Eimplementation = 3
 };
 
 /// asynchronous roundtrip
@@ -70,10 +379,10 @@ enum class error : Wint::integral_type {
 /// attempt to use it after that point.
 ///
 /// The callback_data passed in the callback is the event serial.
-struct sync {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_display::request::sync {
+    static constexpr Wopcode<wl_display> opcode{ 0 };
     /// callback object for the sync request
-    Wnew_id callback;
+    Wnew_id<wl_callback> callback;
 };
 
 /// get global registry object
@@ -87,10 +396,10 @@ struct sync {
 /// client disconnects, not when the client side proxy is destroyed.
 /// Therefore, clients should invoke get_registry as infrequently as
 /// possible to avoid wasting memory.
-struct get_registry {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_display::request::get_registry {
+    static constexpr Wopcode<wl_display> opcode{ 1 };
     /// global registry object
-    Wnew_id registry;
+    Wnew_id<wl_registry> registry;
 };
 
 /// fatal error event
@@ -102,10 +411,10 @@ struct get_registry {
 /// by the object interface.  As such, each interface defines its
 /// own set of error codes.  The message is a brief description
 /// of the error, for (debugging) convenience.
-struct error {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_display::event::error {
+    static constexpr Wopcode<wl_display> opcode{ 2 };
     /// object where the error occurred
-    Wobject object_id;
+    Wobject<> object_id;
     /// error code
     Wuint code;
     /// error description
@@ -119,48 +428,22 @@ struct error {
 /// the server will send this event to acknowledge that it has
 /// seen the delete request. When the client receives this event,
 /// it will know that it can safely reuse the object ID.
-struct delete_id {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_display::event::delete_id {
+    static constexpr Wopcode<wl_display> opcode{ 3 };
     /// deleted object ID
     Wuint id;
 };
-
-} // namespace wl_display
-
-/// global registry object
-///
-/// The singleton global registry object.  The server has a number of
-/// global objects that are available to all clients.  These objects
-/// typically represent an actual object in the server (for example,
-/// an input device) or they are singleton objects that provide
-/// extension functionality.
-///
-/// When a client creates a registry object, the registry object
-/// will emit a global event for each global currently in the
-/// registry.  Globals come and go as a result of device or
-/// monitor hotplugs, reconfiguration or other events, and the
-/// registry will send out global and global_remove events to
-/// keep the client up to date with the changes.  To mark the end
-/// of the initial burst of events, the client can use the
-/// wl_display.sync request immediately after calling
-/// wl_display.get_registry.
-///
-/// A client can bind to a global object by using the bind
-/// request.  This creates a client-side handle that lets the object
-/// emit events to the client and lets the client invoke requests on
-/// the object.
-namespace wl_registry {
 
 /// bind an object to the display
 ///
 /// Binds a new, client-created object to the server using the
 /// specified name as the identifier.
-struct bind {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_registry::request::bind {
+    static constexpr Wopcode<wl_registry> opcode{ 0 };
     /// unique numeric name of the object
     Wuint name;
     /// bounded object
-    Wnew_id id;
+    Wnew_id<> id;
 };
 
 /// announce global object
@@ -170,8 +453,8 @@ struct bind {
 /// The event notifies the client that a global object with
 /// the given name is now available, and it implements the
 /// given version of the given interface.
-struct global {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_registry::event::global {
+    static constexpr Wopcode<wl_registry> opcode{ 1 };
     /// numeric name of the global object
     Wuint name;
     /// interface implemented by the object
@@ -192,71 +475,38 @@ struct global {
 /// The object remains valid and requests to the object will be
 /// ignored until the client destroys it, to avoid races between
 /// the global going away and a client sending a request to it.
-struct global_remove {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_registry::event::global_remove {
+    static constexpr Wopcode<wl_registry> opcode{ 2 };
     /// numeric name of the global object
     Wuint name;
 };
 
-} // namespace wl_registry
-
-/// callback object
-///
-/// Clients can handle the 'done' event to get notified when
-/// the related request is done.
-///
-/// Note, because wl_callback objects are created from multiple independent
-/// factory interfaces, the wl_callback interface is frozen at version 1.
-namespace wl_callback {
-
 /// done event
 ///
 /// Notify the client when the related request is done.
-struct done {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_callback::event::done {
+    static constexpr Wopcode<wl_callback> opcode{ 0 };
     /// request-specific data for the callback
     Wuint callback_data;
 };
 
-} // namespace wl_callback
-
-/// the compositor singleton
-///
-/// A compositor.  This object is a singleton global.  The
-/// compositor is in charge of combining the contents of multiple
-/// surfaces into one displayable output.
-namespace wl_compositor {
-
 /// create new surface
 ///
 /// Ask the compositor to create a new surface.
-struct create_surface {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_compositor::request::create_surface {
+    static constexpr Wopcode<wl_compositor> opcode{ 0 };
     /// the new surface
-    Wnew_id id;
+    Wnew_id<wl_surface> id;
 };
 
 /// create new region
 ///
 /// Ask the compositor to create a new region.
-struct create_region {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_compositor::request::create_region {
+    static constexpr Wopcode<wl_compositor> opcode{ 1 };
     /// the new region
-    Wnew_id id;
+    Wnew_id<wl_region> id;
 };
-
-} // namespace wl_compositor
-
-/// a shared memory pool
-///
-/// The wl_shm_pool object encapsulates a piece of memory shared
-/// between the compositor and client.  Through the wl_shm_pool
-/// object, the client can allocate shared memory wl_buffer objects.
-/// All objects created through the same pool share the same
-/// underlying mapped memory. Reusing the mapped memory avoids the
-/// setup/teardown overhead and is useful when interactively resizing
-/// a surface or for many small buffers.
-namespace wl_shm_pool {
 
 /// create a buffer from the pool
 ///
@@ -271,10 +521,10 @@ namespace wl_shm_pool {
 /// A buffer will keep a reference to the pool it was created from
 /// so it is valid to destroy the pool immediately after creating
 /// a buffer from it.
-struct create_buffer {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_shm_pool::request::create_buffer {
+    static constexpr Wopcode<wl_shm_pool> opcode{ 0 };
     /// buffer to create
-    Wnew_id id;
+    Wnew_id<wl_buffer> id;
     /// buffer byte offset within the pool
     Wint offset;
     /// buffer width, in pixels
@@ -284,7 +534,7 @@ struct create_buffer {
     /// number of bytes from the beginning of one row to the beginning of the next row
     Wint stride;
     /// buffer pixel format
-    Wuint format;
+    wl_shm::format format;
 };
 
 /// destroy the pool
@@ -294,8 +544,8 @@ struct create_buffer {
 /// The mmapped memory will be released when all
 /// buffers that have been created from this pool
 /// are gone.
-struct destroy {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_shm_pool::request::destroy {
+    static constexpr Wopcode<wl_shm_pool> opcode{ 1 };
 };
 
 /// change the size of the pool mapping
@@ -310,37 +560,22 @@ struct destroy {
 /// file descriptor passed at creation time. It is the client's
 /// responsibility to ensure that the file is at least as big as
 /// the new pool size.
-struct resize {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_shm_pool::request::resize {
+    static constexpr Wopcode<wl_shm_pool> opcode{ 2 };
     /// new size of the pool, in bytes
     Wint size;
 };
 
-} // namespace wl_shm_pool
-
-/// shared memory support
-///
-/// A singleton global object that provides support for shared
-/// memory.
-///
-/// Clients can create wl_shm_pool objects using the create_pool
-/// request.
-///
-/// On binding the wl_shm object one or more format events
-/// are emitted to inform clients about the valid pixel formats
-/// that can be used for buffers.
-namespace wl_shm {
-
 /// wl_shm error values
 ///
 /// These errors can be emitted in response to wl_shm requests.
-enum class error : Wint::integral_type {
+enum class wl_shm::error : Wint::integral_type {
     /// buffer format is not known
-    invalid_format = 0,
+    Einvalid_format = 0,
     /// invalid size or stride during pool or buffer creation
-    invalid_stride = 1,
+    Einvalid_stride = 1,
     /// mmapping the file descriptor failed
-    invalid_fd = 2
+    Einvalid_fd = 2
 };
 
 /// pixel formats
@@ -357,241 +592,241 @@ enum class error : Wint::integral_type {
 ///
 /// For all wl_shm formats and unless specified in another protocol
 /// extension, pre-multiplied alpha is used for pixel values.
-enum class format : Wint::integral_type {
+enum class wl_shm::format : Wint::integral_type {
     /// 32-bit ARGB format, [31:0] A:R:G:B 8:8:8:8 little endian
-    argb8888 = 0,
+    Eargb8888 = 0,
     /// 32-bit RGB format, [31:0] x:R:G:B 8:8:8:8 little endian
-    xrgb8888 = 1,
+    Exrgb8888 = 1,
     /// 8-bit color index format, [7:0] C
-    c8 = 538982467,
+    Ec8 = 538982467,
     /// 8-bit RGB format, [7:0] R:G:B 3:3:2
-    rgb332 = 943867730,
+    Ergb332 = 943867730,
     /// 8-bit BGR format, [7:0] B:G:R 2:3:3
-    bgr233 = 944916290,
+    Ebgr233 = 944916290,
     /// 16-bit xRGB format, [15:0] x:R:G:B 4:4:4:4 little endian
-    xrgb4444 = 842093144,
+    Exrgb4444 = 842093144,
     /// 16-bit xBGR format, [15:0] x:B:G:R 4:4:4:4 little endian
-    xbgr4444 = 842089048,
+    Exbgr4444 = 842089048,
     /// 16-bit RGBx format, [15:0] R:G:B:x 4:4:4:4 little endian
-    rgbx4444 = 842094674,
+    Ergbx4444 = 842094674,
     /// 16-bit BGRx format, [15:0] B:G:R:x 4:4:4:4 little endian
-    bgrx4444 = 842094658,
+    Ebgrx4444 = 842094658,
     /// 16-bit ARGB format, [15:0] A:R:G:B 4:4:4:4 little endian
-    argb4444 = 842093121,
+    Eargb4444 = 842093121,
     /// 16-bit ABGR format, [15:0] A:B:G:R 4:4:4:4 little endian
-    abgr4444 = 842089025,
+    Eabgr4444 = 842089025,
     /// 16-bit RBGA format, [15:0] R:G:B:A 4:4:4:4 little endian
-    rgba4444 = 842088786,
+    Ergba4444 = 842088786,
     /// 16-bit BGRA format, [15:0] B:G:R:A 4:4:4:4 little endian
-    bgra4444 = 842088770,
+    Ebgra4444 = 842088770,
     /// 16-bit xRGB format, [15:0] x:R:G:B 1:5:5:5 little endian
-    xrgb1555 = 892424792,
+    Exrgb1555 = 892424792,
     /// 16-bit xBGR 1555 format, [15:0] x:B:G:R 1:5:5:5 little endian
-    xbgr1555 = 892420696,
+    Exbgr1555 = 892420696,
     /// 16-bit RGBx 5551 format, [15:0] R:G:B:x 5:5:5:1 little endian
-    rgbx5551 = 892426322,
+    Ergbx5551 = 892426322,
     /// 16-bit BGRx 5551 format, [15:0] B:G:R:x 5:5:5:1 little endian
-    bgrx5551 = 892426306,
+    Ebgrx5551 = 892426306,
     /// 16-bit ARGB 1555 format, [15:0] A:R:G:B 1:5:5:5 little endian
-    argb1555 = 892424769,
+    Eargb1555 = 892424769,
     /// 16-bit ABGR 1555 format, [15:0] A:B:G:R 1:5:5:5 little endian
-    abgr1555 = 892420673,
+    Eabgr1555 = 892420673,
     /// 16-bit RGBA 5551 format, [15:0] R:G:B:A 5:5:5:1 little endian
-    rgba5551 = 892420434,
+    Ergba5551 = 892420434,
     /// 16-bit BGRA 5551 format, [15:0] B:G:R:A 5:5:5:1 little endian
-    bgra5551 = 892420418,
+    Ebgra5551 = 892420418,
     /// 16-bit RGB 565 format, [15:0] R:G:B 5:6:5 little endian
-    rgb565 = 909199186,
+    Ergb565 = 909199186,
     /// 16-bit BGR 565 format, [15:0] B:G:R 5:6:5 little endian
-    bgr565 = 909199170,
+    Ebgr565 = 909199170,
     /// 24-bit RGB format, [23:0] R:G:B little endian
-    rgb888 = 875710290,
+    Ergb888 = 875710290,
     /// 24-bit BGR format, [23:0] B:G:R little endian
-    bgr888 = 875710274,
+    Ebgr888 = 875710274,
     /// 32-bit xBGR format, [31:0] x:B:G:R 8:8:8:8 little endian
-    xbgr8888 = 875709016,
+    Exbgr8888 = 875709016,
     /// 32-bit RGBx format, [31:0] R:G:B:x 8:8:8:8 little endian
-    rgbx8888 = 875714642,
+    Ergbx8888 = 875714642,
     /// 32-bit BGRx format, [31:0] B:G:R:x 8:8:8:8 little endian
-    bgrx8888 = 875714626,
+    Ebgrx8888 = 875714626,
     /// 32-bit ABGR format, [31:0] A:B:G:R 8:8:8:8 little endian
-    abgr8888 = 875708993,
+    Eabgr8888 = 875708993,
     /// 32-bit RGBA format, [31:0] R:G:B:A 8:8:8:8 little endian
-    rgba8888 = 875708754,
+    Ergba8888 = 875708754,
     /// 32-bit BGRA format, [31:0] B:G:R:A 8:8:8:8 little endian
-    bgra8888 = 875708738,
+    Ebgra8888 = 875708738,
     /// 32-bit xRGB format, [31:0] x:R:G:B 2:10:10:10 little endian
-    xrgb2101010 = 808669784,
+    Exrgb2101010 = 808669784,
     /// 32-bit xBGR format, [31:0] x:B:G:R 2:10:10:10 little endian
-    xbgr2101010 = 808665688,
+    Exbgr2101010 = 808665688,
     /// 32-bit RGBx format, [31:0] R:G:B:x 10:10:10:2 little endian
-    rgbx1010102 = 808671314,
+    Ergbx1010102 = 808671314,
     /// 32-bit BGRx format, [31:0] B:G:R:x 10:10:10:2 little endian
-    bgrx1010102 = 808671298,
+    Ebgrx1010102 = 808671298,
     /// 32-bit ARGB format, [31:0] A:R:G:B 2:10:10:10 little endian
-    argb2101010 = 808669761,
+    Eargb2101010 = 808669761,
     /// 32-bit ABGR format, [31:0] A:B:G:R 2:10:10:10 little endian
-    abgr2101010 = 808665665,
+    Eabgr2101010 = 808665665,
     /// 32-bit RGBA format, [31:0] R:G:B:A 10:10:10:2 little endian
-    rgba1010102 = 808665426,
+    Ergba1010102 = 808665426,
     /// 32-bit BGRA format, [31:0] B:G:R:A 10:10:10:2 little endian
-    bgra1010102 = 808665410,
+    Ebgra1010102 = 808665410,
     /// packed YCbCr format, [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian
-    yuyv = 1448695129,
+    Eyuyv = 1448695129,
     /// packed YCbCr format, [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian
-    yvyu = 1431918169,
+    Eyvyu = 1431918169,
     /// packed YCbCr format, [31:0] Y1:Cr0:Y0:Cb0 8:8:8:8 little endian
-    uyvy = 1498831189,
+    Euyvy = 1498831189,
     /// packed YCbCr format, [31:0] Y1:Cb0:Y0:Cr0 8:8:8:8 little endian
-    vyuy = 1498765654,
+    Evyuy = 1498765654,
     /// packed AYCbCr format, [31:0] A:Y:Cb:Cr 8:8:8:8 little endian
-    ayuv = 1448433985,
+    Eayuv = 1448433985,
     /// 2 plane YCbCr Cr:Cb format, 2x2 subsampled Cr:Cb plane
-    nv12 = 842094158,
+    Env12 = 842094158,
     /// 2 plane YCbCr Cb:Cr format, 2x2 subsampled Cb:Cr plane
-    nv21 = 825382478,
+    Env21 = 825382478,
     /// 2 plane YCbCr Cr:Cb format, 2x1 subsampled Cr:Cb plane
-    nv16 = 909203022,
+    Env16 = 909203022,
     /// 2 plane YCbCr Cb:Cr format, 2x1 subsampled Cb:Cr plane
-    nv61 = 825644622,
+    Env61 = 825644622,
     /// 3 plane YCbCr format, 4x4 subsampled Cb (1) and Cr (2) planes
-    yuv410 = 961959257,
+    Eyuv410 = 961959257,
     /// 3 plane YCbCr format, 4x4 subsampled Cr (1) and Cb (2) planes
-    yvu410 = 961893977,
+    Eyvu410 = 961893977,
     /// 3 plane YCbCr format, 4x1 subsampled Cb (1) and Cr (2) planes
-    yuv411 = 825316697,
+    Eyuv411 = 825316697,
     /// 3 plane YCbCr format, 4x1 subsampled Cr (1) and Cb (2) planes
-    yvu411 = 825316953,
+    Eyvu411 = 825316953,
     /// 3 plane YCbCr format, 2x2 subsampled Cb (1) and Cr (2) planes
-    yuv420 = 842093913,
+    Eyuv420 = 842093913,
     /// 3 plane YCbCr format, 2x2 subsampled Cr (1) and Cb (2) planes
-    yvu420 = 842094169,
+    Eyvu420 = 842094169,
     /// 3 plane YCbCr format, 2x1 subsampled Cb (1) and Cr (2) planes
-    yuv422 = 909202777,
+    Eyuv422 = 909202777,
     /// 3 plane YCbCr format, 2x1 subsampled Cr (1) and Cb (2) planes
-    yvu422 = 909203033,
+    Eyvu422 = 909203033,
     /// 3 plane YCbCr format, non-subsampled Cb (1) and Cr (2) planes
-    yuv444 = 875713881,
+    Eyuv444 = 875713881,
     /// 3 plane YCbCr format, non-subsampled Cr (1) and Cb (2) planes
-    yvu444 = 875714137,
+    Eyvu444 = 875714137,
     /// [7:0] R
-    r8 = 538982482,
+    Er8 = 538982482,
     /// [15:0] R little endian
-    r16 = 540422482,
+    Er16 = 540422482,
     /// [15:0] R:G 8:8 little endian
-    rg88 = 943212370,
+    Erg88 = 943212370,
     /// [15:0] G:R 8:8 little endian
-    gr88 = 943215175,
+    Egr88 = 943215175,
     /// [31:0] R:G 16:16 little endian
-    rg1616 = 842221394,
+    Erg1616 = 842221394,
     /// [31:0] G:R 16:16 little endian
-    gr1616 = 842224199,
+    Egr1616 = 842224199,
     /// [63:0] x:R:G:B 16:16:16:16 little endian
-    xrgb16161616f = 1211388504,
+    Exrgb16161616f = 1211388504,
     /// [63:0] x:B:G:R 16:16:16:16 little endian
-    xbgr16161616f = 1211384408,
+    Exbgr16161616f = 1211384408,
     /// [63:0] A:R:G:B 16:16:16:16 little endian
-    argb16161616f = 1211388481,
+    Eargb16161616f = 1211388481,
     /// [63:0] A:B:G:R 16:16:16:16 little endian
-    abgr16161616f = 1211384385,
+    Eabgr16161616f = 1211384385,
     /// [31:0] X:Y:Cb:Cr 8:8:8:8 little endian
-    xyuv8888 = 1448434008,
+    Exyuv8888 = 1448434008,
     /// [23:0] Cr:Cb:Y 8:8:8 little endian
-    vuy888 = 875713878,
+    Evuy888 = 875713878,
     /// Y followed by U then V, 10:10:10. Non-linear modifier only
-    vuy101010 = 808670550,
+    Evuy101010 = 808670550,
     /// [63:0] Cr0:0:Y1:0:Cb0:0:Y0:0 10:6:10:6:10:6:10:6 little endian per 2 Y pixels
-    y210 = 808530521,
+    Ey210 = 808530521,
     /// [63:0] Cr0:0:Y1:0:Cb0:0:Y0:0 12:4:12:4:12:4:12:4 little endian per 2 Y pixels
-    y212 = 842084953,
+    Ey212 = 842084953,
     /// [63:0] Cr0:Y1:Cb0:Y0 16:16:16:16 little endian per 2 Y pixels
-    y216 = 909193817,
+    Ey216 = 909193817,
     /// [31:0] A:Cr:Y:Cb 2:10:10:10 little endian
-    y410 = 808531033,
+    Ey410 = 808531033,
     /// [63:0] A:0:Cr:0:Y:0:Cb:0 12:4:12:4:12:4:12:4 little endian
-    y412 = 842085465,
+    Ey412 = 842085465,
     /// [63:0] A:Cr:Y:Cb 16:16:16:16 little endian
-    y416 = 909194329,
+    Ey416 = 909194329,
     /// [31:0] X:Cr:Y:Cb 2:10:10:10 little endian
-    xvyu2101010 = 808670808,
+    Exvyu2101010 = 808670808,
     /// [63:0] X:0:Cr:0:Y:0:Cb:0 12:4:12:4:12:4:12:4 little endian
-    xvyu12_16161616 = 909334104,
+    Exvyu12_16161616 = 909334104,
     /// [63:0] X:Cr:Y:Cb 16:16:16:16 little endian
-    xvyu16161616 = 942954072,
+    Exvyu16161616 = 942954072,
     /// [63:0]   A3:A2:Y3:0:Cr0:0:Y2:0:A1:A0:Y1:0:Cb0:0:Y0:0  1:1:8:2:8:2:8:2:1:1:8:2:8:2:8:2 little endian
-    y0l0 = 810299481,
+    Ey0l0 = 810299481,
     /// [63:0]   X3:X2:Y3:0:Cr0:0:Y2:0:X1:X0:Y1:0:Cb0:0:Y0:0  1:1:8:2:8:2:8:2:1:1:8:2:8:2:8:2 little endian
-    x0l0 = 810299480,
+    Ex0l0 = 810299480,
     /// [63:0]   A3:A2:Y3:Cr0:Y2:A1:A0:Y1:Cb0:Y0  1:1:10:10:10:1:1:10:10:10 little endian
-    y0l2 = 843853913,
+    Ey0l2 = 843853913,
     /// [63:0]   X3:X2:Y3:Cr0:Y2:X1:X0:Y1:Cb0:Y0  1:1:10:10:10:1:1:10:10:10 little endian
-    x0l2 = 843853912,
-    yuv420_8bit = 942691673,
-    yuv420_10bit = 808539481,
-    xrgb8888_a8 = 943805016,
-    xbgr8888_a8 = 943800920,
-    rgbx8888_a8 = 943806546,
-    bgrx8888_a8 = 943806530,
-    rgb888_a8 = 943798354,
-    bgr888_a8 = 943798338,
-    rgb565_a8 = 943797586,
-    bgr565_a8 = 943797570,
+    Ex0l2         = 843853912,
+    Eyuv420_8bit  = 942691673,
+    Eyuv420_10bit = 808539481,
+    Exrgb8888_a8  = 943805016,
+    Exbgr8888_a8  = 943800920,
+    Ergbx8888_a8  = 943806546,
+    Ebgrx8888_a8  = 943806530,
+    Ergb888_a8    = 943798354,
+    Ebgr888_a8    = 943798338,
+    Ergb565_a8    = 943797586,
+    Ebgr565_a8    = 943797570,
     /// non-subsampled Cr:Cb plane
-    nv24 = 875714126,
+    Env24 = 875714126,
     /// non-subsampled Cb:Cr plane
-    nv42 = 842290766,
+    Env42 = 842290766,
     /// 2x1 subsampled Cr:Cb plane, 10 bit per channel
-    p210 = 808530512,
+    Ep210 = 808530512,
     /// 2x2 subsampled Cr:Cb plane 10 bits per channel
-    p010 = 808530000,
+    Ep010 = 808530000,
     /// 2x2 subsampled Cr:Cb plane 12 bits per channel
-    p012 = 842084432,
+    Ep012 = 842084432,
     /// 2x2 subsampled Cr:Cb plane 16 bits per channel
-    p016 = 909193296,
+    Ep016 = 909193296,
     /// [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian
-    axbxgxrx106106106106 = 808534593,
+    Eaxbxgxrx106106106106 = 808534593,
     /// 2x2 subsampled Cr:Cb plane
-    nv15 = 892425806,
-    q410 = 808531025,
-    q401 = 825242705,
+    Env15 = 892425806,
+    Eq410 = 808531025,
+    Eq401 = 825242705,
     /// [63:0] x:R:G:B 16:16:16:16 little endian
-    xrgb16161616 = 942953048,
+    Exrgb16161616 = 942953048,
     /// [63:0] x:B:G:R 16:16:16:16 little endian
-    xbgr16161616 = 942948952,
+    Exbgr16161616 = 942948952,
     /// [63:0] A:R:G:B 16:16:16:16 little endian
-    argb16161616 = 942953025,
+    Eargb16161616 = 942953025,
     /// [63:0] A:B:G:R 16:16:16:16 little endian
-    abgr16161616 = 942948929,
+    Eabgr16161616 = 942948929,
     /// [7:0] C0:C1:C2:C3:C4:C5:C6:C7 1:1:1:1:1:1:1:1 eight pixels/byte
-    c1 = 538980675,
+    Ec1 = 538980675,
     /// [7:0] C0:C1:C2:C3 2:2:2:2 four pixels/byte
-    c2 = 538980931,
+    Ec2 = 538980931,
     /// [7:0] C0:C1 4:4 two pixels/byte
-    c4 = 538981443,
+    Ec4 = 538981443,
     /// [7:0] D0:D1:D2:D3:D4:D5:D6:D7 1:1:1:1:1:1:1:1 eight pixels/byte
-    d1 = 538980676,
+    Ed1 = 538980676,
     /// [7:0] D0:D1:D2:D3 2:2:2:2 four pixels/byte
-    d2 = 538980932,
+    Ed2 = 538980932,
     /// [7:0] D0:D1 4:4 two pixels/byte
-    d4 = 538981444,
+    Ed4 = 538981444,
     /// [7:0] D
-    d8 = 538982468,
+    Ed8 = 538982468,
     /// [7:0] R0:R1:R2:R3:R4:R5:R6:R7 1:1:1:1:1:1:1:1 eight pixels/byte
-    r1 = 538980690,
+    Er1 = 538980690,
     /// [7:0] R0:R1:R2:R3 2:2:2:2 four pixels/byte
-    r2 = 538980946,
+    Er2 = 538980946,
     /// [7:0] R0:R1 4:4 two pixels/byte
-    r4 = 538981458,
+    Er4 = 538981458,
     /// [15:0] x:R 6:10 little endian
-    r10 = 540029266,
+    Er10 = 540029266,
     /// [15:0] x:R 4:12 little endian
-    r12 = 540160338,
+    Er12 = 540160338,
     /// [31:0] A:Cr:Cb:Y 8:8:8:8 little endian
-    avuy8888 = 1498764865,
+    Eavuy8888 = 1498764865,
     /// [31:0] X:Cr:Cb:Y 8:8:8:8 little endian
-    xvuy8888 = 1498764888,
+    Exvuy8888 = 1498764888,
     /// 2x2 subsampled Cr:Cb plane 10 bits per channel packed
-    p030 = 808661072
+    Ep030 = 808661072
 };
 
 /// create a shm pool
@@ -601,10 +836,10 @@ enum class format : Wint::integral_type {
 /// The pool can be used to create shared memory based buffer
 /// objects.  The server will mmap size bytes of the passed file
 /// descriptor, to use as backing memory for the pool.
-struct create_pool {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_shm::request::create_pool {
+    static constexpr Wopcode<wl_shm> opcode{ 0 };
     /// pool to create
-    Wnew_id id;
+    Wnew_id<wl_shm_pool> id;
     /// file descriptor for the pool
     Wfd fd;
     /// pool size, in bytes
@@ -617,8 +852,8 @@ struct create_pool {
 /// use the shm object anymore.
 ///
 /// Objects created via this interface remain unaffected.
-struct release {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_shm::request::release {
+    static constexpr Wopcode<wl_shm> opcode{ 2 };
 };
 
 /// pixel format description
@@ -626,32 +861,11 @@ struct release {
 /// Informs the client about a valid pixel format that
 /// can be used for buffers. Known formats include
 /// argb8888 and xrgb8888.
-struct format {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_shm::event::format {
+    static constexpr Wopcode<wl_shm> opcode{ 1 };
     /// buffer pixel format
-    Wuint format;
+    wl_shm::format format;
 };
-
-} // namespace wl_shm
-
-/// content for a wl_surface
-///
-/// A buffer provides the content for a wl_surface. Buffers are
-/// created through factory interfaces such as wl_shm, wp_linux_buffer_params
-/// (from the linux-dmabuf protocol extension) or similar. It has a width and
-/// a height and can be attached to a wl_surface, but the mechanism by which a
-/// client provides and updates the contents is defined by the buffer factory
-/// interface.
-///
-/// Color channels are assumed to be electrical rather than optical (in other
-/// words, encoded with a transfer function) unless otherwise specified. If
-/// the buffer uses a format that has an alpha channel, the alpha channel is
-/// assumed to be premultiplied into the electrical color channel values
-/// (after transfer function encoding) unless otherwise specified.
-///
-/// Note, because wl_buffer objects are created from multiple independent
-/// factory interfaces, the wl_buffer interface is frozen at version 1.
-namespace wl_buffer {
 
 /// destroy a buffer
 ///
@@ -659,8 +873,8 @@ namespace wl_buffer {
 /// storage is defined by the buffer factory interface.
 ///
 /// For possible side-effects to a surface, see wl_surface.attach.
-struct destroy {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_buffer::request::destroy {
+    static constexpr Wopcode<wl_buffer> opcode{ 0 };
 };
 
 /// compositor releases buffer
@@ -677,31 +891,19 @@ struct destroy {
 /// this is possible, when the compositor maintains a copy of the
 /// wl_surface contents, e.g. as a GL texture. This is an important
 /// optimization for GL(ES) compositors with wl_shm clients.
-struct release {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_buffer::event::release {
+    static constexpr Wopcode<wl_buffer> opcode{ 1 };
 };
 
-} // namespace wl_buffer
-
-/// offer to transfer data
-///
-/// A wl_data_offer represents a piece of data offered for transfer
-/// by another client (the source client).  It is used by the
-/// copy-and-paste and drag-and-drop mechanisms.  The offer
-/// describes the different mime types that the data can be
-/// converted to and provides the mechanism for transferring the
-/// data directly from the source client.
-namespace wl_data_offer {
-
-enum class error : Wint::integral_type {
+enum class wl_data_offer::error : Wint::integral_type {
     /// finish request was called untimely
-    invalid_finish = 0,
+    Einvalid_finish = 0,
     /// action mask contains invalid values
-    invalid_action_mask = 1,
+    Einvalid_action_mask = 1,
     /// action argument has an invalid value
-    invalid_action = 2,
+    Einvalid_action = 2,
     /// offer doesn't accept this request
-    invalid_offer = 3
+    Einvalid_offer = 3
 };
 
 /// accept one of the offered mime types
@@ -720,8 +922,8 @@ enum class error : Wint::integral_type {
 /// will be cancelled and the corresponding drag source will receive
 /// wl_data_source.cancelled. Clients may still use this event in
 /// conjunction with wl_data_source.action for feedback.
-struct accept {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_data_offer::request::accept {
+    static constexpr Wopcode<wl_data_offer> opcode{ 0 };
     /// serial number of the accept request
     Wuint serial;
     /// mime type accepted by the client
@@ -745,8 +947,8 @@ struct accept {
 /// both before and after wl_data_device.drop. Drag-and-drop destination
 /// clients may preemptively fetch data or examine it more closely to
 /// determine acceptance.
-struct receive {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_data_offer::request::receive {
+    static constexpr Wopcode<wl_data_offer> opcode{ 1 };
     /// mime type desired by receiver
     Wstring mime_type;
     /// file descriptor for data transfer
@@ -756,8 +958,8 @@ struct receive {
 /// destroy data offer
 ///
 /// Destroy the data offer.
-struct destroy {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_data_offer::request::destroy {
+    static constexpr Wopcode<wl_data_offer> opcode{ 2 };
 };
 
 /// the offer will no longer be used
@@ -776,8 +978,8 @@ struct destroy {
 ///
 /// If wl_data_offer.finish request is received for a non drag and drop
 /// operation, the invalid_finish protocol error is raised.
-struct finish {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_data_offer::request::finish {
+    static constexpr Wopcode<wl_data_offer> opcode{ 4 };
 };
 
 /// set the available/preferred drag-and-drop actions
@@ -813,20 +1015,20 @@ struct finish {
 ///
 /// This request can only be made on drag-and-drop offers, a protocol error
 /// will be raised otherwise.
-struct set_actions {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_data_offer::request::set_actions {
+    static constexpr Wopcode<wl_data_offer> opcode{ 5 };
     /// actions supported by the destination client
-    Wuint dnd_actions;
+    wl_data_device_manager::dnd_action dnd_actions;
     /// action preferred by the destination client
-    Wuint preferred_action;
+    wl_data_device_manager::dnd_action preferred_action;
 };
 
 /// advertise offered mime type
 ///
 /// Sent immediately after creating the wl_data_offer object.  One
 /// event per offered mime type.
-struct offer {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_data_offer::event::offer {
+    static constexpr Wopcode<wl_data_offer> opcode{ 3 };
     /// offered mime type
     Wstring mime_type;
 };
@@ -837,10 +1039,10 @@ struct offer {
 /// will be sent immediately after creating the wl_data_offer object,
 /// or anytime the source side changes its offered actions through
 /// wl_data_source.set_actions.
-struct source_actions {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_data_offer::event::source_actions {
+    static constexpr Wopcode<wl_data_offer> opcode{ 6 };
     /// actions offered by the data source
-    Wuint source_actions;
+    wl_data_device_manager::dnd_action source_actions;
 };
 
 /// notify the selected action
@@ -880,27 +1082,17 @@ struct source_actions {
 /// user (e.g. popping up a menu with the available options). The
 /// final wl_data_offer.set_actions and wl_data_offer.accept requests
 /// must happen before the call to wl_data_offer.finish.
-struct action {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_data_offer::event::action {
+    static constexpr Wopcode<wl_data_offer> opcode{ 7 };
     /// action selected by the compositor
-    Wuint dnd_action;
+    wl_data_device_manager::dnd_action dnd_action;
 };
 
-} // namespace wl_data_offer
-
-/// offer to transfer data
-///
-/// The wl_data_source object is the source side of a wl_data_offer.
-/// It is created by the source client in a data transfer and
-/// provides a way to describe the offered data and a way to respond
-/// to requests to transfer the data.
-namespace wl_data_source {
-
-enum class error : Wint::integral_type {
+enum class wl_data_source::error : Wint::integral_type {
     /// action mask contains invalid values
-    invalid_action_mask = 0,
+    Einvalid_action_mask = 0,
     /// source doesn't accept this request
-    invalid_source = 1
+    Einvalid_source = 1
 };
 
 /// add an offered mime type
@@ -908,8 +1100,8 @@ enum class error : Wint::integral_type {
 /// This request adds a mime type to the set of mime types
 /// advertised to targets.  Can be called several times to offer
 /// multiple types.
-struct offer {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_data_source::request::offer {
+    static constexpr Wopcode<wl_data_source> opcode{ 0 };
     /// mime type offered by the data source
     Wstring mime_type;
 };
@@ -917,8 +1109,8 @@ struct offer {
 /// destroy the data source
 ///
 /// Destroy the data source.
-struct destroy {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_data_source::request::destroy {
+    static constexpr Wopcode<wl_data_source> opcode{ 1 };
 };
 
 /// set the available drag-and-drop actions
@@ -936,10 +1128,10 @@ struct destroy {
 /// used in drag-and-drop, so it must be performed before
 /// wl_data_device.start_drag. Attempting to use the source other than
 /// for drag-and-drop will raise a protocol error.
-struct set_actions {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_data_source::request::set_actions {
+    static constexpr Wopcode<wl_data_source> opcode{ 5 };
     /// actions supported by the data source
-    Wuint dnd_actions;
+    wl_data_device_manager::dnd_action dnd_actions;
 };
 
 /// a target accepts an offered mime type
@@ -948,8 +1140,8 @@ struct set_actions {
 /// a target does not accept any of the offered types, type is NULL.
 ///
 /// Used for feedback during drag-and-drop.
-struct target {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_data_source::event::target {
+    static constexpr Wopcode<wl_data_source> opcode{ 2 };
     /// mime type accepted by the target
     Wstring mime_type;
 };
@@ -959,8 +1151,8 @@ struct target {
 /// Request for data from the client.  Send the data as the
 /// specified mime type over the passed file descriptor, then
 /// close it.
-struct send {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_data_source::event::send {
+    static constexpr Wopcode<wl_data_source> opcode{ 3 };
     /// mime type for the data
     Wstring mime_type;
     /// file descriptor for the data
@@ -989,8 +1181,8 @@ struct send {
 /// For objects of version 2 or older, wl_data_source.cancelled will
 /// only be emitted if the data source was replaced by another data
 /// source.
-struct cancelled {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_data_source::event::cancelled {
+    static constexpr Wopcode<wl_data_source> opcode{ 4 };
 };
 
 /// the drag-and-drop operation physically finished
@@ -1004,8 +1196,8 @@ struct cancelled {
 ///
 /// Note that the data_source may still be used in the future and should
 /// not be destroyed here.
-struct dnd_drop_performed {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_data_source::event::dnd_drop_performed {
+    static constexpr Wopcode<wl_data_source> opcode{ 6 };
 };
 
 /// the drag-and-drop operation concluded
@@ -1016,8 +1208,8 @@ struct dnd_drop_performed {
 ///
 /// If the action used to perform the operation was "move", the
 /// source can now delete the transferred data.
-struct dnd_finished {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_data_source::event::dnd_finished {
+    static constexpr Wopcode<wl_data_source> opcode{ 7 };
 };
 
 /// notify the selected action
@@ -1047,28 +1239,17 @@ struct dnd_finished {
 ///
 /// Clients can trigger cursor surface changes from this point, so
 /// they reflect the current action.
-struct action {
-    static constexpr Wopcode opcode{ 8 };
+struct wl_data_source::event::action {
+    static constexpr Wopcode<wl_data_source> opcode{ 8 };
     /// action selected by the compositor
-    Wuint dnd_action;
+    wl_data_device_manager::dnd_action dnd_action;
 };
 
-} // namespace wl_data_source
-
-/// data transfer device
-///
-/// There is one wl_data_device per seat which can be obtained
-/// from the global wl_data_device_manager singleton.
-///
-/// A wl_data_device provides access to inter-client data transfer
-/// mechanisms such as copy-and-paste and drag-and-drop.
-namespace wl_data_device {
-
-enum class error : Wint::integral_type {
+enum class wl_data_device::error : Wint::integral_type {
     /// given wl_surface has another role
-    role = 0,
+    Erole = 0,
     /// source has already been used
-    used_source = 1
+    Eused_source = 1
 };
 
 /// start drag-and-drop operation
@@ -1102,14 +1283,14 @@ enum class error : Wint::integral_type {
 /// The given source may not be used in any further set_selection or
 /// start_drag requests. Attempting to reuse a previously-used source
 /// may send a used_source error.
-struct start_drag {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_data_device::request::start_drag {
+    static constexpr Wopcode<wl_data_device> opcode{ 0 };
     /// data source for the eventual transfer
-    Wobject source;
+    Wobject<wl_data_source> source;
     /// surface where the drag originates
-    Wobject origin;
+    Wobject<wl_surface> origin;
     /// drag-and-drop icon surface
-    Wobject icon;
+    Wobject<wl_surface> icon;
     /// serial number of the implicit grab on the origin
     Wuint serial;
 };
@@ -1124,10 +1305,10 @@ struct start_drag {
 /// The given source may not be used in any further set_selection or
 /// start_drag requests. Attempting to reuse a previously-used source
 /// may send a used_source error.
-struct set_selection {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_data_device::request::set_selection {
+    static constexpr Wopcode<wl_data_device> opcode{ 1 };
     /// data source for the selection
-    Wobject source;
+    Wobject<wl_data_source> source;
     /// serial number of the event that triggered this request
     Wuint serial;
 };
@@ -1135,8 +1316,8 @@ struct set_selection {
 /// destroy data device
 ///
 /// This request destroys the data device.
-struct release {
-    static constexpr Wopcode opcode{ 8 };
+struct wl_data_device::request::release {
+    static constexpr Wopcode<wl_data_device> opcode{ 8 };
 };
 
 /// introduce a new wl_data_offer
@@ -1148,10 +1329,10 @@ struct release {
 /// following the data_device.data_offer event, the new data_offer
 /// object will send out data_offer.offer events to describe the
 /// mime types it offers.
-struct data_offer {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_data_device::event::data_offer {
+    static constexpr Wopcode<wl_data_device> opcode{ 2 };
     /// the new data_offer object
-    Wnew_id id;
+    Wnew_id<wl_data_offer> id;
 };
 
 /// initiate drag-and-drop session
@@ -1160,18 +1341,18 @@ struct data_offer {
 /// a surface owned by the client.  The position of the pointer at
 /// enter time is provided by the x and y arguments, in surface-local
 /// coordinates.
-struct enter {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_data_device::event::enter {
+    static constexpr Wopcode<wl_data_device> opcode{ 3 };
     /// serial number of the enter event
     Wuint serial;
     /// client surface entered
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// surface-local x coordinate
     Wfixed x;
     /// surface-local y coordinate
     Wfixed y;
     /// source data_offer object
-    Wobject id;
+    Wobject<wl_data_offer> id;
 };
 
 /// end drag-and-drop session
@@ -1179,8 +1360,8 @@ struct enter {
 /// This event is sent when the drag-and-drop pointer leaves the
 /// surface and the session ends.  The client must destroy the
 /// wl_data_offer introduced at enter time at this point.
-struct leave {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_data_device::event::leave {
+    static constexpr Wopcode<wl_data_device> opcode{ 4 };
 };
 
 /// drag-and-drop session motion
@@ -1189,8 +1370,8 @@ struct leave {
 /// the currently focused surface. The new position of the pointer
 /// is provided by the x and y arguments, in surface-local
 /// coordinates.
-struct motion {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_data_device::event::motion {
+    static constexpr Wopcode<wl_data_device> opcode{ 5 };
     /// timestamp with millisecond granularity
     Wuint time;
     /// surface-local x coordinate
@@ -1214,8 +1395,8 @@ struct motion {
 /// final. The drag-and-drop destination is expected to perform one last
 /// wl_data_offer.set_actions request, or wl_data_offer.destroy in order
 /// to cancel the operation.
-struct drop {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_data_device::event::drop {
+    static constexpr Wopcode<wl_data_device> opcode{ 6 };
 };
 
 /// advertise new selection
@@ -1232,27 +1413,11 @@ struct drop {
 /// keyboard focus within the same client doesn't mean a new selection
 /// will be sent.  The client must destroy the previous selection
 /// data_offer, if any, upon receiving this event.
-struct selection {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_data_device::event::selection {
+    static constexpr Wopcode<wl_data_device> opcode{ 7 };
     /// selection data_offer object
-    Wobject id;
+    Wobject<wl_data_offer> id;
 };
-
-} // namespace wl_data_device
-
-/// data transfer interface
-///
-/// The wl_data_device_manager is a singleton global object that
-/// provides access to inter-client data transfer mechanisms such as
-/// copy-and-paste and drag-and-drop.  These mechanisms are tied to
-/// a wl_seat and this interface lets a client get a wl_data_device
-/// corresponding to a wl_seat.
-///
-/// Depending on the version bound, the objects created from the bound
-/// wl_data_device_manager object will have different requirements for
-/// functioning properly. See wl_data_source.set_actions,
-/// wl_data_offer.accept and wl_data_offer.finish for details.
-namespace wl_data_device_manager {
 
 /// drag and drop actions
 ///
@@ -1279,55 +1444,40 @@ namespace wl_data_device_manager {
 /// Compositors may for example bind other modifiers (like Alt/Meta)
 /// or drags initiated with other buttons than BTN_LEFT to specific
 /// actions (e.g. "ask").
-enum class dnd_action : Wuint::integral_type {
+enum class wl_data_device_manager::dnd_action : Wuint::integral_type {
     /// no action
-    none = 0,
+    Enone = 0,
     /// copy action
-    copy = 1,
+    Ecopy = 1,
     /// move action
-    move = 2,
+    Emove = 2,
     /// ask action
-    ask = 4
+    Eask = 4
 };
 
 /// create a new data source
 ///
 /// Create a new data source.
-struct create_data_source {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_data_device_manager::request::create_data_source {
+    static constexpr Wopcode<wl_data_device_manager> opcode{ 0 };
     /// data source to create
-    Wnew_id id;
+    Wnew_id<wl_data_source> id;
 };
 
 /// create a new data device
 ///
 /// Create a new data device for a given seat.
-struct get_data_device {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_data_device_manager::request::get_data_device {
+    static constexpr Wopcode<wl_data_device_manager> opcode{ 1 };
     /// data device to create
-    Wnew_id id;
+    Wnew_id<wl_data_device> id;
     /// seat associated with the data device
-    Wobject seat;
+    Wobject<wl_seat> seat;
 };
 
-} // namespace wl_data_device_manager
-
-/// create desktop-style surfaces
-///
-/// This interface is implemented by servers that provide
-/// desktop-style user interfaces.
-///
-/// It allows clients to associate a wl_shell_surface with
-/// a basic surface.
-///
-/// Note! This protocol is deprecated and not intended for production use.
-/// For desktop-style user interfaces, use xdg_shell. Compositors and clients
-/// should not implement this interface.
-namespace wl_shell {
-
-enum class error : Wint::integral_type {
+enum class wl_shell::error : Wint::integral_type {
     /// given wl_surface has another role
-    role = 0
+    Erole = 0
 };
 
 /// create a shell surface from a surface
@@ -1337,30 +1487,13 @@ enum class error : Wint::integral_type {
 /// already has another role, it raises a protocol error.
 ///
 /// Only one shell surface can be associated with a given surface.
-struct get_shell_surface {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_shell::request::get_shell_surface {
+    static constexpr Wopcode<wl_shell> opcode{ 0 };
     /// shell surface to create
-    Wnew_id id;
+    Wnew_id<wl_shell_surface> id;
     /// surface to be given the shell surface role
-    Wobject surface;
+    Wobject<wl_surface> surface;
 };
-
-} // namespace wl_shell
-
-/// desktop-style metadata interface
-///
-/// An interface that may be implemented by a wl_surface, for
-/// implementations that provide a desktop-style user interface.
-///
-/// It provides requests to treat surfaces like toplevel, fullscreen
-/// or popup windows, move, resize or maximize them, associate
-/// metadata like title and class, etc.
-///
-/// On the server side the object is automatically destroyed when
-/// the related wl_surface is destroyed. On the client side,
-/// wl_shell_surface_destroy() must be called before destroying
-/// the wl_surface object.
-namespace wl_shell_surface {
 
 /// edge values for resizing
 ///
@@ -1368,34 +1501,34 @@ namespace wl_shell_surface {
 /// is being dragged in a resize operation. The server may
 /// use this information to adapt its behavior, e.g. choose
 /// an appropriate cursor image.
-enum class resize : Wuint::integral_type {
+enum class wl_shell_surface::resize : Wuint::integral_type {
     /// no edge
-    none = 0,
+    Enone = 0,
     /// top edge
-    top = 1,
+    Etop = 1,
     /// bottom edge
-    bottom = 2,
+    Ebottom = 2,
     /// left edge
-    left = 4,
+    Eleft = 4,
     /// top and left edges
-    top_left = 5,
+    Etop_left = 5,
     /// bottom and left edges
-    bottom_left = 6,
+    Ebottom_left = 6,
     /// right edge
-    right = 8,
+    Eright = 8,
     /// top and right edges
-    top_right = 9,
+    Etop_right = 9,
     /// bottom and right edges
-    bottom_right = 10
+    Ebottom_right = 10
 };
 
 /// details of transient behaviour
 ///
 /// These flags specify details of the expected behaviour
 /// of transient surfaces. Used in the set_transient request.
-enum class transient : Wuint::integral_type {
+enum class wl_shell_surface::transient : Wuint::integral_type {
     /// do not set keyboard focus
-    inactive = 1
+    Einactive = 1
 };
 
 /// different method to set the surface fullscreen
@@ -1403,23 +1536,23 @@ enum class transient : Wuint::integral_type {
 /// Hints to indicate to the compositor how to deal with a conflict
 /// between the dimensions of the surface and the dimensions of the
 /// output. The compositor is free to ignore this parameter.
-enum class fullscreen_method : Wint::integral_type {
+enum class wl_shell_surface::fullscreen_method : Wint::integral_type {
     /// no preference, apply default policy
-    default = 0,
+    Edefault = 0,
     /// scale, preserve the surface's aspect ratio and center on output
-    scale = 1,
+    Escale = 1,
     /// switch output mode to the smallest mode that can fit the surface, add black borders to compensate size mismatch
-    driver = 2,
+    Edriver = 2,
     /// no upscaling, center on output and add black borders to compensate size mismatch
-    fill = 3
+    Efill = 3
 };
 
 /// respond to a ping event
 ///
 /// A client must respond to a ping event with a pong request or
 /// the client may be deemed unresponsive.
-struct pong {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_shell_surface::request::pong {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 0 };
     /// serial number of the ping event
     Wuint serial;
 };
@@ -1431,10 +1564,10 @@ struct pong {
 /// This request must be used in response to a button press event.
 /// The server may ignore move requests depending on the state of
 /// the surface (e.g. fullscreen or maximized).
-struct move {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_shell_surface::request::move {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 1 };
     /// seat whose pointer is used
-    Wobject seat;
+    Wobject<wl_seat> seat;
     /// serial number of the implicit grab on the pointer
     Wuint serial;
 };
@@ -1446,14 +1579,14 @@ struct move {
 /// This request must be used in response to a button press event.
 /// The server may ignore resize requests depending on the state of
 /// the surface (e.g. fullscreen or maximized).
-struct resize {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_shell_surface::request::resize {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 2 };
     /// seat whose pointer is used
-    Wobject seat;
+    Wobject<wl_seat> seat;
     /// serial number of the implicit grab on the pointer
     Wuint serial;
     /// which edge or corner is being dragged
-    Wuint edges;
+    wl_shell_surface::resize edges;
 };
 
 /// make the surface a toplevel surface
@@ -1461,8 +1594,8 @@ struct resize {
 /// Map the surface as a toplevel surface.
 ///
 /// A toplevel surface is not fullscreen, maximized or transient.
-struct set_toplevel {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_shell_surface::request::set_toplevel {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 3 };
 };
 
 /// make the surface a transient surface
@@ -1474,16 +1607,16 @@ struct set_toplevel {
 /// parent surface, in surface-local coordinates.
 ///
 /// The flags argument controls details of the transient behaviour.
-struct set_transient {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_shell_surface::request::set_transient {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 4 };
     /// parent surface
-    Wobject parent;
+    Wobject<wl_surface> parent;
     /// surface-local x coordinate
     Wint x;
     /// surface-local y coordinate
     Wint y;
     /// transient surface behavior
-    Wuint flags;
+    wl_shell_surface::transient flags;
 };
 
 /// make the surface a fullscreen surface
@@ -1521,14 +1654,14 @@ struct set_transient {
 /// The compositor must reply to this request with a configure event
 /// with the dimensions for the output on which the surface will
 /// be made fullscreen.
-struct set_fullscreen {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_shell_surface::request::set_fullscreen {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 5 };
     /// method for resolving size conflict
-    Wuint method;
+    wl_shell_surface::fullscreen_method method;
     /// framerate in mHz
     Wuint framerate;
     /// output on which the surface is to be fullscreen
-    Wobject output;
+    Wobject<wl_output> output;
 };
 
 /// make the surface a popup surface
@@ -1552,20 +1685,20 @@ struct set_fullscreen {
 /// The x and y arguments specify the location of the upper left
 /// corner of the surface relative to the upper left corner of the
 /// parent surface, in surface-local coordinates.
-struct set_popup {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_shell_surface::request::set_popup {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 6 };
     /// seat whose pointer is used
-    Wobject seat;
+    Wobject<wl_seat> seat;
     /// serial number of the implicit grab on the pointer
     Wuint serial;
     /// parent surface
-    Wobject parent;
+    Wobject<wl_surface> parent;
     /// surface-local x coordinate
     Wint x;
     /// surface-local y coordinate
     Wint y;
     /// transient surface behavior
-    Wuint flags;
+    wl_shell_surface::transient flags;
 };
 
 /// make the surface a maximized surface
@@ -1588,10 +1721,10 @@ struct set_popup {
 /// fullscreen shell surface.
 ///
 /// The details depend on the compositor implementation.
-struct set_maximized {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_shell_surface::request::set_maximized {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 7 };
     /// output on which the surface is to be maximized
-    Wobject output;
+    Wobject<wl_output> output;
 };
 
 /// set surface title
@@ -1603,8 +1736,8 @@ struct set_maximized {
 /// compositor.
 ///
 /// The string must be encoded in UTF-8.
-struct set_title {
-    static constexpr Wopcode opcode{ 8 };
+struct wl_shell_surface::request::set_title {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 8 };
     /// surface title
     Wstring title;
 };
@@ -1617,8 +1750,8 @@ struct set_title {
 /// to which the surface belongs. A common convention is to use the
 /// file name (or the full path if it is a non-standard location) of
 /// the application's .desktop file as the class.
-struct set_class {
-    static constexpr Wopcode opcode{ 9 };
+struct wl_shell_surface::request::set_class {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 9 };
     /// surface class
     Wstring class_;
 };
@@ -1627,8 +1760,8 @@ struct set_class {
 ///
 /// Ping a client to check if it is receiving events and sending
 /// requests. A client is expected to reply with a pong request.
-struct ping {
-    static constexpr Wopcode opcode{ 10 };
+struct wl_shell_surface::event::ping {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 10 };
     /// serial number of the ping
     Wuint serial;
 };
@@ -1652,10 +1785,10 @@ struct ping {
 ///
 /// The width and height arguments specify the size of the window
 /// in surface-local coordinates.
-struct configure {
-    static constexpr Wopcode opcode{ 11 };
+struct wl_shell_surface::event::configure {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 11 };
     /// how the surface was resized
-    Wuint edges;
+    wl_shell_surface::resize edges;
     /// new width of the surface
     Wint width;
     /// new height of the surface
@@ -1667,79 +1800,31 @@ struct configure {
 /// The popup_done event is sent out when a popup grab is broken,
 /// that is, when the user clicks a surface that doesn't belong
 /// to the client owning the popup surface.
-struct popup_done {
-    static constexpr Wopcode opcode{ 12 };
+struct wl_shell_surface::event::popup_done {
+    static constexpr Wopcode<wl_shell_surface> opcode{ 12 };
 };
-
-} // namespace wl_shell_surface
-
-/// an onscreen surface
-///
-/// A surface is a rectangular area that may be displayed on zero
-/// or more outputs, and shown any number of times at the compositor's
-/// discretion. They can present wl_buffers, receive user input, and
-/// define a local coordinate system.
-///
-/// The size of a surface (and relative positions on it) is described
-/// in surface-local coordinates, which may differ from the buffer
-/// coordinates of the pixel content, in case a buffer_transform
-/// or a buffer_scale is used.
-///
-/// A surface without a "role" is fairly useless: a compositor does
-/// not know where, when or how to present it. The role is the
-/// purpose of a wl_surface. Examples of roles are a cursor for a
-/// pointer (as set by wl_pointer.set_cursor), a drag icon
-/// (wl_data_device.start_drag), a sub-surface
-/// (wl_subcompositor.get_subsurface), and a window as defined by a
-/// shell protocol (e.g. wl_shell.get_shell_surface).
-///
-/// A surface can have only one role at a time. Initially a
-/// wl_surface does not have a role. Once a wl_surface is given a
-/// role, it is set permanently for the whole lifetime of the
-/// wl_surface object. Giving the current role again is allowed,
-/// unless explicitly forbidden by the relevant interface
-/// specification.
-///
-/// Surface roles are given by requests in other interfaces such as
-/// wl_pointer.set_cursor. The request should explicitly mention
-/// that this request gives a role to a wl_surface. Often, this
-/// request also creates a new protocol object that represents the
-/// role and adds additional functionality to wl_surface. When a
-/// client wants to destroy a wl_surface, they must destroy this role
-/// object before the wl_surface, otherwise a defunct_role_object error is
-/// sent.
-///
-/// Destroying the role object does not remove the role from the
-/// wl_surface, but it may stop the wl_surface from "playing the role".
-/// For instance, if a wl_subsurface object is destroyed, the wl_surface
-/// it was created for will be unmapped and forget its position and
-/// z-order. It is allowed to create a wl_subsurface for the same
-/// wl_surface again, but it is not allowed to use the wl_surface as
-/// a cursor (cursor is a different role than sub-surface, and role
-/// switching is not allowed).
-namespace wl_surface {
 
 /// wl_surface error values
 ///
 /// These errors can be emitted in response to wl_surface requests.
-enum class error : Wint::integral_type {
+enum class wl_surface::error : Wint::integral_type {
     /// buffer scale value is invalid
-    invalid_scale = 0,
+    Einvalid_scale = 0,
     /// buffer transform value is invalid
-    invalid_transform = 1,
+    Einvalid_transform = 1,
     /// buffer size is invalid
-    invalid_size = 2,
+    Einvalid_size = 2,
     /// buffer offset is invalid
-    invalid_offset = 3,
+    Einvalid_offset = 3,
     /// surface was destroyed before its role object
-    defunct_role_object = 4
+    Edefunct_role_object = 4
 };
 
 /// delete surface
 ///
 /// Deletes the surface and invalidates its object ID.
-struct destroy {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_surface::request::destroy {
+    static constexpr Wopcode<wl_surface> opcode{ 0 };
 };
 
 /// set the surface contents
@@ -1802,10 +1887,10 @@ struct destroy {
 /// If wl_surface.attach is sent with a NULL wl_buffer, or the pending
 /// wl_buffer has been destroyed, the following wl_surface.commit will
 /// remove the surface content.
-struct attach {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_surface::request::attach {
+    static constexpr Wopcode<wl_surface> opcode{ 1 };
     /// buffer of surface contents
-    Wobject buffer;
+    Wobject<wl_buffer> buffer;
     /// surface-local x coordinate
     Wint x;
     /// surface-local y coordinate
@@ -1835,8 +1920,8 @@ struct attach {
 /// Note! New clients should not use this request. Instead damage can be
 /// posted with wl_surface.damage_buffer which uses buffer coordinates
 /// instead of surface coordinates.
-struct damage {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_surface::request::damage {
+    static constexpr Wopcode<wl_surface> opcode{ 2 };
     /// surface-local x coordinate
     Wint x;
     /// surface-local y coordinate
@@ -1881,10 +1966,10 @@ struct damage {
 ///
 /// The callback_data passed in the callback is the current time, in
 /// milliseconds, with an undefined base.
-struct frame {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_surface::request::frame {
+    static constexpr Wopcode<wl_surface> opcode{ 3 };
     /// callback object for the frame request
-    Wnew_id callback;
+    Wnew_id<wl_callback> callback;
 };
 
 /// set opaque region
@@ -1913,10 +1998,10 @@ struct frame {
 /// opaque region has copy semantics, and the wl_region object can be
 /// destroyed immediately. A NULL wl_region causes the pending opaque
 /// region to be set to empty.
-struct set_opaque_region {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_surface::request::set_opaque_region {
+    static constexpr Wopcode<wl_surface> opcode{ 4 };
     /// opaque region of the surface
-    Wobject region;
+    Wobject<wl_region> region;
 };
 
 /// set input region
@@ -1943,10 +2028,10 @@ struct set_opaque_region {
 /// has copy semantics, and the wl_region object can be destroyed
 /// immediately. A NULL wl_region causes the input region to be set
 /// to infinite.
-struct set_input_region {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_surface::request::set_input_region {
+    static constexpr Wopcode<wl_surface> opcode{ 5 };
     /// input region of the surface
-    Wobject region;
+    Wobject<wl_region> region;
 };
 
 /// commit pending surface state
@@ -1968,8 +2053,8 @@ struct set_input_region {
 /// to affect double-buffered state.
 ///
 /// Other interfaces may add further double-buffered surface state.
-struct commit {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_surface::request::commit {
+    static constexpr Wopcode<wl_surface> opcode{ 6 };
 };
 
 /// sets the buffer transformation
@@ -2003,10 +2088,10 @@ struct commit {
 /// If transform is not one of the values from the
 /// wl_output.transform enum the invalid_transform protocol error
 /// is raised.
-struct set_buffer_transform {
-    static constexpr Wopcode opcode{ 9 };
+struct wl_surface::request::set_buffer_transform {
+    static constexpr Wopcode<wl_surface> opcode{ 9 };
     /// transform for interpreting buffer contents
-    Wint transform;
+    wl_output::transform transform;
 };
 
 /// sets the buffer scaling factor
@@ -2034,8 +2119,8 @@ struct set_buffer_transform {
 ///
 /// If scale is not greater than 0 the invalid_scale protocol error is
 /// raised.
-struct set_buffer_scale {
-    static constexpr Wopcode opcode{ 10 };
+struct wl_surface::request::set_buffer_scale {
+    static constexpr Wopcode<wl_surface> opcode{ 10 };
     /// scale for interpreting buffer contents
     Wint scale;
 };
@@ -2074,8 +2159,8 @@ struct set_buffer_scale {
 /// kinds of damage into account will have to accumulate damage from the
 /// two requests separately and only transform from one to the other
 /// after receiving the wl_surface.commit.
-struct damage_buffer {
-    static constexpr Wopcode opcode{ 11 };
+struct wl_surface::request::damage_buffer {
+    static constexpr Wopcode<wl_surface> opcode{ 11 };
     /// buffer-local x coordinate
     Wint x;
     /// buffer-local y coordinate
@@ -2100,8 +2185,8 @@ struct damage_buffer {
 /// This request is semantically equivalent to and the replaces the x and y
 /// arguments in the wl_surface.attach request in wl_surface versions prior
 /// to 5. See wl_surface.attach for details.
-struct offset {
-    static constexpr Wopcode opcode{ 12 };
+struct wl_surface::request::offset {
+    static constexpr Wopcode<wl_surface> opcode{ 12 };
     /// surface-local x coordinate
     Wint x;
     /// surface-local y coordinate
@@ -2115,10 +2200,10 @@ struct offset {
 /// output.
 ///
 /// Note that a surface may be overlapping with zero or more outputs.
-struct enter {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_surface::event::enter {
+    static constexpr Wopcode<wl_surface> opcode{ 7 };
     /// output entered by the surface
-    Wobject output;
+    Wobject<wl_output> output;
 };
 
 /// surface leaves an output
@@ -2132,10 +2217,10 @@ struct enter {
 /// has been sent, and the compositor might expect new surface content
 /// updates even if no enter event has been sent. The frame event should be
 /// used instead.
-struct leave {
-    static constexpr Wopcode opcode{ 8 };
+struct wl_surface::event::leave {
+    static constexpr Wopcode<wl_surface> opcode{ 8 };
     /// output left by the surface
-    Wobject output;
+    Wobject<wl_output> output;
 };
 
 /// preferred buffer scale for the surface
@@ -2152,8 +2237,8 @@ struct leave {
 /// buffer.
 ///
 /// The compositor shall emit a scale value greater than 0.
-struct preferred_buffer_scale {
-    static constexpr Wopcode opcode{ 13 };
+struct wl_surface::event::preferred_buffer_scale {
+    static constexpr Wopcode<wl_surface> opcode{ 13 };
     /// preferred scaling factor
     Wint factor;
 };
@@ -2169,41 +2254,31 @@ struct preferred_buffer_scale {
 /// It is intended that transform aware clients use this event to apply the
 /// transform to their content and use wl_surface.set_buffer_transform to
 /// indicate the transform they have rendered with.
-struct preferred_buffer_transform {
-    static constexpr Wopcode opcode{ 14 };
+struct wl_surface::event::preferred_buffer_transform {
+    static constexpr Wopcode<wl_surface> opcode{ 14 };
     /// preferred transform
-    Wuint transform;
+    wl_output::transform transform;
 };
-
-} // namespace wl_surface
-
-/// group of input devices
-///
-/// A seat is a group of keyboards, pointer and touch devices. This
-/// object is published as a global during start up, or when such a
-/// device is hot plugged.  A seat typically has a pointer and
-/// maintains a keyboard focus and a pointer focus.
-namespace wl_seat {
 
 /// seat capability bitmask
 ///
 /// This is a bitmask of capabilities this seat has; if a member is
 /// set, then it is present on the seat.
-enum class capability : Wuint::integral_type {
+enum class wl_seat::capability : Wuint::integral_type {
     /// the seat has pointer devices
-    pointer = 1,
+    Epointer = 1,
     /// the seat has one or more keyboards
-    keyboard = 2,
+    Ekeyboard = 2,
     /// the seat has touch devices
-    touch = 4
+    Etouch = 4
 };
 
 /// wl_seat error values
 ///
 /// These errors can be emitted in response to wl_seat requests.
-enum class error : Wint::integral_type {
+enum class wl_seat::error : Wint::integral_type {
     /// get_pointer, get_keyboard or get_touch called on seat without the matching capability
-    missing_capability = 0
+    Emissing_capability = 0
 };
 
 /// return pointer object
@@ -2216,10 +2291,10 @@ enum class error : Wint::integral_type {
 /// It is a protocol violation to issue this request on a seat that has
 /// never had the pointer capability. The missing_capability error will
 /// be sent in this case.
-struct get_pointer {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_seat::request::get_pointer {
+    static constexpr Wopcode<wl_seat> opcode{ 1 };
     /// seat pointer
-    Wnew_id id;
+    Wnew_id<wl_pointer> id;
 };
 
 /// return keyboard object
@@ -2232,10 +2307,10 @@ struct get_pointer {
 /// It is a protocol violation to issue this request on a seat that has
 /// never had the keyboard capability. The missing_capability error will
 /// be sent in this case.
-struct get_keyboard {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_seat::request::get_keyboard {
+    static constexpr Wopcode<wl_seat> opcode{ 2 };
     /// seat keyboard
-    Wnew_id id;
+    Wnew_id<wl_keyboard> id;
 };
 
 /// return touch object
@@ -2248,18 +2323,18 @@ struct get_keyboard {
 /// It is a protocol violation to issue this request on a seat that has
 /// never had the touch capability. The missing_capability error will
 /// be sent in this case.
-struct get_touch {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_seat::request::get_touch {
+    static constexpr Wopcode<wl_seat> opcode{ 3 };
     /// seat touch interface
-    Wnew_id id;
+    Wnew_id<wl_touch> id;
 };
 
 /// release the seat object
 ///
 /// Using this request a client can tell the server that it is not going to
 /// use the seat object anymore.
-struct release {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_seat::request::release {
+    static constexpr Wopcode<wl_seat> opcode{ 5 };
 };
 
 /// seat capabilities changed
@@ -2288,10 +2363,10 @@ struct release {
 ///
 /// The above behavior also applies to wl_keyboard and wl_touch with the
 /// keyboard and touch capabilities, respectively.
-struct capabilities {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_seat::event::capabilities {
+    static constexpr Wopcode<wl_seat> opcode{ 0 };
     /// capabilities of the seat
-    Wuint capabilities;
+    wl_seat::capability capabilities;
 };
 
 /// unique identifier for this seat
@@ -2312,50 +2387,36 @@ struct capabilities {
 ///
 /// Compositors may re-use the same seat name if the wl_seat global is
 /// destroyed and re-created later.
-struct name {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_seat::event::name {
+    static constexpr Wopcode<wl_seat> opcode{ 4 };
     /// seat identifier
     Wstring name;
 };
 
-} // namespace wl_seat
-
-/// pointer input device
-///
-/// The wl_pointer interface represents one or more input devices,
-/// such as mice, which control the pointer location and pointer_focus
-/// of a seat.
-///
-/// The wl_pointer interface generates motion, enter and leave
-/// events for the surfaces that the pointer is located over,
-/// and button and axis events for button presses, button releases
-/// and scrolling.
-namespace wl_pointer {
-
-enum class error : Wint::integral_type {
+enum class wl_pointer::error : Wint::integral_type {
     /// given wl_surface has another role
-    role = 0
+    Erole = 0
 };
 
 /// physical button state
 ///
 /// Describes the physical state of a button that produced the button
 /// event.
-enum class button_state : Wint::integral_type {
+enum class wl_pointer::button_state : Wint::integral_type {
     /// the button is not pressed
-    released = 0,
+    Ereleased = 0,
     /// the button is pressed
-    pressed = 1
+    Epressed = 1
 };
 
 /// axis types
 ///
 /// Describes the axis types of scroll events.
-enum class axis : Wint::integral_type {
+enum class wl_pointer::axis : Wint::integral_type {
     /// vertical axis
-    vertical_scroll = 0,
+    Evertical_scroll = 0,
     /// horizontal axis
-    horizontal_scroll = 1
+    Ehorizontal_scroll = 1
 };
 
 /// axis source types
@@ -2376,26 +2437,26 @@ enum class axis : Wint::integral_type {
 /// The "wheel tilt" axis source indicates that the actual device is a
 /// wheel but the scroll event is not caused by a rotation but a
 /// (usually sideways) tilt of the wheel.
-enum class axis_source : Wint::integral_type {
+enum class wl_pointer::axis_source : Wint::integral_type {
     /// a physical wheel rotation
-    wheel = 0,
+    Ewheel = 0,
     /// finger on a touch surface
-    finger = 1,
+    Efinger = 1,
     /// continuous coordinate space
-    continuous = 2,
+    Econtinuous = 2,
     /// a physical wheel tilt
-    wheel_tilt = 3
+    Ewheel_tilt = 3
 };
 
 /// axis relative direction
 ///
 /// This specifies the direction of the physical motion that caused a
 /// wl_pointer.axis event, relative to the wl_pointer.axis direction.
-enum class axis_relative_direction : Wint::integral_type {
+enum class wl_pointer::axis_relative_direction : Wint::integral_type {
     /// physical motion matches axis direction
-    identical = 0,
+    Eidentical = 0,
     /// physical motion is the inverse of the axis direction
-    inverted = 1
+    Einverted = 1
 };
 
 /// set the pointer surface
@@ -2433,12 +2494,12 @@ enum class axis_relative_direction : Wint::integral_type {
 /// The serial parameter must match the latest wl_pointer.enter
 /// serial number sent to the client. Otherwise the request will be
 /// ignored.
-struct set_cursor {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_pointer::request::set_cursor {
+    static constexpr Wopcode<wl_pointer> opcode{ 0 };
     /// serial number of the enter event
     Wuint serial;
     /// pointer surface
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// surface-local x coordinate
     Wint hotspot_x;
     /// surface-local y coordinate
@@ -2452,8 +2513,8 @@ struct set_cursor {
 ///
 /// This request destroys the pointer proxy object, so clients must not call
 /// wl_pointer_destroy() after using this request.
-struct release {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_pointer::request::release {
+    static constexpr Wopcode<wl_pointer> opcode{ 6 };
 };
 
 /// enter event
@@ -2464,12 +2525,12 @@ struct release {
 /// When a seat's focus enters a surface, the pointer image
 /// is undefined and a client should respond to this event by setting
 /// an appropriate pointer image with the set_cursor request.
-struct enter {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_pointer::event::enter {
+    static constexpr Wopcode<wl_pointer> opcode{ 1 };
     /// serial number of the enter event
     Wuint serial;
     /// surface entered by the pointer
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// surface-local x coordinate
     Wfixed surface_x;
     /// surface-local y coordinate
@@ -2483,12 +2544,12 @@ struct enter {
 ///
 /// The leave notification is sent before the enter notification
 /// for the new focus.
-struct leave {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_pointer::event::leave {
+    static constexpr Wopcode<wl_pointer> opcode{ 2 };
     /// serial number of the leave event
     Wuint serial;
     /// surface left by the pointer
-    Wobject surface;
+    Wobject<wl_surface> surface;
 };
 
 /// pointer motion event
@@ -2496,8 +2557,8 @@ struct leave {
 /// Notification of pointer location change. The arguments
 /// surface_x and surface_y are the location relative to the
 /// focused surface.
-struct motion {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_pointer::event::motion {
+    static constexpr Wopcode<wl_pointer> opcode{ 3 };
     /// timestamp with millisecond granularity
     Wuint time;
     /// surface-local x coordinate
@@ -2522,8 +2583,8 @@ struct motion {
 /// kernel's event code list. All other button codes above 0xFFFF are
 /// currently undefined but may be used in future versions of this
 /// protocol.
-struct button {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_pointer::event::button {
+    static constexpr Wopcode<wl_pointer> opcode{ 4 };
     /// serial number of the button event
     Wuint serial;
     /// timestamp with millisecond granularity
@@ -2531,7 +2592,7 @@ struct button {
     /// button that produced the event
     Wuint button;
     /// physical state of the button
-    Wuint state;
+    wl_pointer::button_state state;
 };
 
 /// axis event
@@ -2552,12 +2613,12 @@ struct button {
 ///
 /// When applicable, a client can transform its content relative to the
 /// scroll distance.
-struct axis {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_pointer::event::axis {
+    static constexpr Wopcode<wl_pointer> opcode{ 5 };
     /// timestamp with millisecond granularity
     Wuint time;
     /// axis type
-    Wuint axis;
+    wl_pointer::axis axis;
     /// length of vector in surface-local coordinate space
     Wfixed value;
 };
@@ -2598,8 +2659,8 @@ struct axis {
 /// Compositor-specific policies may require the wl_pointer.leave and
 /// wl_pointer.enter event being split across multiple wl_pointer.frame
 /// groups.
-struct frame {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_pointer::event::frame {
+    static constexpr Wopcode<wl_pointer> opcode{ 7 };
 };
 
 /// axis source event
@@ -2629,10 +2690,10 @@ struct frame {
 ///
 /// The order of wl_pointer.axis_discrete and wl_pointer.axis_source is
 /// not guaranteed.
-struct axis_source {
-    static constexpr Wopcode opcode{ 8 };
+struct wl_pointer::event::axis_source {
+    static constexpr Wopcode<wl_pointer> opcode{ 8 };
     /// source of the axis event
-    Wuint axis_source;
+    wl_pointer::axis_source axis_source;
 };
 
 /// axis stop event
@@ -2651,12 +2712,12 @@ struct axis_source {
 /// The timestamp is to be interpreted identical to the timestamp in the
 /// wl_pointer.axis event. The timestamp value may be the same as a
 /// preceding wl_pointer.axis event.
-struct axis_stop {
-    static constexpr Wopcode opcode{ 9 };
+struct wl_pointer::event::axis_stop {
+    static constexpr Wopcode<wl_pointer> opcode{ 9 };
     /// timestamp with millisecond granularity
     Wuint time;
     /// the axis stopped with this event
-    Wuint axis;
+    wl_pointer::axis axis;
 };
 
 /// axis click event
@@ -2691,10 +2752,10 @@ struct axis_stop {
 ///
 /// The order of wl_pointer.axis_discrete and wl_pointer.axis_source is
 /// not guaranteed.
-struct axis_discrete {
-    static constexpr Wopcode opcode{ 10 };
+struct wl_pointer::event::axis_discrete {
+    static constexpr Wopcode<wl_pointer> opcode{ 10 };
     /// axis type
-    Wuint axis;
+    wl_pointer::axis axis;
     /// number of steps
     Wint discrete;
 };
@@ -2722,10 +2783,10 @@ struct axis_discrete {
 ///
 /// The order of wl_pointer.axis_value120 and wl_pointer.axis_source is
 /// not guaranteed.
-struct axis_value120 {
-    static constexpr Wopcode opcode{ 11 };
+struct wl_pointer::event::axis_value120 {
+    static constexpr Wopcode<wl_pointer> opcode{ 11 };
     /// axis type
-    Wuint axis;
+    wl_pointer::axis axis;
     /// scroll distance as fraction of 120
     Wint value120;
 };
@@ -2767,46 +2828,38 @@ struct axis_value120 {
 /// The order of wl_pointer.axis_relative_direction,
 /// wl_pointer.axis_discrete and wl_pointer.axis_source is not
 /// guaranteed.
-struct axis_relative_direction {
-    static constexpr Wopcode opcode{ 12 };
+struct wl_pointer::event::axis_relative_direction {
+    static constexpr Wopcode<wl_pointer> opcode{ 12 };
     /// axis type
-    Wuint axis;
+    wl_pointer::axis axis;
     /// physical direction relative to axis motion
-    Wuint direction;
+    wl_pointer::axis_relative_direction direction;
 };
-
-} // namespace wl_pointer
-
-/// keyboard input device
-///
-/// The wl_keyboard interface represents one or more keyboards
-/// associated with a seat.
-namespace wl_keyboard {
 
 /// keyboard mapping format
 ///
 /// This specifies the format of the keymap provided to the
 /// client with the wl_keyboard.keymap event.
-enum class keymap_format : Wint::integral_type {
+enum class wl_keyboard::keymap_format : Wint::integral_type {
     /// no keymap; client must understand how to interpret the raw keycode
-    no_keymap = 0,
+    Eno_keymap = 0,
     /// libxkbcommon compatible, null-terminated string; to determine the xkb keycode, clients must add 8 to the key event keycode
-    xkb_v1 = 1
+    Exkb_v1 = 1
 };
 
 /// physical key state
 ///
 /// Describes the physical state of a key that produced the key event.
-enum class key_state : Wint::integral_type {
+enum class wl_keyboard::key_state : Wint::integral_type {
     /// key is not pressed
-    released = 0,
+    Ereleased = 0,
     /// key is pressed
-    pressed = 1
+    Epressed = 1
 };
 
 /// release the keyboard object
-struct release {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_keyboard::request::release {
+    static constexpr Wopcode<wl_keyboard> opcode{ 5 };
 };
 
 /// keyboard mapping
@@ -2817,10 +2870,10 @@ struct release {
 ///
 /// From version 7 onwards, the fd must be mapped with MAP_PRIVATE by
 /// the recipient, as MAP_SHARED may fail.
-struct keymap {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_keyboard::event::keymap {
+    static constexpr Wopcode<wl_keyboard> opcode{ 0 };
     /// keymap format
-    Wuint format;
+    wl_keyboard::keymap_format format;
     /// keymap file descriptor
     Wfd fd;
     /// keymap size, in bytes
@@ -2834,12 +2887,12 @@ struct keymap {
 ///
 /// The compositor must send the wl_keyboard.modifiers event after this
 /// event.
-struct enter {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_keyboard::event::enter {
+    static constexpr Wopcode<wl_keyboard> opcode{ 1 };
     /// serial number of the enter event
     Wuint serial;
     /// surface gaining keyboard focus
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// the currently pressed keys
     Warray keys;
 };
@@ -2856,12 +2909,12 @@ struct enter {
 /// it must stop key repeating if there's some going on and until
 /// it receives the next wl_keyboard.modifiers event, the client
 /// must also assume no modifiers are active.
-struct leave {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_keyboard::event::leave {
+    static constexpr Wopcode<wl_keyboard> opcode{ 2 };
     /// serial number of the leave event
     Wuint serial;
     /// surface that lost keyboard focus
-    Wobject surface;
+    Wobject<wl_surface> surface;
 };
 
 /// key event
@@ -2878,8 +2931,8 @@ struct leave {
 ///
 /// The compositor must not send this event without a surface of the client
 /// having keyboard focus.
-struct key {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_keyboard::event::key {
+    static constexpr Wopcode<wl_keyboard> opcode{ 3 };
     /// serial number of the key event
     Wuint serial;
     /// timestamp with millisecond granularity
@@ -2887,7 +2940,7 @@ struct key {
     /// key that produced the event
     Wuint key;
     /// physical state of the key
-    Wuint state;
+    wl_keyboard::key_state state;
 };
 
 /// modifier and group state
@@ -2902,8 +2955,8 @@ struct key {
 /// valid until it receives the next wl_keyboard.modifiers event. In order to
 /// reset the modifier state again, the compositor can send a
 /// wl_keyboard.modifiers event with no pressed modifiers.
-struct modifiers {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_keyboard::event::modifiers {
+    static constexpr Wopcode<wl_keyboard> opcode{ 4 };
     /// serial number of the modifiers event
     Wuint serial;
     /// depressed modifiers
@@ -2930,31 +2983,17 @@ struct modifiers {
 /// This event can be sent later on as well with a new value if necessary,
 /// so clients should continue listening for the event past the creation
 /// of wl_keyboard.
-struct repeat_info {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_keyboard::event::repeat_info {
+    static constexpr Wopcode<wl_keyboard> opcode{ 6 };
     /// the rate of repeating keys in characters per second
     Wint rate;
     /// delay in milliseconds since key down until repeating starts
     Wint delay;
 };
 
-} // namespace wl_keyboard
-
-/// touchscreen input device
-///
-/// The wl_touch interface represents a touchscreen
-/// associated with a seat.
-///
-/// Touch interactions can consist of one or more contacts.
-/// For each contact, a series of events is generated, starting
-/// with a down event, followed by zero or more motion events,
-/// and ending with an up event. Events relating to the same
-/// contact point can be identified by the ID of the sequence.
-namespace wl_touch {
-
 /// release the touch object
-struct release {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_touch::request::release {
+    static constexpr Wopcode<wl_touch> opcode{ 5 };
 };
 
 /// touch down event and beginning of a touch sequence
@@ -2963,14 +3002,14 @@ struct release {
 /// assigned a unique ID. Future events from this touch point reference
 /// this ID. The ID ceases to be valid after a touch up event and may be
 /// reused in the future.
-struct down {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_touch::event::down {
+    static constexpr Wopcode<wl_touch> opcode{ 0 };
     /// serial number of the touch down event
     Wuint serial;
     /// timestamp with millisecond granularity
     Wuint time;
     /// surface touched
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// the unique ID of this touch point
     Wint id;
     /// surface-local x coordinate
@@ -2984,8 +3023,8 @@ struct down {
 /// The touch point has disappeared. No further events will be sent for
 /// this touch point and the touch point's ID is released and may be
 /// reused in a future touch down event.
-struct up {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_touch::event::up {
+    static constexpr Wopcode<wl_touch> opcode{ 1 };
     /// serial number of the touch up event
     Wuint serial;
     /// timestamp with millisecond granularity
@@ -2997,8 +3036,8 @@ struct up {
 /// update of touch point coordinates
 ///
 /// A touch point has changed coordinates.
-struct motion {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_touch::event::motion {
+    static constexpr Wopcode<wl_touch> opcode{ 2 };
     /// timestamp with millisecond granularity
     Wuint time;
     /// the unique ID of this touch point
@@ -3019,8 +3058,8 @@ struct motion {
 /// guarantee is provided about the set of events within a frame. A client
 /// must assume that any state not updated in a frame is unchanged from the
 /// previously known state.
-struct frame {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_touch::event::frame {
+    static constexpr Wopcode<wl_touch> opcode{ 3 };
 };
 
 /// touch session cancelled
@@ -3031,8 +3070,8 @@ struct frame {
 /// currently active on this client's surface. The client is
 /// responsible for finalizing the touch points, future touch points on
 /// this surface may reuse the touch point ID.
-struct cancel {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_touch::event::cancel {
+    static constexpr Wopcode<wl_touch> opcode{ 4 };
 };
 
 /// update shape of touch point
@@ -3062,8 +3101,8 @@ struct cancel {
 /// This event is only sent by the compositor if the touch device supports
 /// shape reports. The client has to make reasonable assumptions about the
 /// shape if it did not receive this event.
-struct shape {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_touch::event::shape {
+    static constexpr Wopcode<wl_touch> opcode{ 6 };
     /// the unique ID of this touch point
     Wint id;
     /// length of the major axis in surface-local coordinates
@@ -3097,43 +3136,31 @@ struct shape {
 ///
 /// This event is only sent by the compositor if the touch device supports
 /// orientation reports.
-struct orientation {
-    static constexpr Wopcode opcode{ 7 };
+struct wl_touch::event::orientation {
+    static constexpr Wopcode<wl_touch> opcode{ 7 };
     /// the unique ID of this touch point
     Wint id;
     /// angle between major axis and positive surface y-axis in degrees
     Wfixed orientation;
 };
 
-} // namespace wl_touch
-
-/// compositor output region
-///
-/// An output describes part of the compositor geometry.  The
-/// compositor works in the 'compositor coordinate system' and an
-/// output corresponds to a rectangular area in that space that is
-/// actually visible.  This typically corresponds to a monitor that
-/// displays part of the compositor space.  This object is published
-/// as global during start up, or when a monitor is hotplugged.
-namespace wl_output {
-
 /// subpixel geometry information
 ///
 /// This enumeration describes how the physical
 /// pixels on an output are laid out.
-enum class subpixel : Wint::integral_type {
+enum class wl_output::subpixel : Wint::integral_type {
     /// unknown geometry
-    unknown = 0,
+    Eunknown = 0,
     /// no geometry
-    none = 1,
+    Enone = 1,
     /// horizontal RGB
-    horizontal_rgb = 2,
+    Ehorizontal_rgb = 2,
     /// horizontal BGR
-    horizontal_bgr = 3,
+    Ehorizontal_bgr = 3,
     /// vertical RGB
-    vertical_rgb = 4,
+    Evertical_rgb = 4,
     /// vertical BGR
-    vertical_bgr = 5
+    Evertical_bgr = 5
 };
 
 /// transform from framebuffer to output
@@ -3149,42 +3176,42 @@ enum class subpixel : Wint::integral_type {
 /// tell the compositor, so that for fullscreen surfaces, the
 /// compositor will still be able to scan out directly from client
 /// surfaces.
-enum class transform : Wint::integral_type {
+enum class wl_output::transform : Wint::integral_type {
     /// no transform
-    normal = 0,
+    Enormal = 0,
     /// 90 degrees counter-clockwise
-    90 = 1,
+    E90 = 1,
     /// 180 degrees counter-clockwise
-    180 = 2,
+    E180 = 2,
     /// 270 degrees counter-clockwise
-    270 = 3,
+    E270 = 3,
     /// 180 degree flip around a vertical axis
-    flipped = 4,
+    Eflipped = 4,
     /// flip and rotate 90 degrees counter-clockwise
-    flipped_90 = 5,
+    Eflipped_90 = 5,
     /// flip and rotate 180 degrees counter-clockwise
-    flipped_180 = 6,
+    Eflipped_180 = 6,
     /// flip and rotate 270 degrees counter-clockwise
-    flipped_270 = 7
+    Eflipped_270 = 7
 };
 
 /// mode information
 ///
 /// These flags describe properties of an output mode.
 /// They are used in the flags bitfield of the mode event.
-enum class mode : Wuint::integral_type {
+enum class wl_output::mode : Wuint::integral_type {
     /// indicates this is the current mode
-    current = 1,
+    Ecurrent = 1,
     /// indicates this is the preferred mode
-    preferred = 2
+    Epreferred = 2
 };
 
 /// release the output object
 ///
 /// Using this request a client can tell the server that it is not going to
 /// use the output object anymore.
-struct release {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_output::request::release {
+    static constexpr Wopcode<wl_output> opcode{ 4 };
 };
 
 /// properties of the output
@@ -3209,8 +3236,8 @@ struct release {
 /// outputs, might fake this information. Instead of using x and y, clients
 /// should use xdg_output.logical_position. Instead of using make and model,
 /// clients should use name and description.
-struct geometry {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_output::event::geometry {
+    static constexpr Wopcode<wl_output> opcode{ 0 };
     /// x position within the global compositor space
     Wint x;
     /// y position within the global compositor space
@@ -3220,13 +3247,13 @@ struct geometry {
     /// height in millimeters of the output
     Wint physical_height;
     /// subpixel orientation of the output
-    Wint subpixel;
+    wl_output::subpixel subpixel;
     /// textual description of the manufacturer
     Wstring make;
     /// textual description of the model
     Wstring model;
     /// transform that maps framebuffer to output
-    Wint transform;
+    wl_output::transform transform;
 };
 
 /// advertise available modes for the output
@@ -3264,10 +3291,10 @@ struct geometry {
 /// Note: this information is not always meaningful for all outputs. Some
 /// compositors, such as those exposing virtual outputs, might fake the
 /// refresh rate or the size.
-struct mode {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_output::event::mode {
+    static constexpr Wopcode<wl_output> opcode{ 1 };
     /// bitfield of mode flags
-    Wuint flags;
+    wl_output::mode flags;
     /// width of the mode in hardware units
     Wint width;
     /// height of the mode in hardware units
@@ -3283,8 +3310,8 @@ struct mode {
 /// other property changes done after that. This allows
 /// changes to the output properties to be seen as
 /// atomic, even if they happen via multiple events.
-struct done {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_output::event::done {
+    static constexpr Wopcode<wl_output> opcode{ 2 };
 };
 
 /// output scaling properties
@@ -3307,8 +3334,8 @@ struct done {
 /// scale to use for a surface.
 ///
 /// The scale event will be followed by a done event.
-struct scale {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_output::event::scale {
+    static constexpr Wopcode<wl_output> opcode{ 3 };
     /// scaling factor of output
     Wint factor;
 };
@@ -3343,8 +3370,8 @@ struct scale {
 /// same name if possible.
 ///
 /// The name event will be followed by a done event.
-struct name {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_output::event::name {
+    static constexpr Wopcode<wl_output> opcode{ 5 };
     /// output name
     Wstring name;
 };
@@ -3365,34 +3392,24 @@ struct name {
 /// not be sent at all.
 ///
 /// The description event will be followed by a done event.
-struct description {
-    static constexpr Wopcode opcode{ 6 };
+struct wl_output::event::description {
+    static constexpr Wopcode<wl_output> opcode{ 6 };
     /// output description
     Wstring description;
 };
 
-} // namespace wl_output
-
-/// region interface
-///
-/// A region object describes an area.
-///
-/// Region objects are used to describe the opaque and input
-/// regions of a surface.
-namespace wl_region {
-
 /// destroy region
 ///
 /// Destroy the region.  This will invalidate the object ID.
-struct destroy {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_region::request::destroy {
+    static constexpr Wopcode<wl_region> opcode{ 0 };
 };
 
 /// add rectangle to region
 ///
 /// Add the specified rectangle to the region.
-struct add {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_region::request::add {
+    static constexpr Wopcode<wl_region> opcode{ 1 };
     /// region-local x coordinate
     Wint x;
     /// region-local y coordinate
@@ -3406,8 +3423,8 @@ struct add {
 /// subtract rectangle from region
 ///
 /// Subtract the specified rectangle from the region.
-struct subtract {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_region::request::subtract {
+    static constexpr Wopcode<wl_region> opcode{ 2 };
     /// region-local x coordinate
     Wint x;
     /// region-local y coordinate
@@ -3418,36 +3435,11 @@ struct subtract {
     Wint height;
 };
 
-} // namespace wl_region
-
-/// sub-surface compositing
-///
-/// The global interface exposing sub-surface compositing capabilities.
-/// A wl_surface, that has sub-surfaces associated, is called the
-/// parent surface. Sub-surfaces can be arbitrarily nested and create
-/// a tree of sub-surfaces.
-///
-/// The root surface in a tree of sub-surfaces is the main
-/// surface. The main surface cannot be a sub-surface, because
-/// sub-surfaces must always have a parent.
-///
-/// A main surface with its sub-surfaces forms a (compound) window.
-/// For window management purposes, this set of wl_surface objects is
-/// to be considered as a single window, and it should also behave as
-/// such.
-///
-/// The aim of sub-surfaces is to offload some of the compositing work
-/// within a window from clients to the compositor. A prime example is
-/// a video player with decorations and video in separate wl_surface
-/// objects. This should allow the compositor to pass YUV video buffer
-/// processing to dedicated overlay hardware when possible.
-namespace wl_subcompositor {
-
-enum class error : Wint::integral_type {
+enum class wl_subcompositor::error : Wint::integral_type {
     /// the to-be sub-surface is invalid
-    bad_surface = 0,
+    Ebad_surface = 0,
     /// the to-be sub-surface parent is invalid
-    bad_parent = 1
+    Ebad_parent = 1
 };
 
 /// unbind from the subcompositor interface
@@ -3455,8 +3447,8 @@ enum class error : Wint::integral_type {
 /// Informs the server that the client will not be using this
 /// protocol object anymore. This does not affect any other
 /// objects, wl_subsurface objects included.
-struct destroy {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_subcompositor::request::destroy {
+    static constexpr Wopcode<wl_subcompositor> opcode{ 0 };
 };
 
 /// give a surface the role sub-surface
@@ -3480,77 +3472,19 @@ struct destroy {
 ///
 /// This request modifies the behaviour of wl_surface.commit request on
 /// the sub-surface, see the documentation on wl_subsurface interface.
-struct get_subsurface {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_subcompositor::request::get_subsurface {
+    static constexpr Wopcode<wl_subcompositor> opcode{ 1 };
     /// the new sub-surface object ID
-    Wnew_id id;
+    Wnew_id<wl_subsurface> id;
     /// the surface to be turned into a sub-surface
-    Wobject surface;
+    Wobject<wl_surface> surface;
     /// the parent surface
-    Wobject parent;
+    Wobject<wl_surface> parent;
 };
 
-} // namespace wl_subcompositor
-
-/// sub-surface interface to a wl_surface
-///
-/// An additional interface to a wl_surface object, which has been
-/// made a sub-surface. A sub-surface has one parent surface. A
-/// sub-surface's size and position are not limited to that of the parent.
-/// Particularly, a sub-surface is not automatically clipped to its
-/// parent's area.
-///
-/// A sub-surface becomes mapped, when a non-NULL wl_buffer is applied
-/// and the parent surface is mapped. The order of which one happens
-/// first is irrelevant. A sub-surface is hidden if the parent becomes
-/// hidden, or if a NULL wl_buffer is applied. These rules apply
-/// recursively through the tree of surfaces.
-///
-/// The behaviour of a wl_surface.commit request on a sub-surface
-/// depends on the sub-surface's mode. The possible modes are
-/// synchronized and desynchronized, see methods
-/// wl_subsurface.set_sync and wl_subsurface.set_desync. Synchronized
-/// mode caches the wl_surface state to be applied when the parent's
-/// state gets applied, and desynchronized mode applies the pending
-/// wl_surface state directly. A sub-surface is initially in the
-/// synchronized mode.
-///
-/// Sub-surfaces also have another kind of state, which is managed by
-/// wl_subsurface requests, as opposed to wl_surface requests. This
-/// state includes the sub-surface position relative to the parent
-/// surface (wl_subsurface.set_position), and the stacking order of
-/// the parent and its sub-surfaces (wl_subsurface.place_above and
-/// .place_below). This state is applied when the parent surface's
-/// wl_surface state is applied, regardless of the sub-surface's mode.
-/// As the exception, set_sync and set_desync are effective immediately.
-///
-/// The main surface can be thought to be always in desynchronized mode,
-/// since it does not have a parent in the sub-surfaces sense.
-///
-/// Even if a sub-surface is in desynchronized mode, it will behave as
-/// in synchronized mode, if its parent surface behaves as in
-/// synchronized mode. This rule is applied recursively throughout the
-/// tree of surfaces. This means, that one can set a sub-surface into
-/// synchronized mode, and then assume that all its child and grand-child
-/// sub-surfaces are synchronized, too, without explicitly setting them.
-///
-/// Destroying a sub-surface takes effect immediately. If you need to
-/// synchronize the removal of a sub-surface to the parent surface update,
-/// unmap the sub-surface first by attaching a NULL wl_buffer, update parent,
-/// and then destroy the sub-surface.
-///
-/// If the parent wl_surface object is destroyed, the sub-surface is
-/// unmapped.
-///
-/// A sub-surface never has the keyboard focus of any seat.
-///
-/// The wl_surface.offset request is ignored: clients must use set_position
-/// instead to move the sub-surface.
-namespace wl_subsurface {
-
-enum class error : Wint::integral_type {
+enum class wl_subsurface::error : Wint::integral_type {
     /// wl_surface is not a sibling or the parent
-    bad_surface = 0
+    Ebad_surface = 0
 };
 
 /// remove sub-surface interface
@@ -3559,8 +3493,8 @@ enum class error : Wint::integral_type {
 /// that was turned into a sub-surface with a
 /// wl_subcompositor.get_subsurface request. The wl_surface's association
 /// to the parent is deleted. The wl_surface is unmapped immediately.
-struct destroy {
-    static constexpr Wopcode opcode{ 0 };
+struct wl_subsurface::request::destroy {
+    static constexpr Wopcode<wl_subsurface> opcode{ 0 };
 };
 
 /// reposition the sub-surface
@@ -3579,8 +3513,8 @@ struct destroy {
 /// replaces the scheduled position from any previous request.
 ///
 /// The initial position is 0, 0.
-struct set_position {
-    static constexpr Wopcode opcode{ 1 };
+struct wl_subsurface::request::set_position {
+    static constexpr Wopcode<wl_subsurface> opcode{ 1 };
     /// x coordinate in the parent surface
     Wint x;
     /// y coordinate in the parent surface
@@ -3602,20 +3536,20 @@ struct set_position {
 ///
 /// A new sub-surface is initially added as the top-most in the stack
 /// of its siblings and parent.
-struct place_above {
-    static constexpr Wopcode opcode{ 2 };
+struct wl_subsurface::request::place_above {
+    static constexpr Wopcode<wl_subsurface> opcode{ 2 };
     /// the reference surface
-    Wobject sibling;
+    Wobject<wl_surface> sibling;
 };
 
 /// restack the sub-surface
 ///
 /// The sub-surface is placed just below the reference surface.
 /// See wl_subsurface.place_above.
-struct place_below {
-    static constexpr Wopcode opcode{ 3 };
+struct wl_subsurface::request::place_below {
+    static constexpr Wopcode<wl_subsurface> opcode{ 3 };
     /// the reference surface
-    Wobject sibling;
+    Wobject<wl_surface> sibling;
 };
 
 /// set sub-surface to synchronized mode
@@ -3633,8 +3567,8 @@ struct place_below {
 /// parent surface commits do not (re-)apply old state.
 ///
 /// See wl_subsurface for the recursive effect of this mode.
-struct set_sync {
-    static constexpr Wopcode opcode{ 4 };
+struct wl_subsurface::request::set_sync {
+    static constexpr Wopcode<wl_subsurface> opcode{ 4 };
 };
 
 /// set sub-surface to desynchronized mode
@@ -3658,13 +3592,10 @@ struct set_sync {
 ///
 /// If a surface's parent surface behaves as desynchronized, then
 /// the cached state is applied on set_desync.
-struct set_desync {
-    static constexpr Wopcode opcode{ 5 };
+struct wl_subsurface::request::set_desync {
+    static constexpr Wopcode<wl_subsurface> opcode{ 5 };
 };
 
-} // namespace wl_subsurface
-
-} // namespace wayland
 } // namespace protocols
 } // namespace wl
 } // namespace ger

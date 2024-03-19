@@ -15,6 +15,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+reserved_identifiers = set(["default"])
+
 class wl_arg_type(Enum):
     wl_int = 0
     wl_uint = 1
@@ -25,7 +27,8 @@ class wl_arg_type(Enum):
     wl_array = 6
     linux_fd = 7
 
-def get_cxx_Wtype(type: wl_arg_type, as_underlying: bool = False) -> str:
+def get_cxx_Wtype(type: wl_arg_type, interface: Optional[str] = None) -> str:
+
     if type == wl_arg_type.wl_int:
         return "Wint"
     elif type == wl_arg_type.wl_uint:
@@ -35,9 +38,9 @@ def get_cxx_Wtype(type: wl_arg_type, as_underlying: bool = False) -> str:
     elif type == wl_arg_type.wl_string:
         return "Wstring"
     elif type == wl_arg_type.wl_object:
-        return "Wobject"
+        return f"Wobject<{interface if interface else ''}>"
     elif type == wl_arg_type.wl_new_id:
-        return "Wnew_id"
+        return f"Wnew_id<{interface if interface else ''}>"
     elif type == wl_arg_type.wl_array:
         return "Warray"
     elif type == wl_arg_type.linux_fd:
@@ -91,7 +94,7 @@ class wl_arg:
     # (description?)
     description: Optional[wl_description]
 
-    def as_cxx_data_member(self, indent_in_spaces: int = 4) -> str:
+    def as_cxx_data_member(self, interface: str, indent_in_spaces: int = 4) -> str:
 
         desc = ""
         indent = ' ' * indent_in_spaces
@@ -104,8 +107,18 @@ class wl_arg:
             desc = self.description.as_sphinx_comment(indent_in_spaces = indent_in_spaces)
             desc += "\n"
 
-        cxx_type = get_cxx_Wtype(self.arg_type)
-        return f"{desc}{' ' * indent_in_spaces}{cxx_type} {self.name};\n"
+        indent = ' ' * indent_in_spaces
+
+        if self.enum:
+            # Apparently format is [interface.]enum
+            if "." in self.enum:
+                cxx_type = self.enum.replace(".", "::")
+            else:
+                cxx_type = interface + "::" + self.enum
+        else:
+            cxx_type = get_cxx_Wtype(self.arg_type, interface = self.interface)
+
+        return f"{desc}{indent}{cxx_type} {self.name};\n"
 
 @dataclass
 class wl_enum_entry:
@@ -135,7 +148,8 @@ class wl_enum_entry:
 
         indent = ' ' * indent_in_spaces
         c = "" if last else ","
-        return desc + indent + f"{self.name} = {self.value}{c}\n"
+        name = "E" + self.name
+        return desc + indent + f"{name} = {self.value}{c}\n"
 
 @dataclass
 class wl_enum:
@@ -150,28 +164,36 @@ class wl_enum:
     description: Optional[wl_description]
     entries: list[wl_enum_entry]
 
-    def as_cxx_enum_class(self) -> str:
+    def underlying_type(self) -> str:
+        wl_underlying_type = wl_arg_type.wl_uint if self.is_bitfield else wl_arg_type.wl_int
+        return get_cxx_Wtype(wl_underlying_type) + "::integral_type"
+
+
+    def as_cxx_enum_class_decleration(self, indent_in_spaces: int = 4) -> str:
+        indent = " " * indent_in_spaces
+        return f"{indent}enum class {self.name} : {self.underlying_type()};\n"
+
+    def as_cxx_enum_class_definition(self, interface: str,  indent_in_spaces: int = 4) -> str:
+        indent = " " * indent_in_spaces
         sphinx_comment = ""
         if self.description:
-            sphinx_comment = self.description.as_sphinx_comment()
+            sphinx_comment = self.description.as_sphinx_comment(indent_in_spaces = indent_in_spaces)
 
-        wl_underlying_type = wl_arg_type.wl_uint if self.is_bitfield else wl_arg_type.wl_int
-        underlying_type = get_cxx_Wtype(wl_underlying_type) + "::integral_type"
-        header = f"enum class {self.name} : {underlying_type} {{\n"
+        header = f"{indent}enum class {interface}::{self.name} : {self.underlying_type()} {{\n"
         body = ""
         if len(self.entries) == 0:
             raise RuntimeError(f"wl_enum {self.name} has no entries!")
         for entry in self.entries[:-1]:
-            body += entry.as_cxx_enum_class_entry()
-        body += self.entries[-1].as_cxx_enum_class_entry(last = True)
-        tail = "};\n\n"
+            body += entry.as_cxx_enum_class_entry(indent_in_spaces = 4 + indent_in_spaces)
+        body += self.entries[-1].as_cxx_enum_class_entry(indent_in_spaces = 4 + indent_in_spaces, last = True)
+        tail = indent + "};\n\n"
         return sphinx_comment + header + body + tail
 
 def cxx_message_header_member(indent_in_spaces: int = 4):
     return (" " * indent_in_spaces) + "message_header header;\n"
-def cxx_opcode_static_member(opcode: int, indent_in_spaces: int = 4):
+def cxx_opcode_static_member(interface: str, opcode: int, indent_in_spaces: int = 4):
     indent = (" " * indent_in_spaces)
-    return indent + f"static constexpr Wopcode opcode{{ {opcode} }};\n"
+    return indent + f"static constexpr Wopcode<{interface}> opcode{{ {opcode} }};\n"
 
 @dataclass
 class wl_event:
@@ -186,14 +208,18 @@ class wl_event:
     description: Optional[wl_description]
     args: list[wl_arg]
 
-    def as_cxx_struct(self, opcode: int) -> str:
+    def as_cxx_member_struct_decleration(self, indent_in_spaces = 4) -> str:
+        indent = " " * indent_in_spaces
+        return indent + f"struct {self.name};\n"
+
+    def as_cxx_member_struct_definition(self, interface: str, opcode: int) -> str:
         comment = ""
         if self.description:
             comment = self.description.as_sphinx_comment()
-        header = f"struct {self.name} {{\n"
-        body = cxx_opcode_static_member(opcode)
+        header = f"struct {interface}::event::{self.name} {{\n"
+        body = cxx_opcode_static_member(interface, opcode)
         for arg in self.args:
-            body += arg.as_cxx_data_member()
+            body += arg.as_cxx_data_member(interface)
         tail = "};\n\n"
         return comment + header + body + tail
 
@@ -210,14 +236,18 @@ class wl_request:
     description: Optional[wl_description]
     args: list[wl_arg]
 
-    def as_cxx_struct(self, opcode: int) -> str:
+    def as_cxx_member_struct_decleration(self, indent_in_spaces = 4) -> str:
+        indent = " " * indent_in_spaces
+        return indent + f"struct {self.name};\n"
+
+    def as_cxx_member_struct_definition(self, interface: str, opcode: int) -> str:
         comment = ""
         if self.description:
             comment = self.description.as_sphinx_comment()
-        header = f"struct {self.name} {{\n"
-        body = cxx_opcode_static_member(opcode)
+        header = f"struct {interface}::request::{self.name} {{\n"
+        body = cxx_opcode_static_member(interface, opcode)
         for arg in self.args:
-            body += arg.as_cxx_data_member()
+            body += arg.as_cxx_data_member(interface)
         tail = "};\n\n"
         return comment + header + body + tail
 
@@ -237,26 +267,48 @@ class wl_interface:
     request_opcodes: list[int]
     event_opcodes: list[int]
 
-    def as_cxx_namespace(self) -> str:
-        comment = ""
-        if self.description:
-            comment = self.description.as_sphinx_comment()
+    def has_enums(self) -> bool:
+        return len(self.enums) != 0
 
-        header = f"namespace {self.name} {{\n\n"
+    def as_cxx_struct_without_definitions(self) -> str:
+        header = f"struct {self.name} {{\n"
+        body = ""
+
+        indent_in_spaces = 4
+        indent = ' ' * indent_in_spaces
+
+        for enum in self.enums:
+            body += enum.as_cxx_enum_class_decleration(indent_in_spaces)
+
+        if len(self.enums) != 0:
+            body += "\n"
+
+        body += indent + "struct request {\n"
+        for request in self.requests:
+            body += request.as_cxx_member_struct_decleration(2 * indent_in_spaces)
+        body += indent + "};\n\n"
+
+        body += indent + "struct event {\n"
+        for event in self.events:
+            body += event.as_cxx_member_struct_decleration(2 * indent_in_spaces)
+        body += indent + "};\n"
+
+        tail = "};\n"
+        return header + body + tail
+
+    def as_cxx_definitions(self) -> str:
         body = ""
 
         for enum in self.enums:
-            body += enum.as_cxx_enum_class()
+            body += enum.as_cxx_enum_class_definition(self.name, indent_in_spaces = 0)
 
         for opcode, request in zip(self.request_opcodes, self.requests):
-            body += request.as_cxx_struct(opcode)
+            body += request.as_cxx_member_struct_definition(self.name, opcode)
 
         for opcode, event in zip(self.event_opcodes, self.events):
-            body += event.as_cxx_struct(opcode)
+            body += event.as_cxx_member_struct_definition(self.name, opcode)
 
-        tail = f"}} // namespace {self.name}\n\n"
-
-        return comment + header + body + tail
+        return body
 
 @dataclass
 class wl_protocol:
@@ -285,15 +337,19 @@ class wl_protocol:
 
         content += "namespace ger {\n"
         content += "namespace wl {\n"
-        content += "namespace protocols {\n"
-        content += f"namespace {self.name} {{\n\n"
+        content += "namespace protocols {\n\n"
 
         if len(self.interfaces) == 0:
             raise RuntimeError(f"Protocol {self.name} has no interfaces!")
-        for interface in self.interfaces:
-            content += interface.as_cxx_namespace()
 
-        content += f"}} // namespace {self.name}\n"
+        content += "/// Declare everything before they might be used.\n\n"
+
+        for interface in self.interfaces:
+            content += interface.as_cxx_struct_without_definitions()
+
+        for interface in self.interfaces:
+            content += interface.as_cxx_definitions()
+
         content += "} // namespace protocols\n"
         content += "} // namespace wl\n"
         content += "} // namespace ger\n"
