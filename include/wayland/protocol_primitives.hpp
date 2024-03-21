@@ -2,6 +2,7 @@
 
 /// @file Contains primitives used in protocol.hpp implementation.
 
+#include <concepts>
 #include <cstdint>
 #include <functional>
 
@@ -41,7 +42,13 @@ template<interface T>
 struct Wnew_id;
 
 template<interface WObj = generic_object>
-struct alignas(4) Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {};
+struct alignas(4) Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
+    template<interface T>
+        requires std::same_as<T, WObj> or std::same_as<T, generic_object>
+    [[nodiscard]] constexpr operator Wnew_id<T>(this auto&& self) {
+        return { self.value };
+    }
+};
 
 template<interface WObj = generic_object>
 struct alignas(4) Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};

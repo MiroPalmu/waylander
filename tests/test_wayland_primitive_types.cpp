@@ -1,5 +1,7 @@
 #include <boost/ut.hpp> // import boost.ut;
 
+#include <concepts>
+
 #include "wayland/protocol_primitives.hpp"
 
 int main() {
@@ -70,5 +72,31 @@ int main() {
         expect(obj_bar == obj_bar);
         expect(obj_bar != new_foo);
         expect(new_foo == new_foo);
+    };
+
+    wl_tag / "Wobject<T> is convertible to Wnew_id<T> or Wnew_id<generic_object>"_test = [] {
+        expect(std::convertible_to<Wobject<generic_object>, Wnew_id<generic_object>>);
+
+        expect(std::convertible_to<Wobject<foo>, Wnew_id<generic_object>>);
+        expect(std::convertible_to<Wobject<foo>, Wnew_id<foo>>);
+
+        expect(std::convertible_to<Wobject<bar>, Wnew_id<generic_object>>);
+        expect(std::convertible_to<Wobject<bar>, Wnew_id<bar>>);
+
+        expect(not std::convertible_to<Wobject<bar>, Wnew_id<foo>>);
+        expect(not std::convertible_to<Wobject<foo>, Wnew_id<bar>>);
+    };
+
+    wl_tag / "Wnew_id<T> is not convertible to Wobject"_test = [] {
+        expect(not std::convertible_to<Wnew_id<generic_object>, Wobject<generic_object>>);
+
+        expect(not std::convertible_to<Wnew_id<foo>, Wobject<generic_object>>);
+        expect(not std::convertible_to<Wnew_id<foo>, Wobject<foo>>);
+
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<generic_object>>);
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<bar>>);
+
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<foo>>);
+        expect(not std::convertible_to<Wnew_id<foo>, Wobject<bar>>);
     };
 }
