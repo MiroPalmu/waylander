@@ -106,5 +106,10 @@ struct alignas(4) message_header {
 template<typename T>
 Wnew_id(T) -> Wnew_id<generic_object>;
 
+template<typename M, typename T>
+concept message = interface<T> and requires {
+    { M::opcode } -> std::same_as<const Wopcode<T>&>;
+};
+
 } // namespace wl
 } // namespace ger

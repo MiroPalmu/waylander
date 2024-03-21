@@ -35,4 +35,58 @@ int main() {
         expect(id3 == id3);
     };
 
+    wl_tag / "connected_client can register requests"_test = [] {
+        auto client = connected_client{};
+
+        using namespace protocols;
+        const auto registery = client.reserve_object_id<wl_registry>();
+        const auto request   = wl_display::request::get_registry{ registery };
+
+        expect(requires { client.register_request(global_display_object, request); });
+
+        client.register_request(global_display_object, request);
+    };
+
+    wl_tag / "connected_client denies registeration for requests of different interface"_test = [] {
+        auto client = connected_client{};
+
+        using namespace protocols;
+        const auto registery = client.reserve_object_id<wl_registry>();
+        const auto request   = wl_display::request::get_registry{ registery };
+
+        const auto wl_shm_object = client.reserve_object_id<wl_shm>();
+
+        // Ugly hack to make program not ill-formed, as:
+        //
+        //   > If a substitution failure would occur in a requires-expression
+        //   > for every possible template argument, the program is ill-formed,
+        //   > no diagnostic required:
+        //
+        // so if expect(...) from the lambda would be outside the lambda,
+        // it would be subtitution failure everytime -> ill-formed program and tests what is is supposed to.
+        //
+        // But now that it is generic lambda it is not neccessearly every
+        // time, so this compiles.
+        auto hack = [&]<typename T>(T obj) {
+            expect(not requires { client.register_request(obj, request); });
+        };
+        hack(wl_shm_object);
+    };
+
+    wl_tag / "connected_client can flush of registered requests"_test = [] {
+        auto client = connected_client{};
+        expect(not client.has_registered_requests());
+
+        using namespace protocols;
+        const auto registery = client.reserve_object_id<wl_registry>();
+        const auto request   = wl_display::request::get_registry{ registery };
+
+        client.register_request(global_display_object, request);
+
+        expect(client.has_registered_requests());
+
+        client.flush_registered_requests();
+
+        expect(not client.has_registered_requests());
+    };
 }

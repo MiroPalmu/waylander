@@ -66,5 +66,6 @@ auto connect_to_wayland_socket() -> linux::fd_type {
 
 [[nodiscard]] connected_client::connected_client() { wayland_fd_ = connect_to_wayland_socket(); }
 
+void connected_client::flush_registered_requests() { has_requests_ = false; };
 } // namespace wl
 } // namespace ger
