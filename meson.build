@@ -5,6 +5,8 @@ project(
     default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++23']
 )
 
+add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
+
 # Directories where compiler is able to include from
 project_include_directories = []
 project_include_directories += include_directories('include')
