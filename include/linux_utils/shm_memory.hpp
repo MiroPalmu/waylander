@@ -5,7 +5,6 @@
 #endif
 
 #include <cstddef>
-#include <cstddef>
 #include <span>
 
 #include <fcntl.h> /* For O_* constants */
@@ -26,7 +25,7 @@ class shm_mem {
     fd_type fd_{};
     std::size_t size_{};
     void* data_ = nullptr;
- 
+
   public:
     /// Create anonymous shm object.
     ///
