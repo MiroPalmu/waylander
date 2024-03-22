@@ -24,22 +24,6 @@ auto legacy_construct(F&& legacy_constructor, Args&&... args) -> Handler {
     return std::forward<F>(legacy_constructor)(std::forward<Args>(args)...);
 }
 
-template<typename I, typename J>
-concept same_signess_integrals = (std::signed_integral<I> and std::signed_integral<J>)
-                                 or (std::unsigned_integral<I> and std::unsigned_integral<J>);
-
-template<std::integral I>
-struct integral_like {
-    I value;
-    using integral_type = I;
-
-    template<std::integral J>
-        requires same_signess_integrals<I, J>
-    [[nodiscard]] constexpr bool operator==(this auto&& self, const J rhs) {
-        return self.value == rhs;
-    }
-};
-
 /// Can be (publicly) inherited to integralifie a type.
 template<std::integral I>
 struct integralifyer {
