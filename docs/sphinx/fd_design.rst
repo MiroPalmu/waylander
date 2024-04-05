@@ -62,3 +62,26 @@ In std::iostream TBi are:
   accessed through  the :code:`basic_ios` base class.
 
 - :code:`std::basic_iostrem` combindes :code:`std::basic_istream` and :code:`std::basic_ostream`.
+
+:code:`ger::gnu` desing
+-----------------------
+
+system resource
+    Resources which management needs to be negotiated with operating system.
+
+Following graph shows which system resources can be converted to other.
+
+.. graphviz:: system_resource_conversions.dot
+
+Implicit conversion are transformations of the system resources types,
+so they do not read, write or copy memory behind any file descriptor.
+Note that mmap does not do any of these.
+Because of paging memory operation happens accessing the mapped memory.
+
+Explicit conversions have to, either explicitly or by asking the kernel,
+read, write or copy memory behind any file descriptor.
+Conversion function that consume the converted resource count as explicit conversion.
+
+Data memory file descriptor does not include metadata of the file descriptor,
+that kernel keeps up to date automatically.
+Note that this allows opening and closing file descriptors themself.

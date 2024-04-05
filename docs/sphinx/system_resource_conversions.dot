@@ -1,0 +1,193 @@
+digraph {
+    // rankdir="LR"
+
+    // subgraph {
+    //     X -> "Implicitly convertible from X."
+    //     X -> "Explicitly convertible from X." [style=dashed]
+    // }
+
+    bgcolor="gray"
+
+    // {
+    //     rank=same
+    //     "in_pipe"
+    //     "out_pipe"
+    //     "inout_pipe"
+    // }
+
+    // {
+    //     rank=same
+    //     "std::span<byte>"
+    //     "std::vector<byte>"
+    // }
+
+
+    // {
+    //     rank=same
+    //     "file<byte>"
+    //     "memory_block<byte>"
+    // }
+
+    // {
+    //     rank=same
+    //     "mmapped<T>"
+    // }
+
+    // {
+    //     rank = same
+    //     "fifo"
+    //     "streaming_socket<namespace>"
+    // }
+
+    // "in_pipe" -> "in_pipe"
+    // "in_pipe" -> "out_pipe"
+    // "in_pipe" -> "inout_pipe"
+
+    // "in_pipe" -> "std::span<byte>"
+    // "in_pipe" -> "std::vector<byte>"
+
+    // "in_pipe" -> "fifo"
+
+    // "in_pipe" -> "file<byte>"
+    // "in_pipe" -> "memory_block<byte>"
+
+    // "in_pipe" -> "mmapped<T>"
+
+    // "in_pipe" -> "streaming_socket<namespace>"
+
+
+    // "out_pipe" -> "in_pipe"
+    // "out_pipe" -> "out_pipe"
+    // "out_pipe" -> "inout_pipe"
+
+    // "out_pipe" -> "std::span<byte>"
+    // "out_pipe" -> "std::vector<byte>"
+
+    // "out_pipe" -> "fifo"
+
+    // "out_pipe" -> "file<byte>"
+    // "out_pipe" -> "memory_block<byte>"
+
+    // "out_pipe" -> "mmapped<T>"
+
+    // "out_pipe" -> "streaming_socket<namespace>"
+
+    "inout_pipe" -> "in_pipe"
+    "inout_pipe" -> "out_pipe"
+    // "inout_pipe" -> "inout_pipe"
+
+    // "inout_pipe" -> "std::span<byte>"
+    // "inout_pipe" -> "std::vector<byte>"
+
+    // "inout_pipe" -> "fifo"
+
+    // "inout_pipe" -> "file<byte>"
+    // "inout_pipe" -> "memory_block<byte>"
+
+    // "inout_pipe" -> "mmapped<T>"
+
+    // "inout_pipe" -> "streaming_socket<namespace>"
+
+
+    // "std::span<byte>" -> "in_pipe"
+    // "std::span<byte>" -> "out_pipe"
+    // "std::span<byte>" -> "inout_pipe"
+
+    // "std::span<byte>" -> "std::span<byte>"
+    // "std::span<byte>" -> "std::vector<byte>"
+
+    // "std::span<byte>" -> "fifo"
+
+    "std::span<byte>" -> "file<byte>" [style=dashed]
+    "std::span<byte>" -> "memory_block<byte>" [style=dashed]
+
+    // "std::span<byte>" -> "mmapped<T>"
+
+    // "std::span<byte>" -> "streaming_socket<namespace>"
+
+
+    "fifo" -> "in_pipe"
+    "fifo" -> "out_pipe"
+    "fifo" -> "inout_pipe"
+
+    // "fifo" -> "std::span<byte>"
+    // "fifo" -> "std::vector<byte>"
+
+    // "fifo" -> "fifo"
+
+    // "fifo" -> "file<byte>"
+    // "fifo" -> "memory_block<byte>"
+
+    // "fifo" -> "mmapped<T>"
+
+    // "fifo" -> "streaming_socket<namespace>"
+
+
+    "file<byte>" -> "in_pipe"
+    "file<byte>" -> "out_pipe" // [label="requires: non_const<byte>"]
+    "file<byte>" -> "inout_pipe"
+
+    // "file<byte>" -> "std::span<byte>"
+    "file<byte>" -> "std::vector<byte>" [style=dashed]
+
+    // "file<byte>" -> "fifo"
+
+    // "file<byte>" -> "file<byte>"
+    "file<byte>" -> "memory_block<byte>" [style=dashed]
+
+    "file<byte>" -> "mmapped<T>"
+
+    // "file<byte>" -> "streaming_socket<namespace>"
+
+    "memory_block<byte>" -> "in_pipe"
+    "memory_block<byte>" -> "out_pipe" // [label="requires: non_const<byte>"]
+    "memory_block<byte>" -> "inout_pipe"
+
+    "memory_block<byte>" -> "std::span<byte>"
+    "memory_block<byte>" -> "std::vector<byte>" [style=dashed]
+
+    // "memory_block<byte>" -> "fifo"
+
+    "memory_block<byte>" -> "file<byte>" [style=dashed]
+    // "memory_block<byte>" -> "memory_block<byte>"
+
+    "memory_block<byte>" -> "mmapped<T>"
+
+    // "memory_block<byte>" -> "streaming_socket<namespace>"
+
+
+    // "mmapped<T>" -> "in_pipe"
+    // "mmapped<T>" -> "out_pipe"
+    // "mmapped<T>" -> "inout_pipe"
+
+    "mmapped<T>" -> "std::span<byte>"
+    "mmapped<T>" -> "std::vector<byte>" [style=dashed]
+
+    // "mmapped<T>" -> "fifo"
+
+    "mmapped<T>" -> "file<byte>" [style=dashed]
+    "mmapped<T>" -> "memory_block<byte>" [style=dashed]
+
+    // "mmapped<T>" -> "mmapped<T>"
+
+    // "mmapped<T>" -> "streaming_socket<namespace>"
+
+
+    "streaming_socket<namespace>" -> "in_pipe"
+    "streaming_socket<namespace>" -> "out_pipe"
+    "streaming_socket<namespace>" -> "inout_pipe"
+
+    // "streaming_socket<namespace>" -> "std::span<byte>"
+    // "streaming_socket<namespace>" -> "std::vector<byte>"
+
+    // "streaming_socket<namespace>" -> "fifo"
+
+    // "streaming_socket<namespace>" -> "file<byte>"
+    // "streaming_socket<namespace>" -> "memory_block<byte>"
+
+    // "streaming_socket<namespace>" -> "mmapped<T>"
+
+    // "streaming_socket<namespace>" -> "streaming_socket<namespace>"
+
+}
+
