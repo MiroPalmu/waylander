@@ -2,7 +2,7 @@ project(
     'meson_template',
     'cpp',
     version: '0.0.1',
-    default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++23']
+    default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++26']
 )
 
 add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
