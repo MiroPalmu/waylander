@@ -12,6 +12,7 @@ single_threaded_unit_tests = [
     'test_linux_shm_memory',
     'test_wayland_connected_client',
     'test_wayland_primitive_types',
+    'test_gnu_pipe',
 ]
 
 single_threaded_test_names_and_exes = {}
