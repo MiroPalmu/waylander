@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <errno.h>

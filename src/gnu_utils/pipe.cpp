@@ -1,4 +1,7 @@
+#include <config.h>
+
 #include "gnu_utils/pipe.hpp"
+
 
 namespace ger {
 namespace gnu {

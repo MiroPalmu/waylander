@@ -1,5 +1,7 @@
 /// @file Implements wl::compsitor
 
+#include <config.h>
+
 #include <array>
 #include <cstdint>
 #include <cstdlib>

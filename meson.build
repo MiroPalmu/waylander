@@ -7,22 +7,32 @@ project(
 
 add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
 
-# Directories where compiler is able to include from
-project_include_directories = []
-project_include_directories += include_directories('include')
-
-# Subprojects (using meson wraps)
 gnulib = subproject('gnulib')
 
-project_dependencies = [gnulib.get_variable('gnulib_dep')]
+project_dependencies = [
+    gnulib.get_variable('gnulib_dep'),
+]
 
 # Project sources
 project_source_files = []
 
 # Subdirectors
 subdir('docs')
-subdir('include')
 subdir('src')
+
+guilander_lib = static_library(
+    'guilander',
+    project_source_files,
+    include_directories : include_directories('include'),
+    dependencies : project_dependencies,
+)
+
+guilander_dep = declare_dependency(
+    include_directories : include_directories('include'),
+    link_with: guilander_lib,
+)
+
+# Tests has to come after guiladner_lib as they use it as meson dependency.
 subdir('tests')
 
 # compile_commands.json stuff:
