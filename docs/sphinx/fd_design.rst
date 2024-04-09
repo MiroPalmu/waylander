@@ -85,3 +85,30 @@ Conversion function that consume the converted resource count as explicit conver
 Data memory file descriptor does not include metadata of the file descriptor,
 that kernel keeps up to date automatically.
 Note that this allows opening and closing file descriptors themself.
+
+.. list-table:: libc gnulib replacements
+    :widths: auto
+    :header-rows: 1
+
+    * - libc
+      - gnulib module
+    * - read
+      - full-read
+    * - write
+      - full-write
+    * - pipe
+      - pipe2-safer
+    * - mkfifo
+      - mkfifo
+    * - socket
+      - socket
+    * - connect
+      - connect
+    * - mmap
+      - no subtitute module available
+    * - open
+      - open
+    * - close
+      - close
+
+See: https://www.gnu.org/software/gnulib/manual/html_node/Closed-standard-fds.html
