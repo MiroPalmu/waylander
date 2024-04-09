@@ -12,9 +12,9 @@ project_include_directories = []
 project_include_directories += include_directories('include')
 
 # Subprojects (using meson wraps)
-ut = subproject('ut')
+gnulib = subproject('gnulib')
 
-project_dependencies = []
+project_dependencies = [gnulib.get_variable('gnulib_dep')]
 
 # Project sources
 project_source_files = []
