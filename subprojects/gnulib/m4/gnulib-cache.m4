@@ -37,14 +37,26 @@
 #  --no-conditional-dependencies \
 #  --no-libtool \
 #  --macro-prefix=gl \
+#  close \
+#  connect \
 #  full-read \
-#  full-write
+#  full-write \
+#  mkfifo \
+#  open \
+#  pipe2-safer \
+#  socket
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
 gl_MODULES([
+  close
+  connect
   full-read
   full-write
+  mkfifo
+  open
+  pipe2-safer
+  socket
 ])
 gl_AVOID([])
 gl_SOURCE_BASE([lib])

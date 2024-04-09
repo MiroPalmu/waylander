@@ -43,14 +43,43 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([gl_PROG_AR_RANLIB])
 
   # Code from module absolute-header:
+  # Code from module alignasof:
+  # Code from module alloca-opt:
+  # Code from module assert-h:
+  # Code from module binary-io:
+  # Code from module c99:
+  # Code from module cloexec:
+  # Code from module close:
+  # Code from module connect:
+  # Code from module dup2:
+  # Code from module errno:
   # Code from module extensions:
   # Code from module extern-inline:
+  # Code from module fcntl:
+  # Code from module fcntl-h:
+  # Code from module fd-hook:
+  # Code from module fd-safer-flag:
+  # Code from module filename:
+  # Code from module fstat:
   # Code from module full-read:
   # Code from module full-write:
   # Code from module gen-header:
+  # Code from module getdtablesize:
+  # Code from module idx:
   # Code from module include_next:
+  # Code from module largefile:
+  AC_REQUIRE([AC_SYS_LARGEFILE])
+  # Code from module limits-h:
+  # Code from module malloca:
+  # Code from module mkfifo:
   # Code from module msvc-inval:
   # Code from module msvc-nothrow:
+  # Code from module multiarch:
+  # Code from module open:
+  # Code from module pathmax:
+  # Code from module pipe-posix:
+  # Code from module pipe2:
+  # Code from module pipe2-safer:
   # Code from module raise:
   # Code from module read:
   # Code from module safe-read:
@@ -59,11 +88,27 @@ AC_DEFUN([gl_EARLY],
   # Code from module snippet/arg-nonnull:
   # Code from module snippet/c++defs:
   # Code from module snippet/warn-on-use:
+  # Code from module socket:
+  # Code from module socketlib:
+  # Code from module sockets:
+  # Code from module socklen:
   # Code from module ssize_t:
+  # Code from module stat:
+  # Code from module stat-time:
+  # Code from module std-gnu11:
+  # Code from module stdbool:
+  # Code from module stdckdint:
   # Code from module stddef:
+  # Code from module stdint:
+  # Code from module sys_socket:
+  # Code from module sys_stat:
   # Code from module sys_types:
+  # Code from module sys_uio:
+  # Code from module time-h:
   # Code from module unistd:
+  # Code from module unistd-safer:
   # Code from module write:
+  # Code from module xalloc-oversized:
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -85,7 +130,65 @@ AC_DEFUN([gl_INIT],
   gl_COMMON
   gl_source_base='lib'
   gl_source_base_prefix=
+  gl_ALIGNASOF
+  gl_FUNC_ALLOCA
+  gl_CONDITIONAL_HEADER([alloca.h])
+  AC_PROG_MKDIR_P
+  gl_ASSERT_H
+  gl_CONDITIONAL_HEADER([assert.h])
+  AC_PROG_MKDIR_P
+  gl_MODULE_INDICATOR_FOR_TESTS([cloexec])
+  gl_FUNC_CLOSE
+  gl_CONDITIONAL([GL_COND_OBJ_CLOSE], [test $REPLACE_CLOSE = 1])
+  gl_UNISTD_MODULE_INDICATOR([close])
+  AC_REQUIRE([gl_SYS_SOCKET_H])
+  gl_CONDITIONAL([GL_COND_OBJ_CONNECT], [test "$ac_cv_header_winsock2_h" = yes])
+  gl_SYS_SOCKET_MODULE_INDICATOR([connect])
+  gl_FUNC_DUP2
+  gl_CONDITIONAL([GL_COND_OBJ_DUP2], [test $REPLACE_DUP2 = 1])
+  AM_COND_IF([GL_COND_OBJ_DUP2], [
+    gl_PREREQ_DUP2
+  ])
+  gl_UNISTD_MODULE_INDICATOR([dup2])
+  gl_HEADER_ERRNO_H
+  gl_CONDITIONAL_HEADER([errno.h])
+  AC_PROG_MKDIR_P
   AC_REQUIRE([gl_EXTERN_INLINE])
+  gl_FUNC_FCNTL
+  gl_CONDITIONAL([GL_COND_OBJ_FCNTL],
+                 [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1])
+  gl_FCNTL_MODULE_INDICATOR([fcntl])
+  gl_FCNTL_H
+  gl_FCNTL_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_MODULE_INDICATOR([fd-safer-flag])
+  gl_FUNC_FSTAT
+  gl_CONDITIONAL([GL_COND_OBJ_FSTAT], [test $REPLACE_FSTAT = 1])
+  AM_COND_IF([GL_COND_OBJ_FSTAT], [
+    case "$host_os" in
+      mingw* | windows*)
+        AC_LIBOBJ([stat-w32])
+        ;;
+    esac
+    gl_PREREQ_FSTAT
+  ])
+  gl_SYS_STAT_MODULE_INDICATOR([fstat])
+  gl_FUNC_GETDTABLESIZE
+  gl_CONDITIONAL([GL_COND_OBJ_GETDTABLESIZE],
+                 [test $HAVE_GETDTABLESIZE = 0 || test $REPLACE_GETDTABLESIZE = 1])
+  AM_COND_IF([GL_COND_OBJ_GETDTABLESIZE], [
+    gl_PREREQ_GETDTABLESIZE
+  ])
+  gl_UNISTD_MODULE_INDICATOR([getdtablesize])
+  AC_REQUIRE([gl_LARGEFILE])
+  gl_LIMITS_H
+  gl_CONDITIONAL_HEADER([limits.h])
+  AC_PROG_MKDIR_P
+  gl_MALLOCA
+  gl_FUNC_MKFIFO
+  gl_CONDITIONAL([GL_COND_OBJ_MKFIFO],
+                 [test $HAVE_MKFIFO = 0 || test $REPLACE_MKFIFO = 1])
+  gl_UNISTD_MODULE_INDICATOR([mkfifo])
   AC_REQUIRE([gl_MSVC_INVAL])
   gl_CONDITIONAL([GL_COND_OBJ_MSVC_INVAL],
                  [test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1])
@@ -93,6 +196,20 @@ AC_DEFUN([gl_INIT],
   gl_CONDITIONAL([GL_COND_OBJ_MSVC_NOTHROW],
                  [test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1])
   gl_MODULE_INDICATOR([msvc-nothrow])
+  gl_MULTIARCH
+  gl_FUNC_OPEN
+  gl_CONDITIONAL([GL_COND_OBJ_OPEN], [test $REPLACE_OPEN = 1])
+  AM_COND_IF([GL_COND_OBJ_OPEN], [
+    gl_PREREQ_OPEN
+  ])
+  gl_FCNTL_MODULE_INDICATOR([open])
+  gl_PATHMAX
+  gl_FUNC_PIPE
+  gl_CONDITIONAL([GL_COND_OBJ_PIPE], [test $HAVE_PIPE = 0])
+  gl_UNISTD_MODULE_INDICATOR([pipe])
+  gl_FUNC_PIPE2
+  gl_UNISTD_MODULE_INDICATOR([pipe2])
+  gl_MODULE_INDICATOR([pipe2-safer])
   gl_FUNC_RAISE
   gl_CONDITIONAL([GL_COND_OBJ_RAISE],
                  [test $HAVE_RAISE = 0 || test $REPLACE_RAISE = 1])
@@ -111,17 +228,72 @@ AC_DEFUN([gl_INIT],
   gl_SIGNAL_H
   gl_SIGNAL_H_REQUIRE_DEFAULTS
   AC_PROG_MKDIR_P
+  AC_REQUIRE([gl_SYS_SOCKET_H])
+  gl_CONDITIONAL([GL_COND_OBJ_SOCKET], [test "$ac_cv_header_winsock2_h" = yes])
+  # When this module is used, sockets may actually occur as file descriptors,
+  # hence it is worth warning if the modules 'close' and 'ioctl' are not used.
+  m4_ifdef([gl_UNISTD_H_DEFAULTS], [gl_UNISTD_H_REQUIRE_DEFAULTS])
+  m4_ifdef([gl_SYS_IOCTL_H_DEFAULTS], [gl_SYS_IOCTL_H_REQUIRE_DEFAULTS])
+  AC_REQUIRE([gl_PREREQ_SYS_H_WINSOCK2])
+  if test "$ac_cv_header_winsock2_h" = yes; then
+    UNISTD_H_HAVE_WINSOCK2_H_AND_USE_SOCKETS=1
+    SYS_IOCTL_H_HAVE_WINSOCK2_H_AND_USE_SOCKETS=1
+  fi
+  gl_SYS_SOCKET_MODULE_INDICATOR([socket])
+  AC_REQUIRE([gl_SOCKETLIB])
+  AC_REQUIRE([gl_SOCKETS])
+  gl_TYPE_SOCKLEN_T
   gt_TYPE_SSIZE_T
+  gl_FUNC_STAT
+  gl_CONDITIONAL([GL_COND_OBJ_STAT], [test $REPLACE_STAT = 1])
+  AM_COND_IF([GL_COND_OBJ_STAT], [
+    case "$host_os" in
+      mingw* | windows*)
+        AC_LIBOBJ([stat-w32])
+        ;;
+    esac
+    gl_PREREQ_STAT
+  ])
+  gl_SYS_STAT_MODULE_INDICATOR([stat])
+  gl_STAT_TIME
+  gl_STAT_BIRTHTIME
+  gl_C_BOOL
+  AC_CHECK_HEADERS_ONCE([stdckdint.h])
+  if test $ac_cv_header_stdckdint_h = yes; then
+    GL_GENERATE_STDCKDINT_H=false
+  else
+    GL_GENERATE_STDCKDINT_H=true
+  fi
+  gl_CONDITIONAL_HEADER([stdckdint.h])
+  AC_PROG_MKDIR_P
   gl_STDDEF_H
   gl_STDDEF_H_REQUIRE_DEFAULTS
   gl_CONDITIONAL_HEADER([stddef.h])
   AC_PROG_MKDIR_P
+  gl_STDINT_H
+  gl_CONDITIONAL_HEADER([stdint.h])
+  dnl Because of gl_REPLACE_LIMITS_H:
+  gl_CONDITIONAL_HEADER([limits.h])
+  AC_PROG_MKDIR_P
+  gl_SYS_SOCKET_H
+  gl_SYS_SOCKET_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_SYS_STAT_H
+  gl_SYS_STAT_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
   gl_SYS_TYPES_H
   gl_SYS_TYPES_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_SYS_UIO_H
+  gl_SYS_UIO_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_TIME_H
+  gl_TIME_H_REQUIRE_DEFAULTS
   AC_PROG_MKDIR_P
   gl_UNISTD_H
   gl_UNISTD_H_REQUIRE_DEFAULTS
   AC_PROG_MKDIR_P
+  gl_UNISTD_SAFER
   gl_FUNC_WRITE
   gl_CONDITIONAL([GL_COND_OBJ_WRITE], [test $REPLACE_WRITE = 1])
   AM_COND_IF([GL_COND_OBJ_WRITE], [
@@ -300,16 +472,49 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
+  lib/alloca.in.h
   lib/arg-nonnull.h
+  lib/assert.in.h
+  lib/binary-io.c
+  lib/binary-io.h
   lib/c++defs.h
+  lib/cloexec.c
+  lib/cloexec.h
+  lib/close.c
+  lib/connect.c
+  lib/dup-safer-flag.c
+  lib/dup-safer.c
+  lib/dup2.c
+  lib/errno.in.h
+  lib/fcntl.c
+  lib/fcntl.in.h
+  lib/fd-hook.c
+  lib/fd-hook.h
+  lib/fd-safer-flag.c
+  lib/fd-safer.c
+  lib/filename.h
+  lib/fstat.c
   lib/full-read.c
   lib/full-read.h
   lib/full-write.c
   lib/full-write.h
+  lib/getdtablesize.c
+  lib/idx.h
+  lib/intprops-internal.h
+  lib/limits.in.h
+  lib/malloca.c
+  lib/malloca.h
+  lib/mkfifo.c
   lib/msvc-inval.c
   lib/msvc-inval.h
   lib/msvc-nothrow.c
   lib/msvc-nothrow.h
+  lib/open.c
+  lib/pathmax.h
+  lib/pipe-safer.c
+  lib/pipe.c
+  lib/pipe2-safer.c
+  lib/pipe2.c
   lib/raise.c
   lib/read.c
   lib/safe-read.c
@@ -317,34 +522,93 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/safe-write.c
   lib/safe-write.h
   lib/signal.in.h
+  lib/socket.c
+  lib/sockets.c
+  lib/sockets.h
+  lib/stat-time.c
+  lib/stat-time.h
+  lib/stat-w32.c
+  lib/stat-w32.h
+  lib/stat.c
+  lib/stdckdint.in.h
   lib/stddef.in.h
+  lib/stdint.in.h
   lib/sys-limits.h
+  lib/sys_socket.c
+  lib/sys_socket.in.h
+  lib/sys_stat.in.h
   lib/sys_types.in.h
+  lib/sys_uio.in.h
+  lib/time.in.h
+  lib/unistd--.h
+  lib/unistd-safer.h
   lib/unistd.c
   lib/unistd.in.h
+  lib/verify.h
+  lib/w32sock.h
   lib/warn-on-use.h
   lib/write.c
+  lib/xalloc-oversized.h
   m4/00gnulib.m4
   m4/absolute-header.m4
+  m4/alloca.m4
+  m4/assert_h.m4
+  m4/c-bool.m4
+  m4/close.m4
+  m4/dup2.m4
+  m4/eealloc.m4
+  m4/errno_h.m4
   m4/extensions.m4
   m4/extern-inline.m4
+  m4/fcntl-o.m4
+  m4/fcntl.m4
+  m4/fcntl_h.m4
+  m4/fstat.m4
+  m4/getdtablesize.m4
   m4/gnulib-common.m4
   m4/include_next.m4
+  m4/largefile.m4
+  m4/limits-h.m4
+  m4/malloca.m4
+  m4/mkfifo.m4
+  m4/mode_t.m4
   m4/msvc-inval.m4
   m4/msvc-nothrow.m4
+  m4/multiarch.m4
   m4/off_t.m4
+  m4/open-cloexec.m4
+  m4/open-slash.m4
+  m4/open.m4
+  m4/pathmax.m4
   m4/pid_t.m4
+  m4/pipe.m4
+  m4/pipe2.m4
   m4/raise.m4
   m4/read.m4
   m4/safe-read.m4
   m4/safe-write.m4
   m4/signal_h.m4
+  m4/socketlib.m4
+  m4/sockets.m4
+  m4/socklen.m4
+  m4/sockpfaf.m4
   m4/ssize_t.m4
+  m4/stat-time.m4
+  m4/stat.m4
+  m4/std-gnu11.m4
+  m4/stdalign.m4
   m4/stddef_h.m4
+  m4/stdint.m4
+  m4/sys_socket_h.m4
+  m4/sys_stat_h.m4
   m4/sys_types_h.m4
+  m4/sys_uio_h.m4
+  m4/time_h.m4
+  m4/unistd-safer.m4
   m4/unistd_h.m4
   m4/warn-on-use.m4
   m4/wchar_t.m4
+  m4/wint_t.m4
   m4/write.m4
   m4/zzgnulib.m4
 ])
