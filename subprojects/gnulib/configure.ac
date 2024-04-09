@@ -4,7 +4,7 @@
 AC_PREREQ([2.72])
 AC_INIT([gnulib-modules-to-meson], [0.0.1], [email@miropalmu.cc])
 
-AC_CONFIG_SRCDIR([lib/full-read.h])
+AC_CONFIG_SRCDIR([handle_for_meson.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([Makefile lib/Makefile])
