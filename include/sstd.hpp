@@ -81,5 +81,54 @@ template<typename L, typename R>
                           get_integral_value(std::forward<R>(rhs)));
 }
 
+template<typename T>
+concept plain_type = std::same_as<std::remove_cvref_t<T>, T>;
+
+template<typename T>
+concept potentially_owning_legacy_handle =
+    plain_type<T> and std::movable<T> and (std::is_trivially_destructible_v<T>);
+
+template<potentially_owning_legacy_handle T, std::invocable<T&> auto Releaser>
+class unique_handle : public T {
+    /// Moved objects are marked inactive.
+    bool active_{ true };
+
+  public:
+    /// Constructible only from r-value reference.
+    unique_handle(T&& resource) : T{ std::move(resource) } {}
+
+    ~unique_handle() {
+        if (active_) {
+            active_ = false; // This should only matter if dtor is called explicitly.
+            Releaser(static_cast<T&>(*this));
+        }
+    }
+
+    /// Move constructible.
+    ///
+    /// Marks resource in \p rhs as inactive and calls move constructor of the base T,
+    /// as otherwise the base is default initialized.
+    unique_handle(unique_handle&& rhs) noexcept : T{ std::move(rhs) } {
+        active_ = std::exchange(rhs.active_, false);
+    }
+
+    /// Move assignable.
+    ///
+    /// *this releases resource if it is currently active,
+    /// before calling the move constructor of the base T.
+    unique_handle& operator=(unique_handle&& rhs) noexcept {
+        this->~unique_handle();
+        active_ = std::exchange(rhs.active_, false);
+        // Call move assignment of the base.
+        this->T::operator=(static_cast<T&&>(rhs));
+        return *this;
+    }
+
+    /// Unique => not copyable.
+    unique_handle(const unique_handle&) = delete;
+    /// Unique => not copyable.
+    unique_handle& operator=(const unique_handle&) = delete;
+};
+
 } // namespace sstd
 } // namespace ger
