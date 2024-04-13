@@ -14,6 +14,7 @@ single_threaded_unit_tests = [
     'test_wayland_connected_client',
     'test_wayland_primitive_types',
     'test_gnu_pipe',
+    'test_gnu_fd_handle',
     'test_sstd_unique_handle',
 ]
 
