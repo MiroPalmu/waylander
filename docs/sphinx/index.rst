@@ -8,6 +8,7 @@ Welcome to Guilander documentation!
    scope
    fd_design
    xml_to_cpp
+   gnulib_usage
    developing_guidelines
    doxygen_index
 
