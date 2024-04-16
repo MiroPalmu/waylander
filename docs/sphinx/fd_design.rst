@@ -2,6 +2,7 @@ File descriptor abstraction design requirements
 -----------------------------------------------
 
 .. #) creates ordered list.
+
 #) all file descriptors can...:
     #) ...allocate resource
     #) ...free resource

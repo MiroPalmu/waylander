@@ -15,12 +15,12 @@ Welcome to Guilander documentation!
 Index and search
 ==================
 
-* :ref:`genindex`
+.. * :ref:`genindex`
+
 * :ref:`search`
 
-
-Docs
-====
-
-.. doxygenfunction:: foo::bar
-   :outline:
+.. Docs
+.. ====
+..
+.. .. doxygenfunction:: foo::bar
+..    :outline:
