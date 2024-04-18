@@ -45,8 +45,7 @@ These macros might not not be desired and :code:`<libc-header>-safer.h` should b
 
 .. note::
 
-    Declarations in :code:`<libc-header>-safer.h` do not use :code:`GNULIB_NAMESPACE` mechanism,
-    so the C preprocess include statment has to be wrapped into :code:`extern "C" { ... }`.
+    Declarations in :code:`<libc-header>-safer.h` do not use :code:`GNULIB_NAMESPACE` mechanism.
 
 Used Gnulib modules
 -------------------
