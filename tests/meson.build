@@ -16,6 +16,7 @@ single_threaded_unit_tests = [
     'test_gnu_pipe',
     'test_gnu_fd_handle',
     'test_sstd_unique_handle',
+    'test_sstd_throw_system_error',
 ]
 
 single_threaded_test_names_and_exes = {}

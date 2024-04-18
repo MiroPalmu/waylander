@@ -3,6 +3,7 @@
 /// @file supplement to namespace std
 
 #include <concepts>
+#include <source_location>
 #include <type_traits>
 #include <utility>
 
@@ -129,6 +130,36 @@ class unique_handle : public T {
     /// Unique => not copyable.
     unique_handle& operator=(const unique_handle&) = delete;
 };
+
+/// Throws std::system_error(errno, std::generic_category(), err_msg).
+///
+/// Where err_msg is quivalent to:
+///
+/// std::format(
+///     "{}:{}:{}: failed with error: {}",
+///     loc.file_name(),
+///     loc.function_name(),
+///     loc.line(),
+///     std::strerror(errno)
+/// )
+[[noreturn]] void
+    throw_generic_system_error(const std::source_location loc = std::source_location::current());
+
+/// Throws std::system_error(errno, std::generic_category(), err_msg).
+///
+/// Where err_msg is quivalent to:
+///
+/// std::format(
+///     "{} failed and transfered {} out of {} total bytes:\n{}",
+///     loc.function_name(),
+///     transfered_bytes,
+///     total_bytes,
+///     std::strerror(errno)
+/// )
+[[noreturn]] void
+    throw_partial_system_io_error(const std::size_t transfered_bytes,
+                                  const std::size_t total_bytes,
+                                  const std::source_location loc = std::source_location::current());
 
 } // namespace sstd
 } // namespace ger
