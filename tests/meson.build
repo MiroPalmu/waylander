@@ -9,6 +9,8 @@ test_dependencies += guilander_dep
 # List of tests that can run in parallel
 single_threaded_unit_tests = [
     'test_unit_test',
+    'test_meson_guilander_dep',
+    'test_meson_guilander_headers_do_not_leak_macros',
     'test_byte_buff',
     'test_linux_shm_memory',
     'test_wayland_connected_client',
