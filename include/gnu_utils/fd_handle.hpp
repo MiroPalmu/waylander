@@ -7,6 +7,10 @@
 namespace ger {
 namespace gnu {
 
+// Forward declerations
+class in_pipe;
+class out_pipe;
+
 using fd_native_type             = int;
 static constexpr auto invalid_fd = fd_native_type{ -1 };
 
@@ -27,7 +31,7 @@ static constexpr auto invalid_fd = fd_native_type{ -1 };
 class fd_handle {
     fd_native_type fd_{ invalid_fd };
 
-    fd_handle(const fd_native_type fd);
+    [[nodiscard]] fd_handle(const fd_native_type fd);
 
   public:
     /// Blocking write.
@@ -76,7 +80,20 @@ class fd_handle {
     /// Setting flags (importantly O_CLOEXEC) is generally not atomic with opening of the pipe.
     /// This matters in multi-threaded programs that spawn child processes.
     /// See gnulib manual 13.116.24 pipe2 for more information.
-    friend auto pipe() -> std::tuple<fd_handle, fd_handle>;
+    friend auto open_pipe() -> std::tuple<in_pipe, out_pipe>;
+
+    /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
+    ///
+    /// If PIPE_BUF is defined return it, else return fpathconf(fd_, PIPE_BUF),
+    /// as POSIX 2018 defines:
+    ///
+    ///  > A definition of one of the symbolic constants in the following list
+    ///  > SHALL BE OMITTED from the <limits.h> header on specific implementations
+    ///  > where the corresponding value is equal to or greater than the stated minimum,
+    ///  > but where the value can vary depending on the file to which it is applied.
+    ///
+    /// Throws on error from fpatconf(...).
+    [[nodiscard]] auto get_PIPE_BUF() const -> unsigned long;
 
     /// Closes the file descriptor.
     ///
@@ -87,12 +104,15 @@ class fd_handle {
     ~fd_handle() = default;
 
     // Moveable:
-    fd_handle(fd_handle&& rhs);
-    fd_handle& operator=(fd_handle&& rhs);
+    [[nodiscard]] fd_handle(fd_handle&&);
+    fd_handle& operator=(fd_handle&&);
     // Not copyable:
     fd_handle(const fd_handle&)            = delete;
     fd_handle& operator=(const fd_handle&) = delete;
 };
+
+/// Simple closer function, which just calls \p x.close().
+void close_fd_handle(fd_handle& x);
 
 } // namespace gnu
 } // namespace ger
