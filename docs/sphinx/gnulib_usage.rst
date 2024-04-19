@@ -92,3 +92,36 @@ Guilander user POV requirements
     #) :code:`config.h`
     #) libc replacement headers
     #) utility headers (e.g. :code:`safe-read.h` and :code:`unistd--.h`)
+
+.. Saved for potential later use:
+
+..     potential headers
+..     │
+..     ├── libc
+..     │   ├── iso standard
+..     │   │   ├── float.h
+..     │   │   └── signal.h
+..     │   └── posix extensions
+..     │       ├── fcntl.h
+..     │       └── unistd.h
+..     ├── libgnu
+..     │   ├── extensions
+..     │   │   └── full_read.h
+..     │   ├── libc header rpl
+..     │   │   ├── fcntl.h
+..     │   │   ├── float.h
+..     │   │   ├── signal.h
+..     │   │   └── unistd.h
+..     │   └── libc safe rpl
+..     │       ├── fcntl--.h
+..     │       └── unistd--.h
+..     └── libstdc++
+..         ├── C compatibility
+..         │   ├── float.h
+..         │   └── signal.h
+..         ├── libc from C++
+..         │   ├── cfloat
+..         │   └── csignal
+..         └── C++
+..             ├── cfloat
+..             └── csignal
