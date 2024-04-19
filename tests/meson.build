@@ -40,6 +40,7 @@ foreach test_name, test_exe : test_names_and_exes
     test(
         test_name,
         test_exe,
-        is_parallel: true
+        is_parallel: true,
+        timeout: 10,
     )
 endforeach
