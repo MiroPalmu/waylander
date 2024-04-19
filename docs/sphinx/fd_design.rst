@@ -83,6 +83,5 @@ Explicit conversions have to, either explicitly or by asking the kernel,
 read, write or copy memory behind any file descriptor.
 Conversion function that consume the converted resource count as explicit conversion.
 
-Data memory file descriptor does not include metadata of the file descriptor,
+Objects of class that represents file descriptor does not include metadata of the file descriptor,
 that kernel keeps up to date automatically.
-Note that this allows opening and closing file descriptors themself.
