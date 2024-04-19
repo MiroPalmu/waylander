@@ -34,6 +34,7 @@ guilander_dep = declare_dependency(
 
 # Tests has to come after guiladner_lib as they use it as meson dependency.
 subdir('tests')
+subdir('examples')
 
 # compile_commands.json stuff:
 compdb = find_program('compdb', required : false)
