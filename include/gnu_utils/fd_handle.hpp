@@ -14,7 +14,7 @@ class out_pipe;
 using fd_native_type             = int;
 static constexpr auto invalid_fd = fd_native_type{ -1 };
 
-/// Throwing wrapper for executing system calls on file descriptor.
+/// Throwing wrapper for executing libc calls on file descriptors.
 ///
 /// Does not...
 ///     - ...own any system resources
@@ -22,8 +22,10 @@ static constexpr auto invalid_fd = fd_native_type{ -1 };
 ///     - ...validate contained fd_native_type before calls
 ///     - ...have any invariants
 ///
-/// Following flags are cleared by default:
+/// Flags set by default:
 ///     - O_CLOEXEC
+///
+/// Flags cleared by default:
 ///     - O_NONBLOCK
 ///
 /// At the moment there is no facilities implemented to enable any of the flags above,
