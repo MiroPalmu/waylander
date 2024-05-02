@@ -30,6 +30,13 @@ static constexpr auto invalid_fd = fd_native_type{ -1 };
 ///
 /// At the moment there is no facilities implemented to enable any of the flags above,
 /// nor it is a priority goal.
+///
+/// All interfaces, that opens new file descriptions, ensures that any file descriptor opened
+/// is not stdin(0), stdout(1) nor stderr(2). This perevents accidental globbing of them when for
+/// variaty of reasons they might be closed and new file descriptors are allocated to
+/// "the smallest non-negative integer that does not yet correspond to an open file descriptor".
+///
+/// For more information see gnulib manual 17.10 Handling closed standard file descriptors.
 class fd_handle {
     fd_native_type fd_{ invalid_fd };
 
@@ -70,14 +77,6 @@ class fd_handle {
     ///     > file descriptor 0 is standard input,
     ///     > and file descriptor 1 is standard output
     ///                                           GNU libc manual 15.1 Creating a Pipe
-    ///
-    /// Ensures that neither of the file descriptors is stdin(0), stdout(1) nor stderr(2).
-    /// This perevents accidental globbing of them when for variaty of reasons they
-    /// might be closed and new file descriptors are allocated to "the smallest non-negative
-    /// integer that does not yet correspond to an open file descriptor".
-    ///
-    /// This is achived by using gnulib module pipe2-safer.
-    /// For more information see gnulib manual 17.10 Handling closed standard file descriptors.
     ///
     /// Setting flags (importantly O_CLOEXEC) is generally not atomic with opening of the pipe.
     /// This matters in multi-threaded programs that spawn child processes.
