@@ -10,6 +10,7 @@ namespace gnu {
 // Forward declerations
 class in_pipe;
 class out_pipe;
+class local_stream_socket;
 
 using fd_native_type             = int;
 static constexpr auto invalid_fd = fd_native_type{ -1 };
@@ -82,6 +83,10 @@ class fd_handle {
     /// This matters in multi-threaded programs that spawn child processes.
     /// See gnulib manual 13.116.24 pipe2 for more information.
     friend auto open_pipe() -> std::tuple<in_pipe, out_pipe>;
+
+    /// Opens pair of streaming style sockets in AF_LOCAL namespace, connected to each other.
+    friend auto open_local_stream_socket_pair()
+        -> std::pair<local_stream_socket, local_stream_socket>;
 
     /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
     ///
