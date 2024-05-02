@@ -16,6 +16,10 @@ class local_stream_socket : private local_stream_socket_fd {
 
     friend auto open_local_stream_socket_pair()
         -> std::pair<local_stream_socket, local_stream_socket>;
+
+  public:
+    using local_stream_socket_fd::read;
+    using local_stream_socket_fd::write;
 };
 
 [[nodiscard]] auto open_local_stream_socket_pair()
