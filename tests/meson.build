@@ -20,6 +20,7 @@ unit_tests = [
     'test_gnu_local_stream_socket',
     'test_sstd_unique_handle',
     'test_sstd_throw_system_error',
+    'test_sstd_construct_allocator_adapter',
 ]
 
 test_names_and_exes = {}
