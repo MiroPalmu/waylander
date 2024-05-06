@@ -29,7 +29,7 @@ class connected_client {
         return { next_new_id_++ };
     }
 
-    template<interface WObj, message<WObj> request>
+    template<interface WObj, message_for_inteface<WObj> request>
     void register_request(const Wobject<WObj> /* object */, const request& /* message */) {
         has_requests_ = true;
     }
