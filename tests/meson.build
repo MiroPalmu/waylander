@@ -15,6 +15,7 @@ unit_tests = [
     'test_linux_shm_memory',
     'test_wayland_connected_client',
     'test_wayland_primitive_types',
+    'test_wayland_message_buffer',
     'test_gnu_pipe',
     'test_gnu_fd_handle',
     'test_gnu_local_stream_socket',
