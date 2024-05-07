@@ -24,25 +24,25 @@ struct generic_object {
     struct event {};
 };
 
-struct alignas(4) dynamic_argument {
+struct dynamic_argument {
     std::uint32_t size;
 };
 
-struct alignas(4) Wint : sstd::integralifyer<std::int32_t> {};
-struct alignas(4) Wuint : sstd::integralifyer<std::uint32_t> {};
-struct alignas(4) Wfixed {
+struct Wint : sstd::integralifyer<std::int32_t> {};
+struct Wuint : sstd::integralifyer<std::uint32_t> {};
+struct Wfixed {
     bool is_negative : 1;
     unsigned mantissa : 23;
     unsigned exponent : 8;
 };
-struct alignas(4) Wstring : dynamic_argument {};
+struct Wstring : dynamic_argument {};
 
 /// Forward decleration for converting operator in Wobject.
 template<interface T>
 struct Wnew_id;
 
 template<interface WObj = generic_object>
-struct alignas(4) Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
+struct Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
     template<interface T>
         requires std::same_as<T, WObj> or std::same_as<T, generic_object>
     [[nodiscard]] constexpr operator Wnew_id<T>(this auto&& self) {
@@ -51,18 +51,18 @@ struct alignas(4) Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuin
 };
 
 template<interface WObj = generic_object>
-struct alignas(4) Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};
+struct Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};
 
-struct alignas(4) Warray : dynamic_argument {};
+struct Warray : dynamic_argument {};
 using Wfd = std::reference_wrapper<linux::fd_type>;
 
-struct alignas(2) Wmessage_size_t : sstd::integralifyer<std::uint16_t> {};
+struct Wmessage_size_t : sstd::integralifyer<std::uint16_t> {};
 
 template<interface T>
-struct alignas(2) Wopcode : sstd::integralifyer<std::uint16_t> {};
+struct Wopcode : sstd::integralifyer<std::uint16_t> {};
 
 template<interface WObj>
-struct alignas(4) message_header {
+struct message_header {
     Wobject<WObj> object_id;
     Wmessage_size_t size;
     Wopcode<WObj> opcode;
