@@ -6,6 +6,7 @@
 #include <ranges>
 #include <vector>
 
+#include "byte_vec.hpp"
 #include "construct_allocator_adapter.hpp"
 #include "wayland/protocol_primitives.hpp"
 
@@ -27,12 +28,7 @@ class message_buffer {
         [](auto...) {}(obj, msg);
     }
 
-    using byte_vec_alloc =
-        sstd::allocator::construct_allocator_adapter<sstd::allocator::default_init_construct,
-                                                     std::byte>;
-    using byte_vec = std::vector<std::byte, byte_vec_alloc>;
-
-    constexpr auto release_data() -> byte_vec {
+    constexpr auto release_data() -> sstd::byte_vec {
         is_empty_ = true;
         return {};
     };
