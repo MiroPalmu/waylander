@@ -2,6 +2,8 @@
 
 /// @file Contains primitives used in protocol.hpp implementation.
 
+#include <bit>
+#include <climits>
 #include <concepts>
 #include <cstdint>
 #include <functional>
@@ -67,6 +69,11 @@ struct message_header {
     Wmessage_size_t size;
     Wopcode<WObj> opcode;
 };
+
+/// message_header has to be 8 bytes.
+static_assert(sizeof(message_header<generic_object>) == 8,
+              "Guilander assumes std::byte to be 8 bits.");
+static_assert(CHAR_BIT == 8, "Guilander assumes std::byte to be 8 bits.");
 
 /// Deduction guide for Wnew_id to make Wnew_id{ 4u } work.
 ///
