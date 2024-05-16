@@ -26,10 +26,6 @@ struct generic_object {
     struct event {};
 };
 
-struct dynamic_argument {
-    std::uint32_t size;
-};
-
 struct Wint : sstd::integralifyer<std::int32_t> {};
 struct Wuint : sstd::integralifyer<std::uint32_t> {};
 struct Wfixed {
@@ -37,7 +33,6 @@ struct Wfixed {
     unsigned mantissa : 23;
     unsigned exponent : 8;
 };
-struct Wstring : dynamic_argument {};
 
 /// Forward decleration for converting operator in Wobject.
 template<interface T>
@@ -55,8 +50,9 @@ struct Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
 template<interface WObj = generic_object>
 struct Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};
 
-struct Warray : dynamic_argument {};
-using Wfd = std::reference_wrapper<linux::fd_type>;
+struct Wstring {};
+struct Warray {};
+struct Wfd {};
 
 struct Wmessage_size_t : sstd::integralifyer<std::uint16_t> {};
 
