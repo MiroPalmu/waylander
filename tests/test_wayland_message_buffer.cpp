@@ -24,17 +24,6 @@ int main() {
         expect(buff.empty());
     };
 
-    wl_tag / "messages can be appended to message_buffer"_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
-        constexpr auto mock_new_id = wl::Wnew_id{ 42u };
-        const auto mock_request_for_display =
-            wl::protocols::wl_display::request::get_registry{ mock_new_id };
-
-        buff.append(wl::global_display_object, mock_request_for_display);
-        expect(not buff.empty());
-    };
-
     wl_tag / "request messages can be appended to message_buffer to make it non-empty"_test = [] {
         auto buff = wl::message_buffer{};
         expect(buff.empty());
