@@ -21,6 +21,7 @@ unit_tests = [
     'test_gnu_pipe',
     'test_gnu_fd_handle',
     'test_gnu_local_stream_socket',
+    'test_sstd_math',
     'test_sstd_type_utils',
     'test_sstd_unique_handle',
     'test_sstd_throw_system_error',

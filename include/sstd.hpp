@@ -161,5 +161,11 @@ class unique_handle : public T {
                                   const std::size_t total_bytes,
                                   const std::source_location loc = std::source_location::current());
 
+/// Returns dx such that x + dx is multiple of N and dx < N.
+template<std::integral auto N>
+constexpr auto round_upto_multiple_of(const std::integral auto x) {
+    return (N - (x % N)) % N;
+};
+
 } // namespace sstd
 } // namespace ger
