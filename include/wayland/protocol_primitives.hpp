@@ -7,6 +7,7 @@
 #include <concepts>
 #include <cstdint>
 #include <functional>
+#include <string_view>
 
 #include "bit_fiddling.hpp"
 #include "linux_utils/file_descriptor.hpp"
@@ -50,8 +51,12 @@ struct Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
 template<interface WObj = generic_object>
 struct Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};
 
-struct Wstring {};
-struct Warray {};
+struct Wstring : std::u8string_view {
+    using size_type = std::uint32_t;
+};
+struct Warray : std::span<const std::byte> {
+    using size_type = std::uint32_t;
+};
 struct Wfd {};
 
 struct Wmessage_size_t : sstd::integralifyer<std::uint16_t> {};
