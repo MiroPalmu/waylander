@@ -23,6 +23,10 @@ concept unary_predicate_trait = std::derived_from<Trait<probe_type>, std::bool_c
 template<template<typename> typename Trait, typename... T>
 concept unary_predicate_trait_fold = unary_predicate_trait<Trait> and (Trait<T>::value && ...);
 
+/// Helper for visitor patter to create overloaded function objects.
+template<class... Ts>
+struct overloaded : Ts... { using Ts::operator()...; };
+
 /// Returns std::tuple<const T&...> where T... are the elements of \p t.
 template<typename T>
     requires(std::is_aggregate_v<std::remove_cvref_t<T>>)
