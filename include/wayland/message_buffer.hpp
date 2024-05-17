@@ -19,7 +19,7 @@ class message_buffer {
     sstd::byte_vec buff_{};
 
   public:
-    /// True if buffer contains any data.
+    /// True if buffer does not contains any data.
     constexpr bool empty() { return buff_.empty(); }
 
     template<interface WObj, message_for_inteface<WObj> Message>
