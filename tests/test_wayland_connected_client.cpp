@@ -1,7 +1,9 @@
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <type_traits>
+#include <utility>
 
+#include "gnu_utils/local_stream_socket.hpp"
 #include "wayland/protocol.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
@@ -16,6 +18,11 @@ int main() {
 
     wl_tag / "connected_client object can be constructed without arguments"_test = [] {
         expect(nothrow([] { auto _ = connected_client(); }));
+    };
+
+    wl_tag / "connected_client object can be constructed from already connected socket"_test = [] {
+        auto [socket, _] = ger::gnu::open_local_stream_socket_pair();
+        expect(nothrow([&] { auto _ = connected_client{ std::move(socket) }; }));
     };
 
     wl_tag / "connected_client can reserve object id"_test = [] {
