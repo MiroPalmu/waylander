@@ -14,7 +14,7 @@ int main() {
     // Run wl_tag:
     cfg<override> = { .tag = { "wayland" } };
 
-    wl_tag / "connected_client object can be constructor"_test = [] {
+    wl_tag / "connected_client object can be constructed without arguments"_test = [] {
         expect(nothrow([] { auto _ = connected_client(); }));
     };
 
