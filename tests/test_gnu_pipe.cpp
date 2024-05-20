@@ -38,7 +38,6 @@ int main() {
         expect(not out_pipe_is_readable);
     } | std::tuple<int>{};
 
-    /// Has to be in generic lambda to make requires expressions not ill-formed.
     tag("gnu") / "[in|out]_pipe has get_PIPE_BUF"_test = [] {
         expect(requires(ger::gnu::in_pipe in) {
             { in.get_PIPE_BUF() } -> std::common_with<unsigned long>;
