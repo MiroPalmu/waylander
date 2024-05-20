@@ -25,7 +25,9 @@ concept unary_predicate_trait_fold = unary_predicate_trait<Trait> and (Trait<T>:
 
 /// Helper for visitor patter to create overloaded function objects.
 template<class... Ts>
-struct overloaded : Ts... { using Ts::operator()...; };
+struct overloaded : Ts... {
+    using Ts::operator()...;
+};
 
 /// Returns std::tuple<const T&...> where T... are the elements of \p t.
 template<typename T>
@@ -527,6 +529,383 @@ constexpr auto to_ref_tuple(const T& t) {
     } else if constexpr (std::constructible_from<T, probe_type>) {
         const auto& [x1] = t;
         return std::make_tuple(std::cref(x1));
+    } else {
+        static_assert(false, "Waiting room for reflection...");
+    }
+}
+
+/// Returns copy of \p t as a std::tuple<T...>, where T... are the elements of \p t.
+template<typename T>
+    requires(std::is_aggregate_v<std::remove_cvref_t<T>>)
+constexpr auto to_tuple(const T& t) {
+    if constexpr (std::constructible_from<T,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type,
+                                          probe_type>) {
+        const auto& [x20,
+                     x19,
+                     x18,
+                     x17,
+                     x16,
+                     x15,
+                     x14,
+                     x13,
+                     x12,
+                     x11,
+                     x10,
+                     x9,
+                     x8,
+                     x7,
+                     x6,
+                     x5,
+                     x4,
+                     x3,
+                     x2,
+                     x1] = t;
+        return std::make_tuple(x20,
+                               x19,
+                               x18,
+                               x17,
+                               x16,
+                               x15,
+                               x14,
+                               x13,
+                               x12,
+                               x11,
+                               x10,
+                               x9,
+                               x8,
+                               x7,
+                               x6,
+                               x5,
+                               x4,
+                               x3,
+                               x2,
+                               x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x19,
+                     x18,
+                     x17,
+                     x16,
+                     x15,
+                     x14,
+                     x13,
+                     x12,
+                     x11,
+                     x10,
+                     x9,
+                     x8,
+                     x7,
+                     x6,
+                     x5,
+                     x4,
+                     x3,
+                     x2,
+                     x1] = t;
+        return std::make_tuple(x19,
+                               x18,
+                               x17,
+                               x16,
+                               x15,
+                               x14,
+                               x13,
+                               x12,
+                               x11,
+                               x10,
+                               x9,
+                               x8,
+                               x7,
+                               x6,
+                               x5,
+                               x4,
+                               x3,
+                               x2,
+                               x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x18,
+                     x17,
+                     x16,
+                     x15,
+                     x14,
+                     x13,
+                     x12,
+                     x11,
+                     x10,
+                     x9,
+                     x8,
+                     x7,
+                     x6,
+                     x5,
+                     x4,
+                     x3,
+                     x2,
+                     x1] = t;
+        return std::make_tuple(x18,
+                               x17,
+                               x16,
+                               x15,
+                               x14,
+                               x13,
+                               x12,
+                               x11,
+                               x10,
+                               x9,
+                               x8,
+                               x7,
+                               x6,
+                               x5,
+                               x4,
+                               x3,
+                               x2,
+                               x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x17, x16, x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] =
+            t;
+        return std::
+            make_tuple(x17, x16, x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x16, x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::
+            make_tuple(x16, x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x15, x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x14, x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x13, x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x12, x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x11, x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x10, x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x10, x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x9, x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x9, x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x8, x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x8, x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x7, x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x7, x6, x5, x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type,
+                                                 probe_type>) {
+        const auto& [x6, x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x6, x5, x4, x3, x2, x1);
+    } else if constexpr (
+        std::constructible_from<T, probe_type, probe_type, probe_type, probe_type, probe_type>) {
+        const auto& [x5, x4, x3, x2, x1] = t;
+        return std::make_tuple(x5, x4, x3, x2, x1);
+    } else if constexpr (
+        std::constructible_from<T, probe_type, probe_type, probe_type, probe_type>) {
+        const auto& [x4, x3, x2, x1] = t;
+        return std::make_tuple(x4, x3, x2, x1);
+    } else if constexpr (std::constructible_from<T, probe_type, probe_type, probe_type>) {
+        const auto& [x3, x2, x1] = t;
+        return std::make_tuple(x3, x2, x1);
+    } else if constexpr (std::constructible_from<T, probe_type, probe_type>) {
+        const auto& [x2, x1] = t;
+        return std::make_tuple(x2, x1);
+    } else if constexpr (std::constructible_from<T, probe_type>) {
+        const auto& [x1] = t;
+        return std::make_tuple(x1);
     } else {
         static_assert(false, "Waiting room for reflection...");
     }
