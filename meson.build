@@ -1,5 +1,5 @@
 project(
-    'meson_template',
+    'guilander',
     'cpp',
     version: '0.0.1',
     default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++26']
@@ -9,12 +9,11 @@ add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
 
 gnulib = subproject('gnulib')
 
-project_dependencies = [
+guilander_dependencies = [
     gnulib.get_variable('gnulib_dep'),
 ]
 
-# Project sources
-project_source_files = []
+guilander_source_files = []
 
 # Subdirectors
 subdir('docs')
@@ -22,9 +21,9 @@ subdir('src')
 
 guilander_lib = static_library(
     'guilander',
-    project_source_files,
+    guilander_source_files,
     include_directories : include_directories('include'),
-    dependencies : project_dependencies,
+    dependencies : guilander_dependencies,
 )
 
 guilander_dep = declare_dependency(
