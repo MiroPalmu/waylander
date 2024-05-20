@@ -69,6 +69,13 @@ class fd_handle {
     /// after partial read, which leads to exception and not continuation of retries.
     [[nodiscard]] auto read(const std::span<std::byte> where_to_read) -> std::size_t;
 
+    /// Blocking read, but does not retry on partial read (cf. fd_handle::read).
+    ///
+    /// Writes data read from fd to memory specified by \p where_to_read,
+    /// retrying if interrupted. Returns the actual number of bytes read,
+    /// zero for EOF and throws if error occurs.
+    [[nodiscard]] auto read_some(const std::span<std::byte> where_to_read) -> std::size_t;
+
     /// Opens posix pipe (i.e. file descriptor IN for reading and OUT for writing).
     ///
     /// From returned tuple fd_handle at index 0 is the read end of the pipe (IN) and

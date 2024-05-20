@@ -6,6 +6,7 @@
 #define GNULIB_NAMESPACE gnulib
 #include "full-read.h"
 #include "full-write.h"
+#include "safe-read.h"
 #include <unistd.h>
 
 #include <cerrno>
@@ -40,6 +41,13 @@ auto fd_handle::read(const std::span<std::byte> where_to_read) -> std::size_t {
     if (number_of_bytes_read < where_to_read.size() and not at_EOF) {
         sstd::throw_partial_system_io_error(number_of_bytes_read, where_to_read.size());
     }
+
+    return number_of_bytes_read;
+}
+
+auto fd_handle::read_some(const std::span<std::byte> where_to_read) -> std::size_t {
+    const auto number_of_bytes_read = ::safe_read(fd_, where_to_read.data(), where_to_read.size());
+    if (number_of_bytes_read == SAFE_READ_ERROR) { sstd::throw_generic_system_error(); }
 
     return number_of_bytes_read;
 }

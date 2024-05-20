@@ -1,10 +1,13 @@
 #include <boost/ut.hpp> // import boost.ut;
 
+#include <algorithm>
 #include <cstddef>
 #include <future>
 #include <latch>
+#include <thread>
 #include <vector>
 
+#include "byte_vec.hpp"
 #include "gnu_utils/local_stream_socket.hpp"
 
 int main() {
@@ -84,5 +87,21 @@ int main() {
         expect(read_bytes_pong == pong.size());
         expect(ping == recv_buff_B);
         expect(pong == recv_buff_A);
+    };
+
+    tag("gnu") / "read_some does not block when trying to read more than is available"_test = [] {
+        const auto ping = sstd::byte_vec{ std::byte{ 'p' },
+                                          std::byte{ 'i' },
+                                          std::byte{ 'n' },
+                                          std::byte{ 'g' } };
+
+        auto [A, B] = ger::gnu::open_local_stream_socket_pair();
+        auto _      = std::jthread{ [&] { B.write(ping); } };
+
+        auto recv_buff = sstd::byte_vec{};
+        recv_buff.resize(2 * ping.size());
+        const auto read_bytes = A.read_some(recv_buff);
+        expect(read_bytes == ping.size());
+        expect(std::ranges::equal(ping, std::span(recv_buff.cbegin(), read_bytes)));
     };
 }

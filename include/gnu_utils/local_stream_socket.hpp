@@ -19,6 +19,7 @@ class local_stream_socket : private local_stream_socket_fd {
 
   public:
     using local_stream_socket_fd::read;
+    using local_stream_socket_fd::read_some;
     using local_stream_socket_fd::write;
 };
 
