@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <cstddef>
 #include <functional>
 #include <tuple>
 #include <type_traits>
@@ -9,11 +10,84 @@
 namespace ger {
 namespace sstd {
 
-/// Used to instantiate template template parameters to get infromation about the template template.
+/// Instantiates template template parameters to get infromation about the template template.
 struct probe_type {
     template<class T>
     constexpr operator T(); // non explicit
 };
+
+/// Pairs type \p T to \p Index. Useful as indexed_type<I, T>::type... where I is parameter pack.
+template<std::size_t Index, typename T>
+struct indexed_type : std::integral_constant<std::size_t, Index> {
+    using type = T;
+};
+/// Helper for indexed_type.
+template<std::size_t Index, typename T>
+using indexed_type_t = indexed_type<Index, T>::type;
+
+/// Template \p TT has arity of \p N, when T<probe_type...> is valid type for \p N probe_types.
+///
+/// Arity of a template template parameter can never be 0,
+/// because they are possible only with partial specializations and
+/// template template parameters only match the primary template, not the partial specializations.
+///
+/// This is not perfect test, but enables sligthly better errors in some situations.
+///
+template<std::size_t N, template<typename...> typename TT>
+concept arity_of_template_is = ((N > 0)and[]<std::size_t... I>(std::index_sequence<I...>) {
+    return requires { typename TT<indexed_type_t<I, probe_type>...>; };
+}(std::make_index_sequence<N>{}));
+
+/// "Invoking" template \p TT using pack T..., i.e. TT<T...>, is valid.
+template<template<typename...> typename TT, typename... T>
+concept template_invocable = requires { typename TT<T...>; }; /* and ([] { 
+    using x = TT<T...>;
+    return []<typename ignore = x>{ return true; }();
+}()); */
+
+/// "Invoke" template \p TT using pack T..., i.e. TT<T...>.
+///
+/// Just more verbose TT<T...> with better error messages thanks to the constraint.
+template<template<typename...> typename TT, typename... T>
+    requires template_invocable<TT, T...>
+struct template_invoke {
+    using type = TT<T...>;
+};
+/// Helper for template_invoke.
+template<template<typename...> typename TT, typename... T>
+    requires template_invocable<TT, T...>
+using template_invoke_t = template_invoke<TT, T...>::type;
+
+/// "Invoking" template \p TT using \p N amount of \p T is valid.
+template<template<typename...> typename TT, typename T, std::size_t N>
+concept template_invocable_with_repeated_argument =
+    ([]<std::size_t... I>(std::index_sequence<I...>) {
+        return template_invocable<TT, indexed_type_t<I, T>...>;
+    }(std::make_index_sequence<N>{}));
+
+/// "Invoke" template \p TT using \p N amount of \p T.
+template<template<typename...> typename TT, typename T, std::size_t N>
+    requires template_invocable_with_repeated_argument<TT, T, N>
+struct template_invoke_with_repeated_argument {
+    using type = decltype([]<std::size_t... I>(std::index_sequence<I...>) {
+        return std::type_identity<template_invoke_t<TT, indexed_type_t<I, T>...>>{};
+    }(std::make_index_sequence<N>{}))::type;
+};
+/// Helper for template_invoke_with_repeated_argument.
+template<template<typename...> typename TT, typename T, std::size_t N>
+    requires template_invocable_with_repeated_argument<TT, T, N>
+using template_invoke_with_repeated_argument_t =
+    template_invoke_with_repeated_argument<TT, T, N>::type;
+
+/// See named requiremend [Unary|Binary]TypeTrait
+template<typename T>
+concept predicate_type = (std::derived_from<T, std::bool_constant<true>>
+                          or std::derived_from<T, std::bool_constant<false>>);
+
+template<std::size_t N, template<typename...> typename Trait>
+concept nary_predicate_trait =
+    template_invocable_with_repeated_argument<Trait, probe_type, N>
+    and predicate_type<template_invoke_with_repeated_argument_t<Trait, probe_type, N>>;
 
 template<template<typename> typename Trait>
 concept unary_predicate_trait = std::derived_from<Trait<probe_type>, std::bool_constant<true>>
