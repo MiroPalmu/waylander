@@ -100,6 +100,20 @@ struct overloaded : Ts... {
     using Ts::operator()...;
 };
 
+template<typename... F>
+struct type_map {
+    using visitor = overloaded<std::function<F>...>;
+
+    template<typename... T>
+    using type = decltype(std::declval<visitor>()(std::declval<T>()...));
+};
+
+template<typename... T>
+struct type_list {
+    template<typename... F>
+    using map = type_list<typename type_map<F...>::template type<T>...>;
+};
+
 /// Implicit converstion to any type T is syntaxically correct but not defined.
 struct morph_type {
     template<class T>
