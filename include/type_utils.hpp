@@ -111,6 +111,53 @@ struct type_list {
     using map = type_list<typename type_map<F...>::template type<T>...>;
 };
 
+/// Primary template for type trait to check if T == type_list.
+template<typename>
+struct is_type_list : std::integral_constant<bool, false> {};
+/// Partial specialization of is_type_list.
+template<typename... T>
+struct is_type_list<type_list<T...>> : std::integral_constant<bool, true> {};
+
+/// Helper for is_type_list
+template<typename T>
+inline constexpr bool is_type_list_v = is_type_list<T>::value;
+
+template<template<typename...> typename TT, typename T>
+    requires(is_type_list_v<T>)
+struct is_template_invocable_with_list;
+
+/// Type trait implementation of concept template_invocable_with_list.
+template<template<typename...> typename TT, typename... T>
+struct is_template_invocable_with_list<TT, type_list<T...>> :
+    std::integral_constant<bool, template_invocable<TT, T...>> {};
+
+template<template<typename...> typename TT, typename T>
+    requires(is_type_list_v<T>)
+inline constexpr bool is_template_invocable_with_list_v =
+    is_template_invocable_with_list<TT, T>::value;
+
+/// "Invoking" template \p TT using pack T... from type_list<T...>, i.e. TT<T...>, is valid.
+template<template<typename...> typename TT, typename List>
+concept template_invocable_with_list = (is_template_invocable_with_list_v<TT, List>);
+
+/// "Invoke" template \p TT using pack T... form type_list<T...>, i.e. TT<T...>.
+///
+/// Primary template.
+template<template<typename...> typename TT, typename List>
+    requires template_invocable_with_list<TT, List>
+struct template_invoke_with_list;
+
+/// Partial specialization for template_invoke_with_list.
+template<template<typename...> typename TT, typename... T>
+struct template_invoke_with_list<TT, type_list<T...>> {
+    using type = template_invoke_t<TT, T...>;
+};
+
+/// Helper for template_invoke_with_list;
+template<template<typename...> typename TT, typename List>
+    requires template_invocable_with_list<TT, List>
+using template_invoke_with_list_t = typename template_invoke_with_list<TT, List>::type;
+
 /// Implicit converstion to any type T is syntaxically correct but not defined.
 struct morph_type {
     template<class T>

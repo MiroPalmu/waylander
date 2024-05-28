@@ -1,8 +1,13 @@
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <concepts>
+#include <type_traits>
 
 #include "type_utils.hpp"
+
+// short hand
+template<typename... T>
+using L = ger::sstd::type_list<T...>;
 
 int main() {
     using namespace boost::ut;
@@ -46,4 +51,119 @@ int main() {
     //     expect(not requires { typename empty::map<int(int), unsigned(int)>; });
     // };
 
+    tag("sstd")
+        / "template_invocable_with_list_with_list is correct for sample set of standard traits"_test =
+        [] {
+            // Unary predicate standard traits
+            expect(constant<not sstd::template_invocable_with_list<std::is_void, L<>>>);
+            expect(constant<sstd::template_invocable_with_list<std::is_void, L<int>>>);
+            expect(constant<not sstd::template_invocable_with_list<std::is_void, L<int, int>>>);
+            expect(
+                constant<not sstd::template_invocable_with_list<std::is_void, L<int, int, int>>>);
+
+            // Binary predicate standard traits
+            expect(constant<not sstd::template_invocable_with_list<std::is_swappable_with, L<>>>);
+            expect(
+                constant<not sstd::template_invocable_with_list<std::is_swappable_with, L<int>>>);
+            expect(
+                constant<sstd::template_invocable_with_list<std::is_swappable_with, L<int, int>>>);
+            expect(constant<not sstd::template_invocable_with_list<std::is_swappable_with,
+                                                                   L<int, int, int>>>);
+
+            // N-ary predicate standard traits
+            expect(not constant<sstd::template_invocable_with_list<std::is_constructible, L<>>>);
+            expect(constant<sstd::template_invocable_with_list<std::is_constructible, L<int>>>);
+            expect(
+                constant<sstd::template_invocable_with_list<std::is_constructible, L<int, int>>>);
+            expect(constant<
+                   sstd::template_invocable_with_list<std::is_constructible, L<int, int, int>>>);
+
+            // Unary non-predicate standard traits
+            expect(constant<not sstd::template_invocable_with_list<std::rank, L<>>>);
+            expect(constant<sstd::template_invocable_with_list<std::rank, L<int>>>);
+            expect(constant<not sstd::template_invocable_with_list<std::rank, L<int, int>>>);
+            expect(constant<not sstd::template_invocable_with_list<std::rank, L<int, int, int>>>);
+
+            // Binary non-predicate standard traits
+            expect(not constant<sstd::template_invocable_with_list<std::is_swappable_with, L<>>>);
+            expect(
+                not constant<sstd::template_invocable_with_list<std::is_swappable_with, L<int>>>);
+            expect(
+                constant<sstd::template_invocable_with_list<std::is_swappable_with, L<int, int>>>);
+            expect(not constant<
+                   sstd::template_invocable_with_list<std::is_swappable_with, L<int, int, int>>>);
+
+            // N-ary non-predicate standard traits
+            expect(constant<sstd::template_invocable_with_list<std::common_type, L<>>>);
+            expect(constant<sstd::template_invocable_with_list<std::common_type, L<int>>>);
+            expect(constant<sstd::template_invocable_with_list<std::common_type, L<int, int>>>);
+            expect(
+                constant<sstd::template_invocable_with_list<std::common_type, L<int, int, int>>>);
+
+            // Miscellaneous predicate standard traits
+            expect(constant<sstd::template_invocable_with_list<std::conjunction, L<>>>);
+            expect(constant<sstd::template_invocable_with_list<std::conjunction, L<int>>>);
+            expect(constant<sstd::template_invocable_with_list<std::conjunction, L<int, int>>>);
+            expect(
+                constant<sstd::template_invocable_with_list<std::conjunction, L<int, int, int>>>);
+        };
+
+    tag("sstd")
+        / "template_invoke_with_list is correct for sample set of standard traits in a type_list"_test =
+        [] {
+            // Unary predicate standard traits
+            expect(constant<std::same_as<sstd::template_invoke_with_list_t<std::is_void, L<int>>,
+                                         std::is_void<int>>>);
+
+            // Binary predicate standard traits
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::is_swappable_with, L<int, int>>,
+                       std::is_swappable_with<int, int>>>);
+
+            // N-ary predicate standard traits
+            expect(constant<
+                   std::same_as<sstd::template_invoke_with_list_t<std::is_constructible, L<int>>,
+                                std::is_constructible<int>>>);
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::is_constructible, L<int, int>>,
+                       std::is_constructible<int, int>>>);
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::is_constructible, L<int, int, int>>,
+                       std::is_constructible<int, int, int>>>);
+
+            // Unary non-predicate standard traits
+            expect(constant<std::same_as<sstd::template_invoke_with_list_t<std::rank, L<int>>,
+                                         std::rank<int>>>);
+
+            // Binary non-predicate standard traits
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::is_swappable_with, L<int, int>>,
+                       std::is_swappable_with<int, int>>>);
+
+            // N-ary non-predicate standard traits
+            expect(constant<std::same_as<sstd::template_invoke_with_list_t<std::common_type, L<>>,
+                                         std::common_type<>>>);
+            expect(
+                constant<std::same_as<sstd::template_invoke_with_list_t<std::common_type, L<int>>,
+                                      std::common_type<int>>>);
+            expect(constant<
+                   std::same_as<sstd::template_invoke_with_list_t<std::common_type, L<int, int>>,
+                                std::common_type<int, int>>>);
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::common_type, L<int, int, int>>,
+                       std::common_type<int, int, int>>>);
+
+            // Miscellaneous predicate standard traits
+            expect(constant<std::same_as<sstd::template_invoke_with_list_t<std::conjunction, L<>>,
+                                         std::conjunction<>>>);
+            expect(
+                constant<std::same_as<sstd::template_invoke_with_list_t<std::conjunction, L<int>>,
+                                      std::conjunction<int>>>);
+            expect(constant<
+                   std::same_as<sstd::template_invoke_with_list_t<std::conjunction, L<int, int>>,
+                                std::conjunction<int, int>>>);
+            expect(constant<std::same_as<
+                       sstd::template_invoke_with_list_t<std::conjunction, L<int, int, int>>,
+                       std::conjunction<int, int, int>>>);
+        };
 };
