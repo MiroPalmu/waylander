@@ -37,10 +37,7 @@ concept arity_of_template_is = ((N > 0)and[]<std::size_t... I>(std::index_sequen
 
 /// "Invoking" template \p TT using pack T..., i.e. TT<T...>, is valid.
 template<template<typename...> typename TT, typename... T>
-concept template_invocable = requires { typename TT<T...>; }; /* and ([] { 
-    using x = TT<T...>;
-    return []<typename ignore = x>{ return true; }();
-}()); */
+concept template_invocable = requires { typename TT<T...>; };
 
 /// "Invoke" template \p TT using pack T..., i.e. TT<T...>.
 ///
