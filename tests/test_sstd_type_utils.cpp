@@ -1,6 +1,7 @@
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <string_view>
+#include <tuple>
 #include <type_traits>
 
 #include "type_utils.hpp"
@@ -222,6 +223,14 @@ int main() {
                        sstd::template_invoke_with_repeated_argument_t<std::conjunction, int, 3>,
                        std::conjunction<int, int, int>>>);
         };
+
+    tag("sstd") / "steal_template_args can turn std::tuple<...> to list_type<...>"_test = [] {
+        using tuple    = std::tuple<int, float, double>;
+        using list     = sstd::steal_template_args_t<tuple, sstd::type_list>;
+        using expected = sstd::type_list<int, float, double>;
+
+        expect(constant<std::same_as<list, expected>>);
+    };
 
     tag("sstd") / "unary_predicate_trait_fold is is usable with std::is_floating_point"_test = [] {
         expect(sstd::unary_predicate_trait_fold<std::is_floating_point, float, double, double>);

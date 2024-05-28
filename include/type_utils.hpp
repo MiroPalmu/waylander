@@ -158,6 +158,20 @@ template<template<typename...> typename TT, typename List>
     requires template_invocable_with_list<TT, List>
 using template_invoke_with_list_t = typename template_invoke_with_list<TT, List>::type;
 
+/// Primary template for the single specialization.
+template<typename T, template<typename...> typename TT>
+struct steal_template_args;
+
+/// Turns TT1<T...> to TT2<T...>.
+template<template<typename...> typename TT1, template<typename...> typename TT2, typename... T>
+struct steal_template_args<TT1<T...>, TT2> {
+    using type = TT2<T...>;
+};
+
+/// Helper for steal_template_args.
+template<typename T, template<typename...> typename TT>
+using steal_template_args_t = steal_template_args<T, TT>::type;
+
 /// Implicit converstion to any type T is syntaxically correct but not defined.
 struct morph_type {
     template<class T>
