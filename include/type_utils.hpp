@@ -99,7 +99,10 @@ struct overloaded : Ts... {
 
 template<typename... F>
 struct type_map {
-    using visitor = overloaded<std::function<F>...>;
+    template<typename f>
+    using make_overloadable = std::conditional_t<std::is_function_v<f>, std::function<f>, f>;
+
+    using visitor = overloaded<make_overloadable<F>...>;
 
     template<typename... T>
     using type = decltype(std::declval<visitor>()(std::declval<T>()...));

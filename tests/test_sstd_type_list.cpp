@@ -51,6 +51,15 @@ int main() {
     //     expect(not requires { typename empty::map<int(int), unsigned(int)>; });
     // };
 
+    tag("sstd") / "type_list::map works with generic lambdas"_test = [] {
+        using list   = sstd::type_list<int, double, float>;
+        using generic_lambda = decltype([](auto) -> short { return {};});
+        using mapped = list::map<unsigned(int), generic_lambda>;
+        using expected = sstd::type_list<unsigned, short, short>;
+
+        expect(constant<std::same_as<expected, mapped>>);
+    };
+
     tag("sstd")
         / "template_invocable_with_list_with_list is correct for sample set of standard traits"_test =
         [] {
