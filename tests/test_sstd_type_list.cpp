@@ -102,6 +102,39 @@ int main() {
         expect(constant<std::same_as<int, fold_result>>);
     };
 
+    // type_list<T...>::append<U...>:
+
+    tag("sstd") / "type_list can be build with type_list::append"_test = [] {
+        using s     = L<>::append<short>;
+        using si    = s::append<int>;
+        using sil   = si::append<long>;
+        using siluu = sil::append<unsigned, unsigned>;
+
+        using s_expected     = L<short>;
+        using si_expected    = L<short, int>;
+        using sil_expected   = L<short, int, long>;
+        using siluu_expected = L<short, int, long, unsigned, unsigned>;
+
+        expect(constant<std::same_as<s, s_expected>>);
+        expect(constant<std::same_as<si, si_expected>>);
+        expect(constant<std::same_as<sil, sil_expected>>);
+        expect(constant<std::same_as<siluu, siluu_expected>>);
+    };
+
+    tag("sstd") / "type_list::append<> is noop"_test = [] {
+        using empty_before = L<>;
+        using one_before   = L<short>;
+        using two_before   = L<short, long>;
+
+        using empty_after = empty_before::append<>;
+        using one_after   = one_before::append<>;
+        using two_after   = two_before::append<>;
+
+        expect(constant<std::same_as<empty_before, empty_after>>);
+        expect(constant<std::same_as<one_before, one_after>>);
+        expect(constant<std::same_as<two_before, two_after>>);
+    };
+
     // template_invoke_with_list:
 
     tag("sstd")

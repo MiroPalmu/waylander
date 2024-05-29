@@ -143,6 +143,9 @@ struct type_list {
     /// after it has been update to be E<Init, T> for each T.
     template<typename Init, typename... F>
     using fold_left = type_fold_left<make_overloaded<F...>, Init, T...>::type;
+
+    template<typename... U>
+    using append = template_invoke_t<type_list, T..., U...>;
 };
 
 /// Primary template for type trait to check if T == type_list.
