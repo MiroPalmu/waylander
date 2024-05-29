@@ -205,6 +205,12 @@ struct steal_template_args<TT1<T...>, TT2> {
     using type = TT2<T...>;
 };
 
+/// Concats two type_list together.
+template<typename Lhs, typename Rhs>
+    requires(is_type_list_v<Lhs> and is_type_list_v<Rhs>)
+using type_list_concat =
+    template_invoke_with_list_t<Lhs::template append, template_invoke_with_list_t<type_list, Rhs>>;
+
 /// Helper for steal_template_args.
 template<typename T, template<typename...> typename TT>
 using steal_template_args_t = steal_template_args<T, TT>::type;

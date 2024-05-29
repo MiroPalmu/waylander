@@ -135,6 +135,44 @@ int main() {
         expect(constant<std::same_as<two_before, two_after>>);
     };
 
+    // type_list<T...>::concat<type_list<U...>>:
+
+    tag("sstd") / "type_list can be build with type_list_concat"_test = [] {
+        using si       = sstd::type_list_concat<L<short>, L<int>>;
+        using sisi     = sstd::type_list_concat<si, si>;
+        using sisisisi = sstd::type_list_concat<sisi, sisi>;
+
+        using si_expected       = L<short, int>;
+        using sisi_expected     = L<short, int, short, int>;
+        using sisisisi_expected = L<short, int, short, int, short, int, short, int>;
+
+        expect(constant<std::same_as<si, si_expected>>);
+        expect(constant<std::same_as<sisi, sisi_expected>>);
+        expect(constant<std::same_as<sisisisi, sisisisi_expected>>);
+    };
+
+    tag("sstd") / "type_list_concat<...> for empty list is noop"_test = [] {
+        using empty_before = L<>;
+        using one_before   = L<short>;
+        using two_before   = L<short, long>;
+
+        using empty_after_A = sstd::type_list_concat<L<>, empty_before>;
+        using one_after_A   = sstd::type_list_concat<L<>, one_before>;
+        using two_after_A   = sstd::type_list_concat<L<>, two_before>;
+
+        using empty_after_B = sstd::type_list_concat<empty_before, L<>>;
+        using one_after_B   = sstd::type_list_concat<one_before, L<>>;
+        using two_after_B   = sstd::type_list_concat<two_before, L<>>;
+
+        expect(constant<std::same_as<empty_before, empty_after_A>>);
+        expect(constant<std::same_as<one_before, one_after_A>>);
+        expect(constant<std::same_as<two_before, two_after_A>>);
+
+        expect(constant<std::same_as<empty_before, empty_after_B>>);
+        expect(constant<std::same_as<one_before, one_after_B>>);
+        expect(constant<std::same_as<two_before, two_after_B>>);
+    };
+
     // template_invoke_with_list:
 
     tag("sstd")
