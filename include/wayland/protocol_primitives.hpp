@@ -71,10 +71,14 @@ struct message_header {
     Wopcode<WObj> opcode;
 };
 
-/// message_header has to be 8 bytes.
-static_assert(sizeof(message_header<generic_object>) == 8,
-              "Guilander assumes std::byte to be 8 bits.");
+// Sanity check primitive sizes.
 static_assert(CHAR_BIT == 8, "Guilander assumes std::byte to be 8 bits.");
+static_assert(sizeof(Wint) == 4);
+static_assert(sizeof(Wuint) == 4);
+static_assert(sizeof(Wfixed) == 4);
+static_assert(sizeof(Wobject<generic_object>) == 4);
+static_assert(sizeof(Wnew_id<generic_object>) == 4);
+static_assert(sizeof(message_header<generic_object>) == 8);
 
 /// Deduction guide for Wnew_id to make Wnew_id{ 4u } work.
 ///
