@@ -14,6 +14,8 @@ int main() {
     using namespace ger;
     cfg<override> = { .tag = { "sstd" } };
 
+    // type_list::map<...>:
+
     tag("sstd") / "type_list::map maps single short to long"_test = [] {
         using single_short = sstd::type_list<short>;
         using mapped       = single_short::map<long(short)>;
@@ -52,13 +54,55 @@ int main() {
     // };
 
     tag("sstd") / "type_list::map works with generic lambdas"_test = [] {
-        using list   = sstd::type_list<int, double, float>;
-        using generic_lambda = decltype([](auto) -> short { return {};});
-        using mapped = list::map<unsigned(int), generic_lambda>;
-        using expected = sstd::type_list<unsigned, short, short>;
+        using list           = sstd::type_list<int, double, float>;
+        using generic_lambda = decltype([](auto) -> short { return {}; });
+        using mapped         = list::map<unsigned(int), generic_lambda>;
+        using expected       = sstd::type_list<unsigned, short, short>;
 
         expect(constant<std::same_as<expected, mapped>>);
     };
+
+    // type_list::fold_left<...>:
+
+    tag("sstd") / "type_list::fold_left can be used to accumulate integral constants"_test = [] {
+        using integrals   = sstd::type_list<sstd::numeral_t<1>,
+                                          sstd::numeral_t<42>,
+                                          sstd::numeral_t<0>,
+                                          sstd::numeral_t<100>>;
+        using binary_op   = decltype([](auto Lhs, auto Rhs) {
+            return sstd::numeral_t<decltype(Lhs)::value + decltype(Rhs)::value>{};
+        });
+        using fold_result = integrals::fold_left<sstd::numeral_t<2000>, binary_op>;
+        using expected    = sstd::numeral_t<2143>;
+
+        expect(constant<std::same_as<fold_result, expected>>);
+    };
+
+    tag("sstd") / "type_list::fold_left can be use overloaded binary operation"_test = [] {
+        using integrals   = sstd::type_list<short, int, long>;
+        using fold_result = integrals::fold_left<unsigned short,
+                                                 short(unsigned short, short),
+                                                 unsigned(short, int),
+                                                 long long(unsigned, long)>;
+
+        expect(constant<std::same_as<long long, fold_result>>);
+    };
+
+    tag("sstd") / "type_list::fold_left<Init, ...> is a noop for empty list"_test = [] {
+        using empty       = sstd::type_list<>;
+        using fold_result = empty::fold_left<double, int(int, int), long(double, double)>;
+
+        expect(constant<std::same_as<double, fold_result>>);
+    };
+
+    tag("sstd") / "type_list::fold_left<Init, ...> works for list of size one"_test = [] {
+        using empty       = sstd::type_list<long>;
+        using fold_result = empty::fold_left<short, int(short, long), unsigned(long, short)>;
+
+        expect(constant<std::same_as<int, fold_result>>);
+    };
+
+    // template_invoke_with_list:
 
     tag("sstd")
         / "template_invocable_with_list_with_list is correct for sample set of standard traits"_test =

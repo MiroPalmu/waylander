@@ -109,21 +109,46 @@ using make_overloadable = std::conditional_t<std::is_function_v<f>, std::functio
 template<typename... F>
 using make_overloaded = overloaded<make_overloadable<F>...>;
 
+/// Morally the invoke_result_t of std::invoke(F{}, T{}...).
+///
+/// Synergizes well with make_overloaded<...> as F.
+template<typename F, typename... T>
+using template_overload_resolution = decltype(std::declval<F>()(std::declval<T>()...));
+
 template<typename... F>
 struct type_map {
-    template<typename f>
-    using make_overloadable = std::conditional_t<std::is_function_v<f>, std::function<f>, f>;
-
-    using visitor = overloaded<make_overloadable<F>...>;
-
     template<typename... T>
-    using type = decltype(std::declval<visitor>()(std::declval<T>()...));
+    using type = decltype(std::declval<make_overloaded<F...>>()(std::declval<T>()...));
+};
+
+/// Primary template for folding types using template_overload_resolution.
+template<typename, typename, typename...>
+struct type_fold_left;
+
+/// Base case as partial specializaion for folding types using template_overload_resolution.
+template<typename F, typename T>
+struct type_fold_left<F, T> {
+    using type = T;
+};
+
+/// Recursive case as partial specializaion for folding types using template_overload_resolution.
+template<typename F, typename Lhs, typename Rhs, typename... Tail>
+struct type_fold_left<F, Lhs, Rhs, Tail...> {
+    using type = type_fold_left<F, template_overload_resolution<F, Lhs, Rhs>, Tail...>::type;
 };
 
 template<typename... T>
 struct type_list {
     template<typename... F>
     using map = type_list<typename type_map<F...>::template type<T>...>;
+
+    /// Fold types with template_overload_resolution<F..., Rhs, Lhs> starting from Init.
+    ///
+    /// Define E<R,L> := template_overload_resolution<make_overloaded<F...>, R, L>
+    /// Now we can define type_list<T...>::fold_left<F...> to be queal to Init,
+    /// after it has been update to be E<Init, T> for each T.
+    template<typename Init, typename... F>
+    using fold_left = type_fold_left<make_overloaded<F...>, Init, T...>::type;
 };
 
 /// Primary template for type trait to check if T == type_list.
