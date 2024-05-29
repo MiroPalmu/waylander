@@ -22,6 +22,10 @@ struct indexed_type : std::integral_constant<std::size_t, Index> {
 template<std::size_t Index, typename T>
 using indexed_type_t = indexed_type<Index, T>::type;
 
+/// Shorthand for std::integral_constant.
+template<std::integral auto N, std::integral T = decltype(N)>
+using numeral_t = std::integral_constant<T, N>;
+
 /// Template \p TT has arity of \p N, when T<probe_type...> is valid type for \p N probe_types.
 ///
 /// Arity of a template template parameter can never be 0,

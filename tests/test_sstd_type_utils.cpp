@@ -24,6 +24,35 @@ int main() {
     using namespace ger;
     cfg<override> = { .tag = { "sstd" } };
 
+    tag("sstd") / "numeral_type<N> works as expected for usual cases"_test = [] {
+        using one_int_A        = sstd::numeral_t<1>;
+        using one_int_B        = sstd::numeral_t<1, int>;
+        using one_int_C        = sstd::numeral_t<1uz, int>;
+        using one_int_expected = std::integral_constant<int, 1>;
+
+        expect(constant<std::same_as<one_int_A, one_int_expected>>);
+        expect(constant<std::same_as<one_int_B, one_int_expected>>);
+        expect(constant<std::same_as<one_int_C, one_int_expected>>);
+
+        using four_long_A        = sstd::numeral_t<4l>;
+        using four_long_B        = sstd::numeral_t<4l, long>;
+        using four_long_C        = sstd::numeral_t<4, long>;
+        using four_long_expected = std::integral_constant<long, 4>;
+
+        expect(constant<std::same_as<four_long_A, four_long_expected>>);
+        expect(constant<std::same_as<four_long_B, four_long_expected>>);
+        expect(constant<std::same_as<four_long_C, four_long_expected>>);
+
+        using six_size_t_A        = sstd::numeral_t<6uz>;
+        using six_size_t_B        = sstd::numeral_t<6uz, std::size_t>;
+        using six_size_t_C        = sstd::numeral_t<6z, std::size_t>;
+        using six_size_t_expected = std::integral_constant<std::size_t, 6>;
+
+        expect(constant<std::same_as<six_size_t_A, six_size_t_expected>>);
+        expect(constant<std::same_as<six_size_t_B, six_size_t_expected>>);
+        expect(constant<std::same_as<six_size_t_C, six_size_t_expected>>);
+    };
+
     tag("sstd")
         / "sstd::predicate_type detects if type is derived from std::bool_constant"_test = [] {
         struct true_trait : std::bool_constant<true> {};
