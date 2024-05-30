@@ -115,12 +115,6 @@ using make_overloaded = overloaded<make_overloadable<F>...>;
 template<typename F, typename... T>
 using template_overload_resolution = decltype(std::declval<F>()(std::declval<T>()...));
 
-template<typename... F>
-struct type_map {
-    template<typename... T>
-    using type = decltype(std::declval<make_overloaded<F...>>()(std::declval<T>()...));
-};
-
 /// Primary template for folding types using template_overload_resolution.
 template<typename, typename, typename...>
 struct type_fold_left;
@@ -140,7 +134,7 @@ struct type_fold_left<F, Lhs, Rhs, Tail...> {
 template<typename... T>
 struct type_list {
     template<typename... F>
-    using map = type_list<typename type_map<F...>::template type<T>...>;
+    using map = type_list<template_overload_resolution<make_overloaded<F...>, T>...>;
 
     /// Fold types with template_overload_resolution<F..., Rhs, Lhs> starting from Init.
     ///
