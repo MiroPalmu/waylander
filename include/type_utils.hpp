@@ -101,6 +101,14 @@ struct overloaded : Ts... {
     using Ts::operator()...;
 };
 
+/// Conditionally turns type \p f to std::function<f> to make overloadable work with function types.
+template<typename f>
+using make_overloadable = std::conditional_t<std::is_function_v<f>, std::function<f>, f>;
+
+/// Helper to make overloaded<...> accept function types in addition to other callables.
+template<typename... F>
+using make_overloaded = overloaded<make_overloadable<F>...>;
+
 template<typename... F>
 struct type_map {
     template<typename f>
