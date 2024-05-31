@@ -65,9 +65,14 @@ auto connect_to_wayland_socket() -> linux::fd_type {
 
     return fd;
 }
-[[nodiscard]] connected_client::connected_client() { wayland_fd_ = connect_to_wayland_socket(); }
-[[nodiscard]] connected_client::connected_client([[maybe_unused]] gnu::local_stream_socket&& _){};
 
-void connected_client::flush_registered_requests() { has_requests_ = false; };
+[[nodiscard]] connected_client::connected_client(
+    [[maybe_unused]] gnu::local_stream_socket&& server_sock)
+    : server_sock_{ std::move(server_sock) } {};
+
+void connected_client::flush_registered_requests() {
+    const auto data_to_write = msg_buff_.release_data();
+    server_sock_.write(data_to_write);
+};
 } // namespace wl
 } // namespace ger

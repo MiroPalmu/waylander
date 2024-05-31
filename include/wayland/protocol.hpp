@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "gnu_utils/local_stream_socket.hpp"
-#include "linux_utils/file_descriptor.hpp"
+#include "wayland/message_buffer.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 
@@ -17,14 +17,11 @@ static constexpr auto global_display_object = Wobject<protocols::wl_display>{ 1 
 
 /// Represents one connected client by wrapping the Wayland socket.
 class connected_client {
-    linux::fd_type wayland_fd_{};
+    gnu::local_stream_socket server_sock_;
     Wuint::integral_type next_new_id_{ 2 };
-
-    bool has_requests_{ false };
+    message_buffer msg_buff_{};
 
   public:
-    [[nodiscard]] connected_client();
-
     /// Uses given \p socket as the compositor socket.
     [[nodiscard]] connected_client(gnu::local_stream_socket&& socket);
 
@@ -34,14 +31,14 @@ class connected_client {
     }
 
     template<interface WObj, message_for_inteface<WObj> request>
-    void register_request(const Wobject<WObj> /* object */, const request& /* message */) {
-        has_requests_ = true;
+    void register_request(const Wobject<WObj> obj, const request& msg) {
+        msg_buff_.append(obj, msg);
     }
 
     void flush_registered_requests();
 
     [[nodiscard]] constexpr bool has_registered_requests(this auto&& self) noexcept {
-        return self.has_requests_;
+        return not self.msg_buff_.empty();
     }
 };
 
