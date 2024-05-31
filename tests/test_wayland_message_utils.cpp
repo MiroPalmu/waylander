@@ -68,4 +68,22 @@ int main() {
         };
         expect(not wl::dynamic_message_argument<Foo>);
     };
+
+    wl_tag / "Wayland enums are static message arguments"_test = [] {
+        using A = wl::protocols::wl_display::error;
+        using B = wl::protocols::wl_shm::format;
+        using C = wl::protocols::wl_keyboard::key_state;
+
+        enum class D : std::uint16_t { e1, e2, e3 };
+
+        expect(constant<wl::static_message_argument<A>>);
+        expect(constant<wl::static_message_argument<B>>);
+        expect(constant<wl::static_message_argument<C>>);
+        expect(constant<not wl::static_message_argument<D>>);
+
+        expect(constant<not wl::dynamic_message_argument<A>>);
+        expect(constant<not wl::dynamic_message_argument<B>>);
+        expect(constant<not wl::dynamic_message_argument<C>>);
+        expect(constant<not wl::dynamic_message_argument<D>>);
+    };
 }
