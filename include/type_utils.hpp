@@ -215,16 +215,36 @@ using type_list_concat =
 template<typename T, template<typename...> typename TT>
 using steal_template_args_t = steal_template_args<T, TT>::type;
 
-/// Implicit converstion to any type T is syntaxically correct but not defined.
-struct morph_type {
+namespace {
+/// Implementation detail of to[_ref]_tuple.
+///
+/// Implicit converstion to any type T (*) is syntaxically correct but not defined.
+/// (*) expect for type Agg.
+///
+/// We want to tests that how many aggreaget elements Agg with:
+///
+/// std::constructible_from<Agg, probe_type, ..., probe_type>
+///
+/// So we have to disable probe_type from converting to Agg directly,
+/// as to make std::constructible_from<Agg, probe_type>
+/// true only for aggregate with single element and not to every type
+///
+/// This is a naive way with, but it can do until better facilities come.
+template<typename Agg>
+struct morph_type_template {
     template<class T>
+        requires(not std::is_convertible_v<Agg, T>)
     constexpr operator T(); // non explicit
 };
+} // namespace
 
 /// Returns std::tuple<const T&...> where T... are the elements of \p t.
+///
+/// Reflection waiting room...
 template<typename T>
     requires(std::is_aggregate_v<std::remove_cvref_t<T>>)
 constexpr auto to_ref_tuple(const T& t) {
+    using morph_type = morph_type_template<T>;
     if constexpr (std::constructible_from<T,
                                           morph_type,
                                           morph_type,
@@ -722,14 +742,17 @@ constexpr auto to_ref_tuple(const T& t) {
         const auto& [x1] = t;
         return std::make_tuple(std::cref(x1));
     } else {
-        static_assert(false, "Waiting room for reflection...");
+        return std::make_tuple();
     }
 }
 
 /// Returns copy of \p t as a std::tuple<T...>, where T... are the elements of \p t.
+///
+/// Reflection waiting room...
 template<typename T>
     requires(std::is_aggregate_v<std::remove_cvref_t<T>>)
 constexpr auto to_tuple(const T& t) {
+    using morph_type = morph_type_template<T>;
     if constexpr (std::constructible_from<T,
                                           morph_type,
                                           morph_type,
@@ -1099,7 +1122,7 @@ constexpr auto to_tuple(const T& t) {
         const auto& [x1] = t;
         return std::make_tuple(x1);
     } else {
-        static_assert(false, "Waiting room for reflection...");
+        return std::make_tuple();
     }
 }
 
