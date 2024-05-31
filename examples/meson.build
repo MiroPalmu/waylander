@@ -14,4 +14,5 @@ foreach example_source : single_source_examples
         example_source,
         dependencies: [guilander_dep],
     )
+    example_ordinal += 1
 endforeach
