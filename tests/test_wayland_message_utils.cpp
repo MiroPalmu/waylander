@@ -4,8 +4,15 @@
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 
-using wl_display = ger::wl::protocols::wl_display;
-// using get_registery = wl_display::request::get_registry;
+using wl_display    = ger::wl::protocols::wl_display;
+using get_registery = wl_display::request::get_registry;
+
+using data_src      = ger::wl::protocols::wl_data_source;
+using data_src_dtro = ger::wl::protocols::wl_data_source;
+
+using wl_shm        = ger::wl::protocols::wl_shm;
+using wl_shm_pool   = ger::wl::protocols::wl_shm_pool;
+using create_buffer = wl_shm_pool::request::create_buffer;
 
 int main() {
     using namespace boost::ut;
@@ -85,5 +92,57 @@ int main() {
         expect(constant<not wl::dynamic_message_argument<B>>);
         expect(constant<not wl::dynamic_message_argument<C>>);
         expect(constant<not wl::dynamic_message_argument<D>>);
+    };
+
+    wl_tag / "message_payload_size is calculated correctly for short static message"_test = [] {
+        constexpr auto message = get_registery{ .registry = {} };
+
+#ifndef __clang__
+        // This will crash LLVM 17 and 18 (annoyingly will break clangd), see:
+        // https://github.com/llvm/llvm-project/issues/93821#issue-2325716041
+        expect(constant<wl::static_message<decltype(message)>>);
+#endif
+
+        constexpr auto payload_size  = wl::message_payload_size(message);
+        constexpr auto expected_size = sizeof(message.registry);
+
+        expect(constant<expected_size == payload_size>);
+    };
+
+    wl_tag / "message_payload_size is calculated correctly for empty static message"_test = [] {
+        constexpr auto message = data_src_dtro{};
+        expect(constant<std::is_empty_v<decltype(message)>>);
+
+#ifndef __clang__
+        // This will crash LLVM 17 and 18 (annoyingly will break clangd), see:
+        // https://github.com/llvm/llvm-project/issues/93821#issue-2325716041
+        expect(constant<wl::static_message<decltype(message)>>);
+#endif
+
+        constexpr auto payload_size  = wl::message_payload_size(message);
+        constexpr auto expected_size = 0uz;
+
+        expect(constant<expected_size == payload_size>);
+    };
+
+    wl_tag / "message_payload_size is calculated correctly for long static message"_test = [] {
+        constexpr auto message = create_buffer{ .id     = { 1 },
+                                                .offset = { 2 },
+                                                .width  = { 3 },
+                                                .height = { 4 },
+                                                .stride = { 5 },
+                                                .format = wl_shm::format::Egr88 };
+
+#ifndef __clang__
+        // This will crash LLVM 17 and 18 (annoyingly will break clangd), see:
+        // https://github.com/llvm/llvm-project/issues/93821#issue-2325716041
+        expect(constant<wl::static_message<decltype(message)>>);
+#endif
+
+        constexpr auto payload_size  = wl::message_payload_size(message);
+        constexpr auto expected_size = sizeof(message.id) + sizeof(message.offset)
+                                       + sizeof(message.width) + sizeof(message.height)
+                                       + sizeof(message.stride) + sizeof(message.format);
+        expect(constant<expected_size == payload_size>);
     };
 }
