@@ -18,6 +18,7 @@ unit_tests = [
     'test_wayland_message_buffer',
     'test_wayland_message_parser',
     'test_wayland_message_utils',
+    'test_wayland_system_utils',
     'test_gnu_pipe',
     'test_gnu_fd_handle',
     'test_gnu_local_stream_socket',
