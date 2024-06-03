@@ -19,6 +19,7 @@
 #include <sys/un.h>
 
 #include "bit_fiddling.hpp"
+#include "gnu_utils/local_stream_socket.hpp"
 #include "linux_utils/file_descriptor.hpp"
 #include "sstd.hpp"
 
@@ -65,6 +66,9 @@ auto connect_to_wayland_socket() -> linux::fd_type {
 
     return fd;
 }
+
+[[nodiscard]] connected_client::connected_client(const std::filesystem::path& socket)
+    : server_sock_{ gnu::open_local_stream_socket_connected_to(socket) } {}
 
 [[nodiscard]] connected_client::connected_client(
     [[maybe_unused]] gnu::local_stream_socket&& server_sock)

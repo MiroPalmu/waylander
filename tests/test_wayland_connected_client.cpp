@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <array>
+#include <filesystem>
 #include <future>
 #include <ranges>
 #include <tuple>
@@ -129,5 +130,17 @@ int main() {
             expect(recv_msg.object_id == global_display_object);
             expect(recv_msg.opcode == decltype(request)::opcode);
         }
+    };
+
+    wl_tag / "connected_client can be default constructed"_test = [] {
+        const auto wayland_server_is_present = std::filesystem::is_socket(wayland_socket_path());
+        expect(wayland_server_is_present) << "Working Wayland compositor is required for this test."
+                                          << "Skipping rest of this test!\n";
+        if (wayland_server_is_present) {
+            // Stop executing rest of tests.
+            return;
+        }
+
+        expect(nothrow([] { auto _ = connected_client{}; }));
     };
 }

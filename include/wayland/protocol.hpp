@@ -3,12 +3,14 @@
 /// @file Contains stuff related to Wayland protocol
 
 #include <cstdint>
+#include <filesystem>
 #include <vector>
 
 #include "gnu_utils/local_stream_socket.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
+#include "wayland/system_utils.hpp"
 
 namespace ger {
 namespace wl {
@@ -22,6 +24,9 @@ class connected_client {
     message_buffer msg_buff_{};
 
   public:
+    /// Connected to socket at \p socket.
+    [[nodiscard]] connected_client(const std::filesystem::path& socket = wayland_socket_path());
+
     /// Uses given \p socket as the compositor socket.
     [[nodiscard]] connected_client(gnu::local_stream_socket&& socket);
 
