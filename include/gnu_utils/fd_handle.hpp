@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <span>
 #include <tuple>
 
@@ -94,6 +95,10 @@ class fd_handle {
     /// Opens pair of streaming style sockets in AF_LOCAL namespace, connected to each other.
     friend auto open_local_stream_socket_pair()
         -> std::pair<local_stream_socket, local_stream_socket>;
+
+    /// Connect to socket at path. Throws if connection fails.
+    friend auto open_local_stream_socket_connected_to(const std::filesystem::path&)
+        -> local_stream_socket;
 
     /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
     ///
