@@ -20,7 +20,7 @@ namespace wl {
     : server_sock_{ std::move(server_sock) } {};
 
 void connected_client::flush_registered_requests() {
-    const auto data_to_write = msg_buff_.release_data();
+    const auto data_to_write = request_buff_.release_data();
     server_sock_.write(data_to_write);
 };
 } // namespace wl
