@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <array>
+#include <barrier>
 #include <filesystem>
 #include <future>
 #include <ranges>
@@ -142,5 +143,94 @@ int main() {
         }
 
         expect(nothrow([] { auto _ = connected_client{}; }));
+    };
+
+    wl_tag / "connected_client can recive events to message_parser"_test = [] {
+        using shell_surface = protocols::wl_shell_surface;
+        using event_t       = shell_surface::event::configure;
+        using enum_t        = shell_surface::resize;
+        const auto configure_event =
+            event_t{ .edges = enum_t::Etop, .width{ 42u }, .height{ 13u } };
+
+        // Send this many events from server.
+        constexpr auto number_of_events = 14;
+
+        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto client                     = connected_client{ std::move(client_sock) };
+
+        const auto obj = client.reserve_object_id<shell_surface>();
+
+        auto _ = std::async(std::launch::async, [&] {
+            auto buff = message_buffer{};
+            for (auto _ : std::ranges::iota_view(0, number_of_events)) {
+                buff.append(obj, configure_event);
+            }
+            const auto data = buff.release_data();
+            server_sock.write(data);
+        });
+
+        auto events_recved = 0;
+        expect(events_recved != number_of_events);
+
+        auto all_events_recved = [&] { return events_recved == number_of_events; };
+        while (not all_events_recved()) {
+            auto msg_parser = client.recv_events();
+            auto msg_gen    = msg_parser.message_generator();
+
+            for (const auto& msg : msg_gen) {
+                expect(msg.opcode == event_t::opcode);
+                expect(msg.object_id == obj);
+                ++events_recved;
+            }
+        }
+        expect(events_recved == number_of_events);
+    };
+
+    wl_tag / "connected_client can recive events which are sent one byte at the time"_test = [] {
+        using shell_surface = protocols::wl_shell_surface;
+        using event_t       = shell_surface::event::configure;
+        using enum_t        = shell_surface::resize;
+        const auto configure_event =
+            event_t{ .edges = enum_t::Etop, .width{ 42u }, .height{ 13u } };
+
+        // Send this many events from server.
+        constexpr auto number_of_events = 14;
+
+        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto client                     = connected_client{ std::move(client_sock) };
+
+        const auto obj = client.reserve_object_id<shell_surface>();
+
+        auto send_one_byte = std::barrier(2);
+
+        auto _ = std::async(std::launch::async, [&] {
+            auto buff = message_buffer{};
+            for (auto _ : std::ranges::iota_view(0, number_of_events)) {
+                buff.append(obj, configure_event);
+            }
+            const auto data      = buff.release_data();
+            const auto data_span = std::span{ data };
+            for (const auto i : std::ranges::iota_view(0uz, data_span.size())) {
+                send_one_byte.arrive_and_wait();
+                server_sock.write(data_span.subspan(i, 1));
+            }
+        });
+
+        auto events_recved = 0;
+        expect(events_recved != number_of_events);
+
+        auto all_events_recved = [&] { return events_recved == number_of_events; };
+        while (not all_events_recved()) {
+            send_one_byte.arrive_and_wait();
+            auto msg_parser = client.recv_events();
+            auto msg_gen    = msg_parser.message_generator();
+
+            for (const auto& msg : msg_gen) {
+                expect(msg.opcode == event_t::opcode);
+                expect(msg.object_id == obj);
+                ++events_recved;
+            }
+        }
+        expect(events_recved == number_of_events);
     };
 }
