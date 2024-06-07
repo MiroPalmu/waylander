@@ -81,9 +81,9 @@ void connected_client::flush_registered_requests() {
         }
 
         wl::Wmessage_size_t size_of_next_msg;
-        const auto ptr_to_size = std::ranges::next(recv_buff_.begin(),
-                                                   bytes_forming_whole_messages
-                                                       + sizeof(wl::Wobject<wl::generic_object>));
+        const auto ptr_to_size = std::ranges::next(
+            recv_buff_.begin(),
+            bytes_forming_whole_messages + wl::message_header<wl::generic_object>::size_offset);
         std::memcpy(&size_of_next_msg, &*ptr_to_size, sizeof(wl::Wmessage_size_t));
 
         const auto bytes_potentially_forming_whole_messages =

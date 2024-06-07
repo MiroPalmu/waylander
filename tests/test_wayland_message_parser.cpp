@@ -36,10 +36,11 @@ int main() {
     };
 
     wl_tag / "message_parser can handle too short (invalid-)message at the end"_test = [] {
-        using wl_display    = wl::protocols::wl_display;
-        using get_registery = wl_display::request::get_registry;
-        constexpr auto header =
-            wl::message_header<wl_display>{ wl::global_display_object, 12u, get_registery::opcode };
+        using wl_display           = wl::protocols::wl_display;
+        using get_registery        = wl_display::request::get_registry;
+        constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
+                                                               get_registery::opcode,
+                                                               { 12u });
         constexpr auto msg         = get_registery{ 2u };
         constexpr auto garbage_msg = 42u;
         auto get_registery_request = bit::byte_buff<16>{ header, msg, garbage_msg };
@@ -53,10 +54,11 @@ int main() {
     };
 
     wl_tag / "message_parser detects incorrect message sizes"_test = [] {
-        using wl_display    = wl::protocols::wl_display;
-        using get_registery = wl_display::request::get_registry;
-        constexpr auto header =
-            wl::message_header<wl_display>{ wl::global_display_object, 5u, get_registery::opcode };
+        using wl_display           = wl::protocols::wl_display;
+        using get_registery        = wl_display::request::get_registry;
+        constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
+                                                               get_registery::opcode,
+                                                               { 5u });
         constexpr auto msg         = get_registery{ 2u };
         auto get_registery_request = bit::byte_buff<12>{ header, msg };
 
@@ -70,10 +72,11 @@ int main() {
     };
 
     wl_tag / "message_parser can parse object_id and opcode of message"_test = [] {
-        using wl_display    = wl::protocols::wl_display;
-        using get_registery = wl_display::request::get_registry;
-        constexpr auto header =
-            wl::message_header<wl_display>{ wl::global_display_object, 12u, get_registery::opcode };
+        using wl_display           = wl::protocols::wl_display;
+        using get_registery        = wl_display::request::get_registry;
+        constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
+                                                               get_registery::opcode,
+                                                               { 12u });
         constexpr auto msg         = get_registery{ 2u };
         auto get_registery_request = bit::byte_buff<12>{ header, msg };
 
@@ -93,14 +96,15 @@ int main() {
     wl_tag / "message_parser can parse object_id and opcode of two messages"_test = [] {
         using namespace wl::protocols;
 
-        using get_registery = wl_display::request::get_registry;
-        constexpr auto header_A =
-            wl::message_header<wl_display>{ wl::global_display_object, 12u, get_registery::opcode };
-        constexpr auto msg_A = get_registery{ 42u };
+        using get_registery     = wl_display::request::get_registry;
+        constexpr auto header_A = wl::message_header<wl_display>(wl::global_display_object,
+                                                                 get_registery::opcode,
+                                                                 { 12u });
+        constexpr auto msg_A    = get_registery{ 42u };
 
         using registery_bind = wl_registry::request::bind;
         constexpr auto header_B =
-            wl::message_header<wl_registry>{ 2u, 16u, registery_bind::opcode };
+            wl::message_header<wl_registry>({ 2u }, registery_bind::opcode, { 16u });
         constexpr auto msg_B = registery_bind{ 43u, 44u };
 
         auto messages_AB = bit::byte_buff<28>{ header_A, msg_A, header_B, msg_B };

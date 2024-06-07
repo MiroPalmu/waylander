@@ -84,11 +84,34 @@ struct Wopcode {
     integral_type value;
 };
 
+static_assert(std::endian::native == std::endian::little,
+              "Only little edian platforms are supported atm.");
+
+/// Type representing Wayland wire format message header.
+///
+/// Order of opcode and size is dependent on a system edianess,
+/// as they are endcoded as 32-bit word and size is defined to be in the upper 16-bits
+/// and the op code in lower 16-bits.
+///
+/// At the moment little edian platform is supported, which is represented in current order.
 template<interface WObj>
 struct message_header {
     Wobject<WObj> object_id;
-    Wmessage_size_t size;
     Wopcode<WObj> opcode;
+    Wmessage_size_t size;
+
+    static constexpr std::size_t opcode_offset = sizeof(object_id);
+    static constexpr std::size_t size_offset   = opcode_offset + sizeof(opcode);
+
+    /// Constructor to disable aggregate initialization.
+    ///
+    /// This is wanted in anticipation of big edian platform support.
+    [[nodiscard]] constexpr explicit message_header(const Wobject<WObj> id,
+                                                    const Wopcode<WObj> op,
+                                                    const Wmessage_size_t size_a)
+        : object_id{ id },
+          opcode{ op },
+          size{ size_a } {}
 };
 
 // Sanity check primitive sizes.

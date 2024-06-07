@@ -33,7 +33,8 @@ int main() {
         constexpr auto ni = Wnew_id{ 7 };
         constexpr auto ms = Wmessage_size_t{ 9 };
         constexpr auto op = Wopcode<foo>{ 10 };
-        constexpr auto h  = message_header<bar>{ 11, 12, 13 };
+        constexpr auto h =
+            message_header<bar>{ Wobject<bar>{ 11 }, Wopcode<bar>{ 13 }, Wmessage_size_t{ 12 } };
         expect(i == 1);
         expect(ui == 2u);
         expect(f.is_negative == true);

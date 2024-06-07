@@ -22,7 +22,7 @@ namespace wl {
 #endif
         wl::Wmessage_size_t size;
         const auto ptr_to_size =
-            std::ranges::next(NUM_begin, sizeof(wl::Wobject<wl::generic_object>));
+            std::ranges::next(NUM_begin, message_header<generic_object>::size_offset);
         std::memcpy(&size, &*ptr_to_size, sizeof(wl::Wmessage_size_t));
 
         if (size.value < 8u) {
@@ -40,10 +40,8 @@ namespace wl {
             };
         }
 
-        constexpr auto id_size     = sizeof(wl::Wobject<wl::generic_object>);
-        constexpr auto size_size   = sizeof(wl::Wmessage_size_t);
-        constexpr auto opcode_size = sizeof(wl::Wopcode<wl::generic_object>);
-        const auto ptr_to_opcode   = std::ranges::next(NUM_begin, id_size + size_size);
+        const auto ptr_to_opcode =
+            std::ranges::next(NUM_begin, message_header<generic_object>::opcode_offset);
 
         // Default intialize NUM, meaning that its members:
         //     - object_id
@@ -56,8 +54,8 @@ namespace wl {
 #endif
 
         parsed_message NUM;
-        std::memcpy(&NUM.object_id, &*NUM_begin, id_size);
-        std::memcpy(&NUM.opcode, &*ptr_to_opcode, opcode_size);
+        std::memcpy(&NUM.object_id, &*NUM_begin, sizeof(NUM.object_id));
+        std::memcpy(&NUM.opcode, &*ptr_to_opcode, sizeof(NUM.opcode));
         return NUM;
     };
 

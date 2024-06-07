@@ -101,10 +101,8 @@ class message_buffer {
             (write_element_32aligned(std::get<I>(msg_primitives)), ...);
         }(std::make_index_sequence<amount_of_msg_primitives>());
 
-        using underlying_size_t = Wmessage_size_t::integral_type;
-        const auto header       = message_header<WObj>{ obj,
-                                                        static_cast<underlying_size_t>(msg_total_size),
-                                                        Message::opcode };
+        const auto narrowed_msg_size = static_cast<Wmessage_size_t::integral_type>(msg_total_size);
+        const auto header = message_header<WObj>(obj, Message::opcode, { narrowed_msg_size });
 
         std::memcpy(std::addressof(buff_[begin_of_header_index]),
                     std::addressof(header),
