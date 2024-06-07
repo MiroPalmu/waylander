@@ -3,6 +3,7 @@
 #include <concepts>
 
 #include "wayland/protocol_primitives.hpp"
+#include "wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;
@@ -94,5 +95,31 @@ int main() {
 
         expect(not std::convertible_to<Wnew_id<bar>, Wobject<foo>>);
         expect(not std::convertible_to<Wnew_id<foo>, Wobject<bar>>);
+    };
+
+    wl_tag / "Wnew_id<T> and Wnew_id<generic_object> are constructible from Wobject<T>"_test = [] {
+        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<generic_object>>);
+
+        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<foo>>);
+        expect(std::constructible_from<Wnew_id<foo>, Wobject<foo>>);
+
+        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<bar>>);
+        expect(std::constructible_from<Wnew_id<bar>, Wobject<bar>>);
+
+        expect(not std::constructible_from<Wnew_id<foo>, Wobject<bar>>);
+        expect(not std::constructible_from<Wnew_id<bar>, Wobject<foo>>);
+    };
+
+    wl_tag / "Wobject is not constructible from Wnew_id<T>"_test = [] {
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<generic_object>>);
+
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<foo>>);
+        expect(not std::constructible_from<Wobject<foo>, Wnew_id<foo>>);
+
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<bar>>);
+        expect(not std::constructible_from<Wobject<bar>, Wnew_id<bar>>);
+
+        expect(not std::constructible_from<Wobject<foo>, Wnew_id<bar>>);
+        expect(not std::constructible_from<Wobject<bar>, Wnew_id<foo>>);
     };
 }

@@ -27,8 +27,8 @@ struct is_any_Wnew_id<Wnew_id<WObj>> : std::true_type {};
 template<typename A>
 concept enum_message_argument =
     std::is_enum_v<A>
-    and (std::same_as<sstd::underlying_integral_t<Wint>, std::underlying_type_t<A>>
-         or std::same_as<sstd::underlying_integral_t<Wuint>, std::underlying_type_t<A>>);
+    and (std::same_as<Wint::integral_type, std::underlying_type_t<A>>
+         or std::same_as<Wuint::integral_type, std::underlying_type_t<A>>);
 } // namespace
 
 template<typename A>

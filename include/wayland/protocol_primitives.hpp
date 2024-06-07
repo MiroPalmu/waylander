@@ -8,10 +8,10 @@
 #include <cstdint>
 #include <functional>
 #include <string_view>
+#include <type_traits>
 
 #include "bit_fiddling.hpp"
 #include "linux_utils/file_descriptor.hpp"
-#include "sstd.hpp"
 
 namespace ger {
 namespace wl {
@@ -27,8 +27,14 @@ struct generic_object {
     struct event {};
 };
 
-struct Wint : sstd::integralifyer<std::int32_t> {};
-struct Wuint : sstd::integralifyer<std::uint32_t> {};
+struct Wint {
+    using integral_type = std::int32_t;
+    integral_type value;
+};
+struct Wuint {
+    using integral_type = std::uint32_t;
+    integral_type value;
+};
 struct Wfixed {
     bool is_negative : 1;
     unsigned mantissa : 23;
@@ -40,7 +46,10 @@ template<interface T>
 struct Wnew_id;
 
 template<interface WObj = generic_object>
-struct Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
+struct Wobject {
+    using integral_type = Wuint::integral_type;
+    integral_type value;
+
     template<interface T>
         requires std::same_as<T, WObj> or std::same_as<T, generic_object>
     [[nodiscard]] constexpr operator Wnew_id<T>(this auto&& self) {
@@ -49,20 +58,31 @@ struct Wobject : sstd::integralifyer<sstd::underlying_integral_t<Wuint>> {
 };
 
 template<interface WObj = generic_object>
-struct Wnew_id : sstd::integralifyer<sstd::underlying_integral_t<Wobject<WObj>>> {};
+struct Wnew_id {
+    using integral_type = Wobject<WObj>::integral_type;
+    integral_type value;
+};
 
 struct Wstring : std::u8string_view {
+    /// The type used to store length of the string in Wire format.
     using size_type = std::uint32_t;
 };
 struct Warray : std::span<const std::byte> {
+    /// The type used to store length of the string in Wire format.
     using size_type = std::uint32_t;
 };
 struct Wfd {};
 
-struct Wmessage_size_t : sstd::integralifyer<std::uint16_t> {};
+struct Wmessage_size_t {
+    using integral_type = std::uint16_t;
+    integral_type value;
+};
 
 template<interface T>
-struct Wopcode : sstd::integralifyer<std::uint16_t> {};
+struct Wopcode {
+    using integral_type = std::uint16_t;
+    integral_type value;
+};
 
 template<interface WObj>
 struct message_header {
@@ -80,48 +100,41 @@ static_assert(sizeof(Wobject<generic_object>) == 4);
 static_assert(sizeof(Wnew_id<generic_object>) == 4);
 static_assert(sizeof(message_header<generic_object>) == 8);
 
-/// Deduction guide for Wnew_id to make Wnew_id{ 4u } work.
-///
-/// Wobject{ 4u } will work while Wnew_id{ 4u } does not.
-/// What is supposed to happen is that compiler will implicitly generate
-/// class template deduction guides, which should contain aggregate deduction candidates.
-///
-/// Below is adhoc aggregate diagrams in which we define I.t := underlying_integral_t<I>:
-///
-///     Wobject<X>                      Wnew_id<X>
-///     |                               |
-///     { { I } }                       { { J } }
-///       |                               |
-///       integralifyer<Wuint.t =: I>     integralifyer<Wobject<X>.t = Wuint.t =: J>
-///
-/// Becuase of brace elision aggregate element of Wobject<X> is the sole I,
-/// following aggregate deduction candidate is produced:
-///
-///     template <typename T>
-///     Wobject<T> F(T);
-///
-/// which will be found by overload resolution in CDAT.
-///
-/// However for Wnew_id the aggregate element is { J }, as in CDAT brace elision is not considered
-/// for any aggregate element that has a dependent non-array type.
-/// In this case { J } is dependent type as it depends on the template argument X.
-/// With Wobject I is not dependent type so brace elision is applied.
-///
-/// So the produced deduction candidate is:
-///
-///     template <typename T>
-///     Wnew_id<T> F(integralifyer<T>);
-///
-/// which will not be found by overload resolution in CDAT and CDAT will fail.
-///
-/// This can be fixed by providing the deduction guide:
-template<typename T>
-Wnew_id(T) -> Wnew_id<generic_object>;
-
 template<typename M, typename Interface>
 concept message_for_inteface = interface<Interface> and requires {
     { M::opcode } -> std::same_as<const Wopcode<Interface>&>;
 };
+
+namespace {
+template<typename T>
+concept has_integral_value = requires(T t) {
+    { auto{ t.value } } -> std::integral;
+};
+
+template<typename T>
+concept morally_integral = std::integral<T> or has_integral_value<T>;
+
+template<typename T>
+    requires has_integral_value<T>
+[[nodiscard]] constexpr auto get_integral_value(T&& x) noexcept {
+    return std::forward<T>(x).value;
+}
+
+template<typename T>
+    requires std::integral<std::remove_cvref_t<T>>
+[[nodiscard]] constexpr auto get_integral_value(const T x) noexcept {
+    return x;
+}
+}; // namespace
+
+/// Comparison operator that message arguments can be compared to integers.
+template<typename Lhs, typename Rhs>
+    requires morally_integral<std::remove_cvref_t<Lhs>>
+             and morally_integral<std::remove_cvref_t<Rhs>>
+constexpr bool operator==(Lhs&& lhs, Rhs&& rhs) {
+    return std::cmp_equal(get_integral_value(std::forward<Lhs>(lhs)),
+                          get_integral_value(std::forward<Rhs>(rhs)));
+}
 
 } // namespace wl
 } // namespace ger

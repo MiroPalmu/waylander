@@ -101,7 +101,7 @@ class message_buffer {
             (write_element_32aligned(std::get<I>(msg_primitives)), ...);
         }(std::make_index_sequence<amount_of_msg_primitives>());
 
-        using underlying_size_t = sstd::underlying_integral_t<Wmessage_size_t>;
+        using underlying_size_t = Wmessage_size_t::integral_type;
         const auto header       = message_header<WObj>{ obj,
                                                         static_cast<underlying_size_t>(msg_total_size),
                                                         Message::opcode };
