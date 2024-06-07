@@ -71,55 +71,96 @@ int main() {
         expect(new_foo == new_foo);
     };
 
-    wl_tag / "Wobject<T> is convertible to Wnew_id<T> or Wnew_id<generic_object>"_test = [] {
-        expect(std::convertible_to<Wobject<generic_object>, Wnew_id<generic_object>>);
-
-        expect(std::convertible_to<Wobject<foo>, Wnew_id<generic_object>>);
+    wl_tag / "Wobject<T> is convertible to Wnew_id<T | generic_object>"_test = [] {
+        // T == foo
         expect(std::convertible_to<Wobject<foo>, Wnew_id<foo>>);
+        expect(std::convertible_to<Wobject<foo>, Wnew_id<generic_object>>);
 
-        expect(std::convertible_to<Wobject<bar>, Wnew_id<generic_object>>);
+        // T == bar
         expect(std::convertible_to<Wobject<bar>, Wnew_id<bar>>);
+        expect(std::convertible_to<Wobject<bar>, Wnew_id<generic_object>>);
 
-        expect(not std::convertible_to<Wobject<bar>, Wnew_id<foo>>);
+        // T == generic_object
+        expect(std::convertible_to<Wobject<generic_object>, Wnew_id<generic_object>>);
+    };
+
+    wl_tag / "Wobject<T> is not convertible to Wnew_id<U != T>"_test = [] {
+        // {T, U} == {foo, bar}
+        // {T, U} == {bar, foo}
         expect(not std::convertible_to<Wobject<foo>, Wnew_id<bar>>);
+        expect(not std::convertible_to<Wobject<bar>, Wnew_id<foo>>);
+
+        // {T, U} == {generic_object, foo}
+        // {T, U} == {generic_object, bar}
+        expect(not std::convertible_to<Wobject<generic_object>, Wnew_id<foo>>);
+        expect(not std::convertible_to<Wobject<generic_object>, Wnew_id<bar>>);
     };
 
-    wl_tag / "Wnew_id<T> is not convertible to Wobject"_test = [] {
-        expect(not std::convertible_to<Wnew_id<generic_object>, Wobject<generic_object>>);
-
-        expect(not std::convertible_to<Wnew_id<foo>, Wobject<generic_object>>);
+    wl_tag / "Wnew_id<T> is not convertible to Wobject<U>"_test = [] {
+        // {T, U} == {foo, foo}
+        // {T, U} == {foo, bar}
+        // {T, U} == {foo, generic_object}
         expect(not std::convertible_to<Wnew_id<foo>, Wobject<foo>>);
-
-        expect(not std::convertible_to<Wnew_id<bar>, Wobject<generic_object>>);
-        expect(not std::convertible_to<Wnew_id<bar>, Wobject<bar>>);
-
-        expect(not std::convertible_to<Wnew_id<bar>, Wobject<foo>>);
         expect(not std::convertible_to<Wnew_id<foo>, Wobject<bar>>);
+        expect(not std::convertible_to<Wnew_id<foo>, Wobject<generic_object>>);
+
+        // {T, U} == {bar, bar}
+        // {T, U} == {bar, foo}
+        // {T, U} == {bar, generic_object}
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<bar>>);
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<foo>>);
+        expect(not std::convertible_to<Wnew_id<bar>, Wobject<generic_object>>);
+
+        // {T, U} == {generic_object, foo}
+        // {T, U} == {generic_object, bar}
+        // {T, U} == {generic_object, generic_object}
+        expect(not std::convertible_to<Wnew_id<generic_object>, Wobject<foo>>);
+        expect(not std::convertible_to<Wnew_id<generic_object>, Wobject<bar>>);
+        expect(not std::convertible_to<Wnew_id<generic_object>, Wobject<generic_object>>);
     };
 
-    wl_tag / "Wnew_id<T> and Wnew_id<generic_object> are constructible from Wobject<T>"_test = [] {
+    wl_tag / "Wnew_id<T | generic_object> is constructible from Wobject<T>"_test = [] {
+        // T == generic_object
         expect(std::constructible_from<Wnew_id<generic_object>, Wobject<generic_object>>);
 
-        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<foo>>);
+        // T == foo
         expect(std::constructible_from<Wnew_id<foo>, Wobject<foo>>);
+        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<foo>>);
 
-        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<bar>>);
+        // T == bar
         expect(std::constructible_from<Wnew_id<bar>, Wobject<bar>>);
+        expect(std::constructible_from<Wnew_id<generic_object>, Wobject<bar>>);
+    };
 
+    wl_tag / "Wnew_id<T> is not constructible from Wobject<U != T>"_test = [] {
+        // {T, U} == {foo, bar}
+        // {T, U} == {bar, foo}
         expect(not std::constructible_from<Wnew_id<foo>, Wobject<bar>>);
         expect(not std::constructible_from<Wnew_id<bar>, Wobject<foo>>);
     };
 
-    wl_tag / "Wobject is not constructible from Wnew_id<T>"_test = [] {
-        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<generic_object>>);
-
-        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<foo>>);
+    // This might change, as compositor might allocate a new object
+    // and advertise it to client using event which has Wnew_id argument.
+    wl_tag / "Wobject<T> is not constructible from Wnew_id<U>"_test = [] {
+        // {T, U} == {foo, foo}
+        // {T, U} == {foo, bar}
+        // {T, U} == {foo, generic_object}
         expect(not std::constructible_from<Wobject<foo>, Wnew_id<foo>>);
-
-        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<bar>>);
-        expect(not std::constructible_from<Wobject<bar>, Wnew_id<bar>>);
-
         expect(not std::constructible_from<Wobject<foo>, Wnew_id<bar>>);
+        expect(not std::constructible_from<Wobject<foo>, Wnew_id<generic_object>>);
+
+        // {T, U} == {bar, foo}
+        // {T, U} == {bar, bar}
+        // {T, U} == {bar, generic_object}
         expect(not std::constructible_from<Wobject<bar>, Wnew_id<foo>>);
+        expect(not std::constructible_from<Wobject<bar>, Wnew_id<bar>>);
+        expect(not std::constructible_from<Wobject<bar>, Wnew_id<generic_object>>);
+
+        // {T, U} == {generic_object, foo}
+        // {T, U} == {generic_object, bar}
+        // {T, U} == {generic_object, generic_object}
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<foo>>);
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<bar>>);
+        expect(not std::constructible_from<Wobject<generic_object>, Wnew_id<generic_object>>);
     };
 }
