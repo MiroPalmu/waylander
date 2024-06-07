@@ -1,0 +1,7 @@
+Guilander is library under construction aiming to be
+type-safer and more convinient replacement for libwayland to build client applications.
+
+It encodes Wayland protocol to C++ type system by generating C++ headers from protocol XML,
+in which Wayland interfaces and messages are represented by types, built form set of primitives.
+Communication using the Wayland wire format is implemented
+using bleeding edge C++ compile time techniques based on the generated types.
