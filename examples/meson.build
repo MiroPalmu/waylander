@@ -1,6 +1,7 @@
 single_source_examples = []
 
 subdir('concept_demos')
+subdir('wayland')
 
 fs = import('fs')
 
