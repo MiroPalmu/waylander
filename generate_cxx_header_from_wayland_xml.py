@@ -189,8 +189,6 @@ class wl_enum:
         tail = indent + "};\n\n"
         return sphinx_comment + header + body + tail
 
-def cxx_message_header_member(indent_in_spaces: int = 4):
-    return (" " * indent_in_spaces) + "message_header header;\n"
 def cxx_opcode_static_member(interface: str, opcode: int, indent_in_spaces: int = 4):
     indent = (" " * indent_in_spaces)
     return indent + f"static constexpr Wopcode<{interface}> opcode{{ {opcode} }};\n"
