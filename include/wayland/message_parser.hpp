@@ -20,6 +20,7 @@ namespace wl {
 struct parsed_message {
     wl::Wobject<wl::generic_object> object_id;
     wl::Wopcode<wl::generic_object> opcode;
+    std::span<const std::byte> arguments;
 };
 
 class message_parser {

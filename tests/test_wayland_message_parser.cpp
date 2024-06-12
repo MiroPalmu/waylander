@@ -1,5 +1,6 @@
 #include <boost/ut.hpp> // import boost.ut;
 
+#include <algorithm>
 #include <cstddef>
 #include <span>
 #include <stdexcept>
@@ -10,6 +11,16 @@
 #include "wayland/protocol.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
+
+/// Tests if `{ span } == { { subspan }, ... }`
+constexpr auto is_beginning_subspan(const std::span<const std::byte> span,
+                                    const std::span<const std::byte> subspan) {
+    if (span.size() < subspan.size()) {
+        // Subspan can not be longer than span.
+        return false;
+    }
+    return std::ranges::equal(span.first(subspan.size()), subspan);
+}
 
 int main() {
     using namespace boost::ut;
@@ -62,16 +73,13 @@ int main() {
         constexpr auto msg         = get_registery{ 2u };
         auto get_registery_request = bit::byte_buff<12>{ header, msg };
 
-        auto parser       = wl::message_parser{ get_registery_request.bytes() };
-        auto gen          = parser.message_generator();
-        auto msg_iterator = gen.begin();
+        auto parser = wl::message_parser{ get_registery_request.bytes() };
+        auto gen    = parser.message_generator();
 
-        expect(msg_iterator != gen.end());
-
-        expect(throws<std::logic_error>([&] { ++msg_iterator; }));
+        expect(throws<std::logic_error>([&] { gen.begin(); }));
     };
 
-    wl_tag / "message_parser can parse object_id and opcode of message"_test = [] {
+    wl_tag / "message_parser can parse message"_test = [] {
         using wl_display           = wl::protocols::wl_display;
         using get_registery        = wl_display::request::get_registry;
         constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
@@ -89,6 +97,10 @@ int main() {
         const auto parsed_msg = *msg_iterator;
         expect(parsed_msg.object_id == header.object_id);
         expect(parsed_msg.opcode == header.opcode);
+
+        expect(is_beginning_subspan(
+            parsed_msg.arguments,
+            get_registery_request.bytes().subspan(sizeof(header), sizeof(msg))));
 
         expect(++msg_iterator == gen.end());
     };
@@ -118,12 +130,18 @@ int main() {
         const auto parsed_msg_A = *msg_iterator;
         expect(parsed_msg_A.object_id == header_A.object_id);
         expect(parsed_msg_A.opcode == header_A.opcode);
+        expect(is_beginning_subspan(parsed_msg_A.arguments,
+                                    messages_AB.bytes().subspan(sizeof(header_A), sizeof(msg_A))));
 
         expect(++msg_iterator != gen.end());
 
         const auto parsed_msg_B = *msg_iterator;
         expect(parsed_msg_B.object_id == header_B.object_id);
         expect(parsed_msg_B.opcode == header_B.opcode);
+
+        constexpr auto B_arg_offset = sizeof(header_A) + sizeof(msg_A) + sizeof(header_B);
+        expect(is_beginning_subspan(parsed_msg_B.arguments,
+                                    messages_AB.bytes().subspan(B_arg_offset, sizeof(msg_B))));
 
         expect(++msg_iterator == gen.end());
     };
