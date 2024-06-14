@@ -96,11 +96,9 @@ int main() {
         expect(++msg_iter == msg_gen.end());
     };
 
-    wl_tag / "message with Wstring in message_buffer has correct header and size"_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
+    wl_tag / "message with Wstring in message_buffer has correct header and size"_test = [&] {
+        // Scenario setup:
 
-        // Message with Wstring:
         using display                = wl::protocols::wl_display;
         const auto mock_msg_with_str = display::event::error{ .object_id = { 4u },
                                                               .code      = { 42u },
@@ -111,13 +109,17 @@ int main() {
         expect(sizeof(mock_msg_with_str.object_id) == 4uz);
         expect(sizeof(mock_msg_with_str.code) == 4uz);
         constexpr auto header_size = 8uz;
-        const auto str_size_without_pad =
+        const auto str_msg_argument_size_without_pad =
             sizeof(wl::Wstring::size_type) + mock_msg_with_str.message.size() + 1uz;
-        const auto str_size =
-            str_size_without_pad + sstd::round_upto_multiple_of<4>(str_size_without_pad);
+        const auto str_msg_argument_size =
+            str_msg_argument_size_without_pad
+            + sstd::round_upto_multiple_of<4>(str_msg_argument_size_without_pad);
         const auto expected_size = header_size + sizeof(mock_msg_with_str.object_id)
-                                   + sizeof(mock_msg_with_str.code) + str_size;
+                                   + sizeof(mock_msg_with_str.code) + str_msg_argument_size;
 
+        // Actual test:
+
+        auto buff = wl::message_buffer{};
         buff.append(wl::global_display_object, mock_msg_with_str);
 
         expect(not buff.empty());
@@ -133,6 +135,26 @@ int main() {
         expect((*msg_iter).object_id == wl::global_display_object);
         expect((*msg_iter).opcode == display::event::error::opcode);
         expect(++msg_iter == msg_gen.end());
+
+        wl_tag / "string argument is correct"_test = [&] {
+            const auto index_of_msg_size_byte =
+                header_size + sizeof(mock_msg_with_str.object_id) + sizeof(mock_msg_with_str.code);
+            wl::Wstring::size_type size;
+            std::memcpy(&size, std::addressof(released_data[index_of_msg_size_byte]), sizeof(size));
+
+            expect(size == mock_msg_with_str.message.size() + 1); // + 1 for null delimiter.
+            expect(size != str_msg_argument_size);
+            expect(size != str_msg_argument_size_without_pad);
+
+            const auto str_in_buff = std::span<const std::byte>(
+                std::addressof(
+                    released_data[index_of_msg_size_byte + sizeof(wl::Wstring::size_type)]),
+                mock_msg_with_str.message.size());
+            const auto expected_str = std::span<const std::byte>(
+                reinterpret_cast<std::byte const*>(mock_msg_with_str.message.data()),
+                mock_msg_with_str.message.size());
+            expect(std::ranges::equal(str_in_buff, expected_str));
+        };
     };
 
     wl_tag / "message with Warray in message_buffer has correct header and size"_test = [] {
@@ -177,10 +199,8 @@ int main() {
     };
 
     wl_tag / "message with short Wstring in message_buffer is padded correctly "_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
+        // Scenario setup:
 
-        // Message with Wstring:
         using display = wl::protocols::wl_display;
         const auto mock_msg_with_str =
             display::event::error{ .object_id = { 4u }, .code = { 42u }, .message = { u8"M" } };
@@ -190,23 +210,39 @@ int main() {
         expect(sizeof(mock_msg_with_str.object_id) == 4uz);
         expect(sizeof(mock_msg_with_str.code) == 4uz);
         constexpr auto header_size = 8uz;
-        const auto str_size_without_pad =
+        const auto str_msg_argument_size_without_pad =
             sizeof(wl::Wstring::size_type) + mock_msg_with_str.message.size() + 1uz;
-        const auto str_size =
-            str_size_without_pad + sstd::round_upto_multiple_of<4>(str_size_without_pad);
+        const auto str_msg_argument_size =
+            str_msg_argument_size_without_pad
+            + sstd::round_upto_multiple_of<4>(str_msg_argument_size_without_pad);
 
+        // Actual tests:
+
+        auto buff = wl::message_buffer{};
         buff.append(wl::global_display_object, mock_msg_with_str);
-
-        expect(not buff.empty());
         const auto released_data = buff.release_data();
+
         expect(released_data.size() % 4uz == 0);
 
-        const auto index_of_msg_size_byte =
-            header_size + sizeof(mock_msg_with_str.object_id) + sizeof(mock_msg_with_str.code);
-        wl::Wstring::size_type size;
-        std::memcpy(&size, std::addressof(released_data[index_of_msg_size_byte]), sizeof(size));
-        expect(size == str_size_without_pad);
-        expect(size != str_size);
+        wl_tag / "string argument is correct"_test = [&] {
+            const auto index_of_msg_size_byte =
+                header_size + sizeof(mock_msg_with_str.object_id) + sizeof(mock_msg_with_str.code);
+            wl::Wstring::size_type size;
+            std::memcpy(&size, std::addressof(released_data[index_of_msg_size_byte]), sizeof(size));
+
+            expect(size == mock_msg_with_str.message.size() + 1); // + 1 for null delimiter.
+            expect(size != str_msg_argument_size);
+            expect(size != str_msg_argument_size_without_pad);
+
+            const auto str_in_buff = std::span<const std::byte>(
+                std::addressof(
+                    released_data[index_of_msg_size_byte + sizeof(wl::Wstring::size_type)]),
+                mock_msg_with_str.message.size());
+            const auto expected_str = std::span<const std::byte>(
+                reinterpret_cast<std::byte const*>(mock_msg_with_str.message.data()),
+                mock_msg_with_str.message.size());
+            expect(std::ranges::equal(str_in_buff, expected_str));
+        };
     };
 
     wl_tag / "message with short Warray in message_buffer is padded correctly"_test = [] {
