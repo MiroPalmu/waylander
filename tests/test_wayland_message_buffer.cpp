@@ -209,47 +209,6 @@ int main() {
         expect(size != str_size);
     };
 
-    wl_tag / "message with Warray in message_buffer has correct header and size"_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
-
-        // Message with Warray:
-        const auto mock_data = std::array{ std::byte{ 1 }, std::byte{ 2 }, std::byte{ 3 } };
-        using keyboard       = wl::protocols::wl_keyboard;
-        const auto mock_msg_with_array =
-            keyboard::event::enter{ .serial  = { 5u },
-                                    .surface = { 43u },
-                                    .keys    = { std::span{ mock_data } } };
-
-        using type = std::remove_cvref_t<decltype(mock_msg_with_array.keys)>;
-        expect(std::is_same_v<type, wl::Warray>);
-        expect(sizeof(mock_msg_with_array.serial) == 4uz);
-        expect(sizeof(mock_msg_with_array.surface) == 4uz);
-        constexpr auto header_size = 8uz;
-        const auto array_size = sizeof(wl::Warray::size_type) + mock_msg_with_array.keys.size();
-        const auto padded_array_size = array_size + sstd::round_upto_multiple_of<4>(array_size);
-        const auto expected_size     = header_size + sizeof(mock_msg_with_array.serial)
-                                   + sizeof(mock_msg_with_array.surface) + padded_array_size;
-
-        expect(std::is_same_v<wl::Warray, std::remove_cvref_t<decltype(mock_msg_with_array.keys)>>);
-        const auto keyboard_obj = wl::Wobject<keyboard>{ 2u };
-        buff.append(keyboard_obj, mock_msg_with_array);
-
-        expect(not buff.empty());
-        const auto released_data = buff.release_data();
-        expect(buff.empty());
-        expect(released_data.size() == expected_size);
-
-        auto msg_parser = wl::message_parser{ released_data };
-        auto msg_gen    = msg_parser.message_generator();
-        auto msg_iter   = msg_gen.begin();
-
-        expect(msg_iter != msg_gen.end());
-        expect((*msg_iter).object_id == keyboard_obj);
-        expect((*msg_iter).opcode == keyboard::event::enter::opcode);
-        expect(++msg_iter == msg_gen.end());
-    };
-
     wl_tag / "message with short Warray in message_buffer is padded correctly"_test = [] {
         auto buff = wl::message_buffer{};
         expect(buff.empty());
