@@ -33,26 +33,28 @@ class message_buffer {
 
         const auto write_element_32aligned = sstd::overloaded{
             [&](const Wstring& str) {
-                const auto element_size_without_pad_wrong_type =
-                    sizeof(Wstring::size_type) + str.size() + 1uz; // + 1 for \0 delimiter.
-                assert(std::in_range<Wstring::size_type>(element_size_without_pad_wrong_type));
-                const auto element_size_withou_pad =
-                    static_cast<Wstring::size_type>(element_size_without_pad_wrong_type);
+                const auto length_of_str            = str.size() + 1uz; // + 1 for \0 delimiter.
+                const auto element_size_without_pad = sizeof(Wstring::size_type) + length_of_str;
 
                 const auto element_size =
-                    element_size_without_pad_wrong_type
-                    + sstd::round_upto_multiple_of<4>(element_size_without_pad_wrong_type);
+                    element_size_without_pad
+                    + sstd::round_upto_multiple_of<4>(element_size_without_pad);
 
                 const auto buff_size_before = std::ranges::size(buff_);
                 buff_.resize(buff_size_before + element_size);
+
                 // size
+                assert(std::in_range<Wstring::size_type>(length_of_str));
+                const auto length_of_str_correct_type =
+                    static_cast<Wstring::size_type>(length_of_str);
                 std::memcpy(std::addressof(buff_[buff_size_before]),
-                            std::addressof(element_size_withou_pad),
+                            std::addressof(length_of_str_correct_type),
                             sizeof(Wstring::size_type));
                 // string
                 std::memcpy(std::addressof(buff_[buff_size_before + sizeof(Wstring::size_type)]),
                             str.data(),
                             str.size());
+
                 // null delimiter
                 buff_.back() = std::byte{ 0 };
 
