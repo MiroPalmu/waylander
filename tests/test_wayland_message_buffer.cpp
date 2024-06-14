@@ -176,7 +176,7 @@ int main() {
         expect(++msg_iter == msg_gen.end());
     };
 
-    wl_tag / "message with short Wstring in padded correctly "_test = [] {
+    wl_tag / "message with short Wstring in message_buffer is padded correctly "_test = [] {
         auto buff = wl::message_buffer{};
         expect(buff.empty());
 
