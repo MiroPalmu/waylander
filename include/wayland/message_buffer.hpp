@@ -61,22 +61,22 @@ class message_buffer {
                 msg_total_size += element_size;
             },
             [&](const Warray& arr) {
-                const auto element_size_without_pad_wrong_type =
-                    sizeof(Warray::size_type) + arr.size();
-                assert(std::in_range<Warray::size_type>(element_size_without_pad_wrong_type));
-                const auto element_size_without_pad =
-                    static_cast<Warray::size_type>(element_size_without_pad_wrong_type);
-
+                const auto element_size_without_pad = sizeof(Warray::size_type) + arr.size();
                 const auto element_size =
                     element_size_without_pad
                     + sstd::round_upto_multiple_of<4>(element_size_without_pad);
 
+                //const auto element_size_without_pad =
+
                 const auto buff_size_before = std::ranges::size(buff_);
                 buff_.resize(buff_size_before + element_size);
+
                 // size
+                assert(std::in_range<Warray::size_type>(arr.size()));
+                const auto array_size_correct_type = static_cast<Warray::size_type>(arr.size());
                 std::memcpy(std::addressof(buff_[buff_size_before]),
-                            std::addressof(element_size_without_pad),
-                            sizeof(Wstring::size_type));
+                            std::addressof(array_size_correct_type),
+                            sizeof(array_size_correct_type));
                 // array
                 std::memcpy(std::addressof(buff_[buff_size_before + sizeof(Wstring::size_type)]),
                             arr.data(),
