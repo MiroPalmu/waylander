@@ -158,12 +158,11 @@ int main() {
     };
 
     wl_tag / "message with Warray in message_buffer has correct header and size"_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
+        // Scenario setup:
 
-        // Message with Warray:
-        const auto mock_data = std::array{ std::byte{ 1 }, std::byte{ 2 }, std::byte{ 3 } };
-        using keyboard       = wl::protocols::wl_keyboard;
+        const auto mock_data    = std::array{ std::byte{ 1 }, std::byte{ 2 }, std::byte{ 3 } };
+        using keyboard          = wl::protocols::wl_keyboard;
+        const auto keyboard_obj = wl::Wobject<keyboard>{ 2u };
         const auto mock_msg_with_array =
             keyboard::event::enter{ .serial  = { 5u },
                                     .surface = { 43u },
@@ -180,7 +179,10 @@ int main() {
                                    + sizeof(mock_msg_with_array.surface) + padded_array_size;
 
         expect(std::is_same_v<wl::Warray, std::remove_cvref_t<decltype(mock_msg_with_array.keys)>>);
-        const auto keyboard_obj = wl::Wobject<keyboard>{ 2u };
+
+        // Actual tests:
+
+        auto buff = wl::message_buffer{};
         buff.append(keyboard_obj, mock_msg_with_array);
 
         expect(not buff.empty());
@@ -196,6 +198,25 @@ int main() {
         expect((*msg_iter).object_id == keyboard_obj);
         expect((*msg_iter).opcode == keyboard::event::enter::opcode);
         expect(++msg_iter == msg_gen.end());
+
+        wl_tag / "array argument is correct"_test = [&] {
+            const auto index_of_array_size_byte = header_size + sizeof(mock_msg_with_array.serial)
+                                                  + sizeof(mock_msg_with_array.surface);
+            wl::Warray::size_type size;
+            std::memcpy(&size,
+                        std::addressof(released_data[index_of_array_size_byte]),
+                        sizeof(size));
+
+            expect(size == mock_msg_with_array.keys.size());
+            expect(size != array_size);
+            expect(size != padded_array_size);
+
+            const auto array_in_buff = std::span<const std::byte>(
+                std::addressof(
+                    released_data[index_of_array_size_byte + sizeof(wl::Warray::size_type)]),
+                mock_msg_with_array.keys.size());
+            expect(std::ranges::equal(array_in_buff, mock_msg_with_array.keys));
+        };
     };
 
     wl_tag / "message with short Wstring in message_buffer is padded correctly "_test = [] {
@@ -246,12 +267,11 @@ int main() {
     };
 
     wl_tag / "message with short Warray in message_buffer is padded correctly"_test = [] {
-        auto buff = wl::message_buffer{};
-        expect(buff.empty());
+        // Scenario setup:
 
-        // Message with Warray:
-        const auto mock_data = std::array{ std::byte{ 1 } };
-        using keyboard       = wl::protocols::wl_keyboard;
+        const auto mock_data    = std::array{ std::byte{ 1 } };
+        using keyboard          = wl::protocols::wl_keyboard;
+        const auto keyboard_obj = wl::Wobject<keyboard>{ 2u };
         const auto mock_msg_with_array =
             keyboard::event::enter{ .serial  = { 5u },
                                     .surface = { 43u },
@@ -266,18 +286,33 @@ int main() {
         const auto padded_array_size = array_size + sstd::round_upto_multiple_of<4>(array_size);
 
         expect(std::is_same_v<wl::Warray, std::remove_cvref_t<decltype(mock_msg_with_array.keys)>>);
-        const auto keyboard_obj = wl::Wobject<keyboard>{ 2u };
+
+        // Actual tests:
+
+        auto buff = wl::message_buffer{};
         buff.append(keyboard_obj, mock_msg_with_array);
 
         expect(not buff.empty());
         const auto released_data = buff.release_data();
         expect(released_data.size() % 4uz == 0uz);
 
-        const auto index_of_array_size_byte =
-            header_size + sizeof(mock_msg_with_array.serial) + sizeof(mock_msg_with_array.surface);
-        wl::Warray::size_type size;
-        std::memcpy(&size, std::addressof(released_data[index_of_array_size_byte]), sizeof(size));
-        expect(size == array_size);
-        expect(size != padded_array_size);
+        wl_tag / "array argument is correct"_test = [&] {
+            const auto index_of_array_size_byte = header_size + sizeof(mock_msg_with_array.serial)
+                                                  + sizeof(mock_msg_with_array.surface);
+            wl::Warray::size_type size;
+            std::memcpy(&size,
+                        std::addressof(released_data[index_of_array_size_byte]),
+                        sizeof(size));
+
+            expect(size == mock_msg_with_array.keys.size());
+            expect(size != array_size);
+            expect(size != padded_array_size);
+
+            const auto array_in_buff = std::span<const std::byte>(
+                std::addressof(
+                    released_data[index_of_array_size_byte + sizeof(wl::Warray::size_type)]),
+                mock_msg_with_array.keys.size());
+            expect(std::ranges::equal(array_in_buff, mock_msg_with_array.keys));
+        };
     };
 }
