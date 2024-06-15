@@ -525,18 +525,20 @@ def parse_wl_interface(node: ET.Element) -> wl_interface:
     parsed_events: list[wl_event] = []
     parsed_enums: list[wl_enum] = []
 
-    opcode_counter = 0
+    request_opcode_counter = 0
+    event_opcode_counter = 0
+
     found_request_opcodes: list[int] = []
     found_event_opcodes: list[int] = []
     for child in non_desc_children:
         if child.tag == "request":
             parsed_requests.append(parse_wl_request(child))
-            found_request_opcodes.append(opcode_counter)
-            opcode_counter += 1
+            found_request_opcodes.append(request_opcode_counter)
+            request_opcode_counter += 1
         elif child.tag == "event":
             parsed_events.append(parse_wl_event(child))
-            found_event_opcodes.append(opcode_counter)
-            opcode_counter += 1
+            found_event_opcodes.append(event_opcode_counter)
+            event_opcode_counter += 1
         elif child.tag == "enum":
             parsed_enums.append(parse_wl_enum(child))
 
