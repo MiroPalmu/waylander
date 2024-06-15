@@ -1,0 +1,267 @@
+#include <boost/ut.hpp> // import boost.ut;
+
+#include <algorithm>
+#include <ranges>
+#include <span>
+
+#include "bit_fiddling.hpp"
+#include "sstd.hpp"
+#include "wayland/message_parser.hpp"
+#include "wayland/message_visitor.hpp"
+#include "wayland/protocol.hpp"
+#include "wayland/protocol_primitives.hpp"
+#include "wayland/protocols/wayland_protocol.hpp"
+
+int main() {
+    using namespace boost::ut;
+    using namespace ger;
+
+    static const auto wl_tag = tag("wayland");
+    // Run wl_tag:
+    cfg<override> = { .tag = { "wayland" } };
+
+    wl_tag / "message_visitor uses the default overload"_test = [] {
+        auto default_counter = 0uz;
+        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
+
+        using touch              = wl::protocols::wl_touch;
+        constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
+
+        using up = touch::event::up;
+        // UM = Unkown Message
+        constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
+        constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
+        constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
+        const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
+
+        static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        expect(default_counter == 1);
+
+        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        expect(default_counter == 3);
+    };
+
+    wl_tag / "message_visitor uses added overload for static message"_test = [] {
+        auto default_counter = 0uz;
+        auto up_counter      = 0uz;
+        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
+
+        using touch              = wl::protocols::wl_touch;
+        constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
+
+        using up = touch::event::up;
+
+#ifndef __clang__
+        // This will crash LLVM 17 and 18 (annoyingly will break clangd), see:
+        // https://github.com/llvm/llvm-project/issues/93821#issue-2325716041
+        static_assert(wl::static_message<up>, "Test assumes this to be true.");
+#endif
+
+        // UM = Unkown Message
+        constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
+        constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
+        constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
+        const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
+
+        static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        expect(default_counter == 1);
+        expect(up_counter == 0);
+
+        vis.add_overload<up>(touch_obj, [&](const up& from_visit) {
+            ++up_counter;
+            expect(from_visit.serial == UM_arguments_arr[0].serial);
+            expect(from_visit.time == UM_arguments_arr[0].time);
+            expect(from_visit.id == UM_arguments_arr[0].id);
+        });
+
+        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        expect(default_counter == 1);
+        expect(up_counter == 1);
+
+        const auto other_UM_obj_id = wl::Wobject<wl::generic_object>{ UM_obj_id.value + 1 };
+        vis.visit(other_UM_obj_id, UM_opcode, UM_arguments);
+        expect(default_counter == 2);
+        expect(up_counter == 1);
+    };
+
+    wl_tag / "message_visitor uses added overloads for message with W[array|string]"_test = [] {
+        // Used interfaces.
+        using wl_display  = wl::protocols::wl_display;
+        using wl_keyboard = wl::protocols::wl_keyboard;
+
+        // Used messages.
+        using msg_str_t = wl_display::event::error;
+        using msg_arr_t = wl_keyboard::event::enter;
+
+        // Data for the messages.
+        constexpr std::byte some_data[]{ std::byte{ 'p' }, std::byte{ 'i' }, std::byte{ 'r' },
+                                         std::byte{ 'a' }, std::byte{ 't' }, std::byte{ 'e' } };
+
+        // "Name" the different object ids used.
+        constexpr auto display_obj    = wl::global_display_object;
+        constexpr auto keyboard_obj_A = wl::Wobject<wl_keyboard>{ 123 };
+        constexpr auto keyboard_obj_B = wl::Wobject<wl_keyboard>{ 321 };
+        constexpr auto keyboard_obj_C = wl::Wobject<wl_keyboard>{ 333 };
+
+        // Assume that message_[parser|buffer] works and construct messages:
+        //
+        // 1. display_obj:    msg_str_t{ 42, 43, "FooBar" }
+        // 2. keyboard_obj_A: msg_arr_t{ 12, 13, { pirate } }
+        // 3. display_obj:    msg_str_t{ 43, 44, "Bar" }
+        // 4. keyboard_obj_B: msg_arr_t{ 21, 31, { pir } }
+        // 5. keyboard_obj_C: msg_arr_t{ 21, 31, { pir } }
+        auto msg_parser = [&]() -> wl::message_parser {
+            auto buff = wl::message_buffer{};
+            buff.append(display_obj,
+                        msg_str_t{ .object_id{ 42 }, .code{ 43 }, .message{ u8"FooBar" } });
+
+            buff.append(keyboard_obj_A,
+                        msg_arr_t{ .serial{ 12 }, .surface{ 13 }, .keys{ some_data } });
+
+            buff.append(display_obj,
+                        msg_str_t{ .object_id{ 43 }, .code{ 44 }, .message{ u8"Bar" } });
+
+            buff.append(
+                keyboard_obj_B,
+                msg_arr_t{ .serial{ 21 }, .surface{ 31 }, .keys{ std::span(some_data).first(3) } });
+
+            buff.append(
+                keyboard_obj_C,
+                msg_arr_t{ .serial{ 21 }, .surface{ 31 }, .keys{ std::span(some_data).first(3) } });
+
+            return { buff.release_data() };
+        }();
+
+        auto default_counter = 0uz;
+        auto str_counter     = 0uz;
+        auto arr_counter     = 0uz;
+        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
+        vis.add_overload<msg_str_t>(display_obj, [&](const msg_str_t& msg) {
+            if (str_counter == 0) {
+                expect(msg.object_id == 42);
+                expect(msg.code == 43);
+                expect(msg.message == u8"FooBar");
+            } else if (str_counter == 1) {
+                expect(msg.object_id == 43);
+                expect(msg.code == 44);
+                expect(msg.message == u8"Bar");
+            }
+            ++str_counter;
+        });
+
+        vis.add_overload<msg_arr_t>(keyboard_obj_A, [&](const msg_arr_t& msg) {
+            ++arr_counter;
+            expect(msg.serial == 12);
+            expect(msg.surface == 13);
+            expect(std::ranges::equal(msg.keys, some_data));
+        });
+
+        vis.add_overload<msg_arr_t>(keyboard_obj_B, [&](const msg_arr_t& msg) {
+            arr_counter += 10;
+            expect(msg.serial == 21);
+            expect(msg.surface == 31);
+            expect(std::ranges::equal(msg.keys, std::span(some_data).first(3)));
+        });
+
+        auto msg_gen = msg_parser.message_generator();
+        auto msg_ptr = msg_gen.begin();
+
+        expect(default_counter == 0);
+        expect(str_counter == 0);
+        expect(arr_counter == 0);
+
+        vis.visit(*msg_ptr);
+        ++msg_ptr;
+
+        expect(default_counter == 0);
+        expect(str_counter == 1);
+        expect(arr_counter == 0);
+
+        vis.visit(*msg_ptr);
+        ++msg_ptr;
+
+        expect(default_counter == 0);
+        expect(str_counter == 1);
+        expect(arr_counter == 1);
+
+        vis.visit(*msg_ptr);
+        ++msg_ptr;
+
+        expect(default_counter == 0);
+        expect(str_counter == 2);
+        expect(arr_counter == 1);
+
+        vis.visit(*msg_ptr);
+        ++msg_ptr;
+
+        expect(default_counter == 0);
+        expect(str_counter == 2);
+        expect(arr_counter == 11);
+
+        vis.visit(*msg_ptr);
+
+        expect(default_counter == 1);
+        expect(str_counter == 2);
+        expect(arr_counter == 11);
+
+        expect(++msg_ptr == msg_gen.end());
+    };
+
+    wl_tag / "message_visitor overloads can hold a state"_test = [] {
+        using wl_display   = wl::protocols::wl_display;
+        using get_registry = wl_display::request::get_registry;
+        using wl_registry  = wl::protocols::wl_registry;
+        using bind         = wl_registry::request::bind;
+
+        constexpr auto registry_obj = wl::Wobject<wl_registry>{ 42 };
+
+        // Assume that message_[parser|buffer] works and construct messages:
+        //
+        // 1. wl::global_display_object: get_registry{ 1 }
+        // 2. registry_obj: bind{ 2, { 3 } }
+        // 3. wl::global_display_object: get_registry{ 4 }
+        // 4.  registry_obj: bind{ 5, { 6 } }
+        auto msg_parser = wl::message_parser{ [&] {
+            auto buff   = wl::message_buffer{};
+            buff.append(wl::global_display_object, get_registry{ .registry{ 1 } });
+            buff.append(registry_obj, bind{ .name{ 2 }, .id{ 3 } });
+            buff.append(wl::global_display_object, get_registry{ .registry{ 4 } });
+            buff.append(registry_obj, bind{ .name{ 5 }, .id{ 6 } });
+            return buff.release_data();
+        }() };
+
+        auto vis           = wl::message_visitor{ [] { expect(false); } };
+        auto request_count = 0uz;
+        auto event_count   = 0uz;
+
+        vis.add_overload<get_registry>(wl::global_display_object,
+                                       [&, first_time = true](const get_registry msg) mutable {
+                                           if (first_time) {
+                                               first_time = false;
+                                               expect(msg.registry == 1);
+                                           } else {
+                                               expect(msg.registry == 4);
+                                           }
+                                           ++request_count;
+                                       });
+
+        vis.add_overload<bind>(registry_obj, [&, first_time = true](const bind msg) mutable {
+            if (first_time) {
+                first_time = false;
+                expect(msg.name == 2);
+                expect(msg.id == 3);
+            } else {
+                expect(msg.name == 5);
+                expect(msg.id == 6);
+            }
+            ++event_count;
+        });
+
+        vis.visit(msg_parser.message_generator());
+    };
+}
