@@ -51,6 +51,7 @@ Following types of commits are allowed:
 * **refactor**: A code change that neither fixes a bug nor adds a feature
 * **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 * **test**: Adding missing tests or correcting existing tests
+* **examples**: A commit related to examples.
 
 Types are borrowed from `Angular`_.
 
