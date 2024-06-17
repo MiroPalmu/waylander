@@ -266,8 +266,8 @@ int main() {
         // 2. registry_obj: bind{ 2, { 3 } }
         // 3. wl::global_display_object: get_registry{ 4 }
         // 4.  registry_obj: bind{ 5, { 6 } }
-        // 5. display_obj_A: get_registry{ 7 }
-        // 6. display_obj_B: get_registry{ 8 }
+        // 5. display_obj: get_registry{ 7 }
+        // 6. display_obj: get_registry{ 7 }
         auto msg_parser = wl::message_parser{ [&] {
             auto buff   = wl::message_buffer{};
             buff.append(wl::global_display_object, get_registry{ .registry{ 1 } });
