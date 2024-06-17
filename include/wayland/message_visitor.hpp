@@ -15,7 +15,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "bit_fiddling.hpp"
 #include "wayland/message_utils.hpp"
 #include "wayland/parsed_message.hpp"
 #include "wayland/protocol_primitives.hpp"
@@ -150,23 +149,18 @@ class message_visitor {
         }
     }
 
-    /// Invokes the overload corresponding to \p obj_id and \p opcode with \p arguments.
+    /// Invokes the overload corresponding to \p msg.object_id and \p msg.opcode with \p msg.arguments.
     ///
-    /// Precondition: \p arguments is a valid Wayland wire format message payload of
+    /// Precondition: \p msg.arguments is a valid Wayland wire format message payload of
     /// message type corresponding to the resolved overload.
-    void visit(const Wobject<generic_object> obj_id,
-               const Wopcode<generic_object> opcode,
-               const std::span<const std::byte> arguments) {
-        const auto overload_resolution = overloads_.find({ obj_id, opcode });
+    void visit(const parsed_message& msg) {
+        const auto overload_resolution = overloads_.find({ msg.object_id, msg.opcode });
         if (overload_resolution == overloads_.end()) {
             default_overload_();
         } else {
-            std::invoke(overload_resolution->second, arguments);
+            std::invoke(overload_resolution->second, msg.arguments);
         }
     }
-
-    /// Helper to call visit with parsed_message.
-    void visit(const parsed_message& msg) { this->visit(msg.object_id, msg.opcode, msg.arguments); }
 
     /// Calls visit on messages in given ranges inorder.
     void visit(std::ranges::input_range auto&& msg_range) {

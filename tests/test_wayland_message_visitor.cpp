@@ -4,7 +4,6 @@
 #include <ranges>
 #include <span>
 
-#include "bit_fiddling.hpp"
 #include "sstd.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/message_visitor.hpp"
@@ -36,11 +35,11 @@ int main() {
 
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
 
-        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 1);
 
-        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
-        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 3);
     };
 
@@ -68,7 +67,7 @@ int main() {
 
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
 
-        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit({UM_obj_id, UM_opcode, UM_arguments});
         expect(default_counter == 1);
         expect(up_counter == 0);
 
@@ -79,12 +78,12 @@ int main() {
             expect(from_visit.id == UM_arguments_arr[0].id);
         });
 
-        vis.visit(UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit({UM_obj_id, UM_opcode, UM_arguments});
         expect(default_counter == 1);
         expect(up_counter == 1);
 
         const auto other_UM_obj_id = wl::Wobject<wl::generic_object>{ UM_obj_id.value + 1 };
-        vis.visit(other_UM_obj_id, UM_opcode, UM_arguments);
+        vis.visit({other_UM_obj_id, UM_opcode, UM_arguments});
         expect(default_counter == 2);
         expect(up_counter == 1);
     };
