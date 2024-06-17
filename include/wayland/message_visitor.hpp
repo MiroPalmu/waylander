@@ -24,7 +24,7 @@ namespace wl {
 
 /// Stores information to interpert raw bytes as Wayland messages.
 class message_visitor {
-    std::move_only_function<void()> default_overload_;
+    std::move_only_function<void(parsed_message)> default_overload_;
     bool has_overload_{ false };
     using key_t             = std::pair<Wobject<generic_object>, Wopcode<generic_object>>;
     using erased_overload_t = std::move_only_function<void(std::span<const std::byte>)>;
@@ -53,9 +53,19 @@ class message_visitor {
     std::unordered_map<key_t, erased_overload_t, key_t_hash> overloads_{};
 
   public:
-    template<std::invocable F>
+    template<typename F>
+        requires std::invocable<F> or std::invocable<F, parsed_message>
     [[nodiscard]] explicit message_visitor(F&& default_overload)
-        : default_overload_{ std::forward<F>(default_overload) } {};
+        : default_overload_{ [wrapped_functor = std::forward<F>(default_overload)](
+                                 const parsed_message& msg) mutable {
+              if constexpr (std::invocable<F>) {
+                  std::invoke(wrapped_functor);
+              } else if (std::invocable<F, parsed_message>) {
+                  std::invoke(wrapped_functor, msg);
+              } else {
+                  throw std::logic_error{ "Hmm..." };
+              }
+          } } {};
 
     template<typename Msg, interface W>
     void add_overload(const Wobject<W> obj_id, std::invocable<Msg> auto&& overload_arg) {
@@ -156,7 +166,7 @@ class message_visitor {
     void visit(const parsed_message& msg) {
         const auto overload_resolution = overloads_.find({ msg.object_id, msg.opcode });
         if (overload_resolution == overloads_.end()) {
-            default_overload_();
+            std::invoke(default_overload_, msg);
         } else {
             std::invoke(overload_resolution->second, msg.arguments);
         }

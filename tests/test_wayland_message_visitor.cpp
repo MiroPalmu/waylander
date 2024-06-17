@@ -1,8 +1,10 @@
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <algorithm>
+#include <optional>
 #include <ranges>
 #include <span>
+#include <vector>
 
 #include "sstd.hpp"
 #include "wayland/message_parser.hpp"
@@ -19,7 +21,7 @@ int main() {
     // Run wl_tag:
     cfg<override> = { .tag = { "wayland" } };
 
-    wl_tag / "message_visitor uses the default overload"_test = [] {
+    wl_tag / "message_visitor uses the default overload without arguments"_test = [] {
         auto default_counter = 0uz;
         auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
 
@@ -34,6 +36,38 @@ int main() {
         const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
 
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        expect(default_counter == 1);
+
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        expect(default_counter == 3);
+    };
+
+    wl_tag / "message_visitor uses the default overload with parsed_message argument"_test = [] {
+        // Scenario setup:
+
+        using touch              = wl::protocols::wl_touch;
+        constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
+
+        using up = touch::event::up;
+        // UM = Unkown Message
+        constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
+        constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
+        constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
+        const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
+        // Sanity check
+        static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        // Actual tests:
+
+        auto default_counter = 0uz;
+        auto vis             = wl::message_visitor{ [&](const wl::parsed_message& msg) {
+            ++default_counter;
+            expect(msg.object_id == touch_obj);
+            expect(msg.opcode == up::opcode);
+        } };
 
         vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 1);
@@ -67,7 +101,7 @@ int main() {
 
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
 
-        vis.visit({UM_obj_id, UM_opcode, UM_arguments});
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 1);
         expect(up_counter == 0);
 
@@ -78,12 +112,12 @@ int main() {
             expect(from_visit.id == UM_arguments_arr[0].id);
         });
 
-        vis.visit({UM_obj_id, UM_opcode, UM_arguments});
+        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 1);
         expect(up_counter == 1);
 
         const auto other_UM_obj_id = wl::Wobject<wl::generic_object>{ UM_obj_id.value + 1 };
-        vis.visit({other_UM_obj_id, UM_opcode, UM_arguments});
+        vis.visit({ other_UM_obj_id, UM_opcode, UM_arguments });
         expect(default_counter == 2);
         expect(up_counter == 1);
     };
@@ -139,7 +173,11 @@ int main() {
         auto default_counter = 0uz;
         auto str_counter     = 0uz;
         auto arr_counter     = 0uz;
-        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
+        auto vis             = wl::message_visitor{ [&](const wl::parsed_message& msg) {
+            ++default_counter;
+            expect(msg.object_id == keyboard_obj_C);
+            expect(msg.opcode == msg_arr_t::opcode);
+        } };
         vis.add_overload<msg_str_t>(display_obj, [&](const msg_str_t& msg) {
             if (str_counter == 0) {
                 expect(msg.object_id == 42);
@@ -212,12 +250,15 @@ int main() {
     };
 
     wl_tag / "message_visitor overloads can hold a state"_test = [] {
+        // Secenario setup:
+
         using wl_display   = wl::protocols::wl_display;
         using get_registry = wl_display::request::get_registry;
         using wl_registry  = wl::protocols::wl_registry;
         using bind         = wl_registry::request::bind;
 
         constexpr auto registry_obj = wl::Wobject<wl_registry>{ 42 };
+        constexpr auto display_obj  = wl::Wobject<wl_display>{ 55 };
 
         // Assume that message_[parser|buffer] works and construct messages:
         //
@@ -225,16 +266,40 @@ int main() {
         // 2. registry_obj: bind{ 2, { 3 } }
         // 3. wl::global_display_object: get_registry{ 4 }
         // 4.  registry_obj: bind{ 5, { 6 } }
+        // 5. display_obj_A: get_registry{ 7 }
+        // 6. display_obj_B: get_registry{ 8 }
         auto msg_parser = wl::message_parser{ [&] {
             auto buff   = wl::message_buffer{};
             buff.append(wl::global_display_object, get_registry{ .registry{ 1 } });
             buff.append(registry_obj, bind{ .name{ 2 }, .id{ 3 } });
             buff.append(wl::global_display_object, get_registry{ .registry{ 4 } });
             buff.append(registry_obj, bind{ .name{ 5 }, .id{ 6 } });
+            buff.append(display_obj, get_registry{ .registry{ 7 } });
+            buff.append(display_obj, get_registry{ .registry{ 7 } });
             return buff.release_data();
         }() };
 
-        auto vis           = wl::message_visitor{ [] { expect(false); } };
+        // Actual tests:
+
+        auto default_count = 0uz;
+
+        struct default_overload_t {
+            std::size_t& default_count_ref;
+            using prev_t = std::optional<std::vector<std::byte>>;
+            prev_t previous_arguments{};
+
+            void operator()(const wl::parsed_message& msg) {
+                ++default_count_ref;
+                if (not previous_arguments.has_value()) {
+                    previous_arguments = std::vector(msg.arguments.begin(), msg.arguments.end());
+                } else {
+                    default_count_ref += 10;
+                    expect(std::ranges::equal(previous_arguments.value(), msg.arguments));
+                }
+            }
+        };
+
+        auto vis = wl::message_visitor{ default_overload_t{ .default_count_ref{ default_count } } };
         auto request_count = 0uz;
         auto event_count   = 0uz;
 
@@ -262,5 +327,6 @@ int main() {
         });
 
         vis.visit(msg_parser.message_generator());
+        expect(default_count == 12);
     };
 }
