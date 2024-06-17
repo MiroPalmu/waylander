@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+
+from generate_cxx_header_from_wayland_xml import main
+import os, sys
+main(
+    argv0 = os.path.basename(__file__),
+    argv_rest = sys.argv[1:],
+    temp_dir = os.getenv("TMPDIR", "/tmp")
+)
