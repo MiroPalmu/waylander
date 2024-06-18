@@ -450,6 +450,10 @@ struct wl_registry::request::bind {
     static constexpr Wopcode<wl_registry> opcode{ 0 };
     /// unique numeric name of the object
     Wuint name;
+    /// Interface name, e.g. from registry::global event, for following Wnew_id<>.
+    Wstring new_id_interface;
+    /// Interface version, e.g. from registry::global event, for following Wnew_id<>.
+    Wuint new_id_interface_version;
     /// bounded object
     Wnew_id<> id;
 };
