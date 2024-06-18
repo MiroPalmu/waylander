@@ -364,7 +364,12 @@ def parse_wl_description(node: ET.Element) -> wl_description:
     return wl_description(node.attrib["summary"], node.text)
 
 
-def parse_wl_arg(node: ET.Element) -> wl_arg:
+def parse_wl_arg(node: ET.Element) -> list[wl_arg]:
+    """
+    This has to return a list of args, as new_id without interface from xml attribute 
+    is preceded by a string specifying the interface name, and a uint
+    specifying the version.
+    """
     assert "arg" == node.tag, f"Expected arg node, got {node.tag} at line number: {node.sourceline}"
 
     parsed_desc = None
@@ -377,6 +382,8 @@ def parse_wl_arg(node: ET.Element) -> wl_arg:
 
     type_str = node.attrib["type"]
     parsed_type = None
+    preceeding_args = []
+
     if (type_str == "int"):
         parsed_type = wl_arg_type.wl_int
     elif (type_str == "uint"):
@@ -389,6 +396,25 @@ def parse_wl_arg(node: ET.Element) -> wl_arg:
         parsed_type = wl_arg_type.wl_object
     elif (type_str == "new_id"):
         parsed_type = wl_arg_type.wl_new_id
+        if not node.attrib.get("interface"):
+            preceeding_args.append(wl_arg(
+                name = "new_id_interface",
+                arg_type = wl_arg_type.wl_string,
+                summary = "Interface name, e.g. from registry::global event, for following Wnew_id<>.",
+                interface = None,
+                allow_null = None,
+                enum = None,
+                description = None,
+            ))
+            preceeding_args.append(wl_arg(
+                name = "new_id_interface_version",
+                arg_type = wl_arg_type.wl_uint,
+                summary = "Interface version, e.g. from registry::global event, for following Wnew_id<>.",
+                interface = None,
+                allow_null = None,
+                enum = None,
+                description = None,
+            ))
     elif (type_str == "array"):
         parsed_type = wl_arg_type.wl_array
     elif (type_str == "fd"):
@@ -398,7 +424,7 @@ def parse_wl_arg(node: ET.Element) -> wl_arg:
 
     allow_null_txt = node.attrib.get("allow-null", "false")
 
-    return wl_arg(
+    return preceeding_args + [wl_arg(
         name = node.attrib["name"],
         arg_type = parsed_type,
         summary = node.attrib.get("summary"),
@@ -406,7 +432,7 @@ def parse_wl_arg(node: ET.Element) -> wl_arg:
         allow_null = (allow_null_txt == "true"),
         enum = node.attrib.get("enum"),
         description = parsed_desc,
-    )
+    )]
 
 def parse_wl_enum_entry(node: ET.Element) -> wl_enum_entry:
     assert "entry" == node.tag, f"Expected entry node, got {node.tag} at line number: {node.sourceline}"
@@ -473,7 +499,11 @@ def parse_wl_event(node: ET.Element) -> wl_event:
         parsed_desc = parse_wl_description(node[0])
 
     potential_args = node[int(parsed_desc is not None):]
-    parsed_args = [parse_wl_arg(child) for child in potential_args]
+    parsed_args = [
+        arg
+        for child in potential_args
+        for arg in parse_wl_arg(child)
+    ]
 
     return wl_event(
         name = node.attrib["name"],
@@ -500,7 +530,11 @@ def parse_wl_request(node: ET.Element) -> wl_request:
         parsed_desc = parse_wl_description(node[0])
 
     potential_args = node[int(parsed_desc is not None):]
-    parsed_args = [parse_wl_arg(child) for child in potential_args]
+    parsed_args = [
+        arg
+        for child in potential_args
+        for arg in parse_wl_arg(child)
+    ]
 
     return wl_request(
         name = node.attrib["name"],
