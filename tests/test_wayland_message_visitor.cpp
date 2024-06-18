@@ -263,17 +263,25 @@ int main() {
         // Assume that message_[parser|buffer] works and construct messages:
         //
         // 1. wl::global_display_object: get_registry{ 1 }
-        // 2. registry_obj: bind{ 2, { 3 } }
+        // 2. registry_obj: bind{ 2, "abc", 42, 3 }
         // 3. wl::global_display_object: get_registry{ 4 }
-        // 4.  registry_obj: bind{ 5, { 6 } }
+        // 4. registry_obj: bind{ 5, "def", 43, 6 }
         // 5. display_obj: get_registry{ 7 }
         // 6. display_obj: get_registry{ 7 }
         auto msg_parser = wl::message_parser{ [&] {
             auto buff   = wl::message_buffer{};
             buff.append(wl::global_display_object, get_registry{ .registry{ 1 } });
-            buff.append(registry_obj, bind{ .name{ 2 }, .id{ 3 } });
+            buff.append(registry_obj,
+                        bind{ .name{ 2 },
+                              .new_id_interface{ u8"abc" },
+                              .new_id_interface_version{ 42 },
+                              .id{ 3 } });
             buff.append(wl::global_display_object, get_registry{ .registry{ 4 } });
-            buff.append(registry_obj, bind{ .name{ 5 }, .id{ 6 } });
+            buff.append(registry_obj,
+                        bind{ .name{ 5 },
+                              .new_id_interface{ u8"def" },
+                              .new_id_interface_version{ 43 },
+                              .id{ 6 } });
             buff.append(display_obj, get_registry{ .registry{ 7 } });
             buff.append(display_obj, get_registry{ .registry{ 7 } });
             return buff.release_data();
@@ -318,9 +326,13 @@ int main() {
             if (first_time) {
                 first_time = false;
                 expect(msg.name == 2);
+                expect(msg.new_id_interface == u8"abc");
+                expect(msg.new_id_interface_version == 42);
                 expect(msg.id == 3);
             } else {
                 expect(msg.name == 5);
+                expect(msg.new_id_interface == u8"def");
+                expect(msg.new_id_interface_version == 43);
                 expect(msg.id == 6);
             }
             ++event_count;
