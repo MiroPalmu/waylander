@@ -26,13 +26,14 @@ int main() {
 
     auto done_on_sync_received{ false };
 
-    auto vis = ger::wl::message_visitor{ [&] { std::println("Received unhandeled event!"); } };
-    vis.add_overload<done_t>(sync_callback, [&](const done_t& msg) {
+    auto msg_overloads = ger::wl::message_overload_set{};
+
+    msg_overloads.add_overload<done_t>(sync_callback, [&](const done_t& msg) {
         done_on_sync_received = true;
         std::println("done event {} for the sync!", msg.callback_data.value);
     });
 
-    vis.add_overload<global_t>(registery, [&](const global_t& msg) {
+    msg_overloads.add_overload<global_t>(registery, [&](const global_t& msg) {
         std::println("registery global event:");
         std::println("    name: {}", msg.name.value);
         // wonky stuff:
@@ -46,6 +47,8 @@ int main() {
     std::println("Receiving events:\n");
     while (not done_on_sync_received) {
         auto msg_parser = client.recv_events();
-        vis.visit(msg_parser.message_generator());
+        ger::wl::message_visit([] { std::println("Received unhandeled event!"); },
+                               msg_overloads,
+                               msg_parser.message_generator());
     }
 }

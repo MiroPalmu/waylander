@@ -21,71 +21,78 @@ int main() {
     // Run wl_tag:
     cfg<override> = { .tag = { "wayland" } };
 
-    wl_tag / "message_visitor uses the default overload without arguments"_test = [] {
-        auto default_counter = 0uz;
-        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
-
-        using touch              = wl::protocols::wl_touch;
-        constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
-
-        using up = touch::event::up;
-        // UM = Unkown Message
-        constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
-        constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
-        constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
-        const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
-
-        static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
-
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
-        expect(default_counter == 1);
-
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
-        expect(default_counter == 3);
-    };
-
-    wl_tag / "message_visitor uses the default overload with parsed_message argument"_test = [] {
+    wl_tag / "message_visit uses the default overload without arguments"_test = [] {
         // Scenario setup:
 
-        using touch              = wl::protocols::wl_touch;
+        using touch = wl::protocols::wl_touch;
+        using up    = touch::event::up;
+
         constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
 
-        using up = touch::event::up;
-        // UM = Unkown Message
+        // UM := Unkown Message
         constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
         constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
         constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
         const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
-        // Sanity check
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        const auto UM = wl::parsed_message{ UM_obj_id, UM_opcode, UM_arguments };
 
         // Actual tests:
 
-        auto default_counter = 0uz;
-        auto vis             = wl::message_visitor{ [&](const wl::parsed_message& msg) {
-            ++default_counter;
-            expect(msg.object_id == touch_obj);
-            expect(msg.opcode == up::opcode);
-        } };
+        auto default_counter             = 0uz;
+        auto default_counter_incrementer = [&] { ++default_counter; };
+        auto empty_overloads             = wl::message_overload_set{};
 
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
         expect(default_counter == 1);
 
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
         expect(default_counter == 3);
     };
 
-    wl_tag / "message_visitor uses added overload for static message"_test = [] {
-        auto default_counter = 0uz;
-        auto up_counter      = 0uz;
-        auto vis             = wl::message_visitor{ [&] { ++default_counter; } };
+    wl_tag / "message_visit uses the default overload with parsed_message argument"_test = [] {
+        // Scenario setup:
 
-        using touch              = wl::protocols::wl_touch;
+        using touch = wl::protocols::wl_touch;
+        using up    = touch::event::up;
+
         constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
 
-        using up = touch::event::up;
+        // UM := Unkown Message
+        constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
+        constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
+        constexpr up UM_arguments_arr[]{ { .serial{ 0 }, .time{ 0 }, .id{ 0 } } };
+        const auto UM_arguments = std::as_bytes(std::span(UM_arguments_arr));
+        static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
+
+        const auto UM = wl::parsed_message{ UM_obj_id, UM_opcode, UM_arguments };
+
+        // Actual tests:
+
+        auto default_counter             = 0uz;
+        auto default_counter_incrementer = [&](const wl::parsed_message& msg) {
+            expect(msg.object_id == touch_obj);
+            expect(msg.opcode == up::opcode);
+            expect(std::ranges::equal(msg.arguments, UM_arguments));
+            ++default_counter;
+        };
+        auto empty_overloads = wl::message_overload_set{};
+
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
+        expect(default_counter == 1);
+
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
+        wl::message_visit(default_counter_incrementer, empty_overloads, UM);
+        expect(default_counter == 3);
+    };
+
+    wl_tag / "message_visit uses overload for static message"_test = [] {
+        // Scenario setup:
+
+        using touch = wl::protocols::wl_touch;
+        using up    = touch::event::up;
 
 #ifndef __clang__
         // This will crash LLVM 17 and 18 (annoyingly will break clangd), see:
@@ -93,6 +100,8 @@ int main() {
         static_assert(wl::static_message<up>, "Test assumes this to be true.");
 #endif
 
+        constexpr auto touch_obj = wl::Wobject<touch>{ 42 };
+
         // UM = Unkown Message
         constexpr auto UM_obj_id = wl::Wobject<wl::generic_object>{ touch_obj.value };
         constexpr auto UM_opcode = wl::Wopcode<wl::generic_object>{ up::opcode.value };
@@ -101,28 +110,40 @@ int main() {
 
         static_assert(sizeof(up) % 4 == 0, "Needs padding to be correct message.");
 
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        const auto UM = wl::parsed_message{ UM_obj_id, UM_opcode, UM_arguments };
+
+        // Actual tests:
+
+        auto default_counter = 0uz;
+        auto up_counter      = 0uz;
+
+        auto overload_set                = wl::message_overload_set{};
+        auto default_counter_incrementer = [&] { ++default_counter; };
+
+        wl::message_visit(default_counter_incrementer, overload_set, UM);
         expect(default_counter == 1);
         expect(up_counter == 0);
 
-        vis.add_overload<up>(touch_obj, [&](const up& from_visit) {
+        overload_set.add_overload<up>(touch_obj, [&](const up& from_visit) {
             ++up_counter;
             expect(from_visit.serial == UM_arguments_arr[0].serial);
             expect(from_visit.time == UM_arguments_arr[0].time);
             expect(from_visit.id == UM_arguments_arr[0].id);
         });
 
-        vis.visit({ UM_obj_id, UM_opcode, UM_arguments });
+        wl::message_visit(default_counter_incrementer, overload_set, UM);
         expect(default_counter == 1);
         expect(up_counter == 1);
 
         const auto other_UM_obj_id = wl::Wobject<wl::generic_object>{ UM_obj_id.value + 1 };
-        vis.visit({ other_UM_obj_id, UM_opcode, UM_arguments });
+        const auto other_UM        = wl::parsed_message{ other_UM_obj_id, UM_opcode, UM_arguments };
+
+        wl::message_visit(default_counter_incrementer, overload_set, other_UM);
         expect(default_counter == 2);
         expect(up_counter == 1);
     };
 
-    wl_tag / "message_visitor uses added overloads for message with W[array|string]"_test = [] {
+    wl_tag / "message_visit uses added overloads for message with W[array|string]"_test = [] {
         // Used interfaces.
         using wl_display  = wl::protocols::wl_display;
         using wl_keyboard = wl::protocols::wl_keyboard;
@@ -170,15 +191,17 @@ int main() {
             return { buff.release_data() };
         }();
 
-        auto default_counter = 0uz;
-        auto str_counter     = 0uz;
-        auto arr_counter     = 0uz;
-        auto vis             = wl::message_visitor{ [&](const wl::parsed_message& msg) {
+        auto default_counter        = 0uz;
+        auto str_counter            = 0uz;
+        auto arr_counter            = 0uz;
+        const auto default_overload = [&](const wl::parsed_message& msg) {
             ++default_counter;
             expect(msg.object_id == keyboard_obj_C);
             expect(msg.opcode == msg_arr_t::opcode);
-        } };
-        vis.add_overload<msg_str_t>(display_obj, [&](const msg_str_t& msg) {
+        };
+
+        auto overload_set = wl::message_overload_set{};
+        overload_set.add_overload<msg_str_t>(display_obj, [&](const msg_str_t& msg) {
             if (str_counter == 0) {
                 expect(msg.object_id == 42);
                 expect(msg.code == 43);
@@ -191,14 +214,14 @@ int main() {
             ++str_counter;
         });
 
-        vis.add_overload<msg_arr_t>(keyboard_obj_A, [&](const msg_arr_t& msg) {
+        overload_set.add_overload<msg_arr_t>(keyboard_obj_A, [&](const msg_arr_t& msg) {
             ++arr_counter;
             expect(msg.serial == 12);
             expect(msg.surface == 13);
             expect(std::ranges::equal(msg.keys, some_data));
         });
 
-        vis.add_overload<msg_arr_t>(keyboard_obj_B, [&](const msg_arr_t& msg) {
+        overload_set.add_overload<msg_arr_t>(keyboard_obj_B, [&](const msg_arr_t& msg) {
             arr_counter += 10;
             expect(msg.serial == 21);
             expect(msg.surface == 31);
@@ -212,35 +235,35 @@ int main() {
         expect(str_counter == 0);
         expect(arr_counter == 0);
 
-        vis.visit(*msg_ptr);
+        wl::message_visit(default_overload, overload_set, *msg_ptr);
         ++msg_ptr;
 
         expect(default_counter == 0);
         expect(str_counter == 1);
         expect(arr_counter == 0);
 
-        vis.visit(*msg_ptr);
+        wl::message_visit(default_overload, overload_set, *msg_ptr);
         ++msg_ptr;
 
         expect(default_counter == 0);
         expect(str_counter == 1);
         expect(arr_counter == 1);
 
-        vis.visit(*msg_ptr);
+        wl::message_visit(default_overload, overload_set, *msg_ptr);
         ++msg_ptr;
 
         expect(default_counter == 0);
         expect(str_counter == 2);
         expect(arr_counter == 1);
 
-        vis.visit(*msg_ptr);
+        wl::message_visit(default_overload, overload_set, *msg_ptr);
         ++msg_ptr;
 
         expect(default_counter == 0);
         expect(str_counter == 2);
         expect(arr_counter == 11);
 
-        vis.visit(*msg_ptr);
+        wl::message_visit(default_overload, overload_set, *msg_ptr);
 
         expect(default_counter == 1);
         expect(str_counter == 2);
@@ -249,7 +272,7 @@ int main() {
         expect(++msg_ptr == msg_gen.end());
     };
 
-    wl_tag / "message_visitor overloads can hold a state"_test = [] {
+    wl_tag / "message_visit overloads can hold a state"_test = [] {
         // Secenario setup:
 
         using wl_display   = wl::protocols::wl_display;
@@ -290,8 +313,10 @@ int main() {
         // Actual tests:
 
         auto default_count = 0uz;
+        auto request_count = 0uz;
+        auto event_count   = 0uz;
 
-        struct default_overload_t {
+        struct {
             std::size_t& default_count_ref;
             using prev_t = std::optional<std::vector<std::byte>>;
             prev_t previous_arguments{};
@@ -305,40 +330,40 @@ int main() {
                     expect(std::ranges::equal(previous_arguments.value(), msg.arguments));
                 }
             }
-        };
+        } default_overload{ default_count };
 
-        auto vis = wl::message_visitor{ default_overload_t{ .default_count_ref{ default_count } } };
-        auto request_count = 0uz;
-        auto event_count   = 0uz;
+        auto overload_set = wl::message_overload_set{};
 
-        vis.add_overload<get_registry>(wl::global_display_object,
-                                       [&, first_time = true](const get_registry msg) mutable {
-                                           if (first_time) {
-                                               first_time = false;
-                                               expect(msg.registry == 1);
-                                           } else {
-                                               expect(msg.registry == 4);
-                                           }
-                                           ++request_count;
-                                       });
+        overload_set.add_overload<get_registry>(
+            wl::global_display_object,
+            [&, first_time = true](const get_registry msg) mutable {
+                if (first_time) {
+                    first_time = false;
+                    expect(msg.registry == 1);
+                } else {
+                    expect(msg.registry == 4);
+                }
+                ++request_count;
+            });
 
-        vis.add_overload<bind>(registry_obj, [&, first_time = true](const bind msg) mutable {
-            if (first_time) {
-                first_time = false;
-                expect(msg.name == 2);
-                expect(msg.new_id_interface == u8"abc");
-                expect(msg.new_id_interface_version == 42);
-                expect(msg.id == 3);
-            } else {
-                expect(msg.name == 5);
-                expect(msg.new_id_interface == u8"def");
-                expect(msg.new_id_interface_version == 43);
-                expect(msg.id == 6);
-            }
-            ++event_count;
-        });
+        overload_set.add_overload<bind>(registry_obj,
+                                        [&, first_time = true](const bind msg) mutable {
+                                            if (first_time) {
+                                                first_time = false;
+                                                expect(msg.name == 2);
+                                                expect(msg.new_id_interface == u8"abc");
+                                                expect(msg.new_id_interface_version == 42);
+                                                expect(msg.id == 3);
+                                            } else {
+                                                expect(msg.name == 5);
+                                                expect(msg.new_id_interface == u8"def");
+                                                expect(msg.new_id_interface_version == 43);
+                                                expect(msg.id == 6);
+                                            }
+                                            ++event_count;
+                                        });
 
-        vis.visit(msg_parser.message_generator());
+        wl::message_visit(default_overload, overload_set, msg_parser.message_generator());
         expect(default_count == 12);
     };
 }
