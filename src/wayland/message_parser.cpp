@@ -12,12 +12,13 @@
 namespace ger {
 namespace wl {
 
-[[nodiscard]] auto message_parser::message_generator() -> std::generator<const parsed_message&> {
+[[nodiscard]] auto parsed_message_generator(const std::span<const std::byte> buff)
+    -> std::generator<const parsed_message&> {
     // Points to the beginning of the next unparsed message = NUM.
-    auto NUM_begin = unparsed_messages_.begin();
+    auto NUM_begin = buff.begin();
 
     const auto parse_NUM = [&]() -> parsed_message {
-        const auto unparsed_bytes = std::ranges::distance(NUM_begin, unparsed_messages_.end());
+        const auto unparsed_bytes = std::ranges::distance(NUM_begin, buff.end());
         if (unparsed_bytes < 8) {
             throw std::logic_error{
                 "Trying to interpert less than 8 bytes as Wayland message header."
@@ -30,6 +31,7 @@ namespace wl {
 
 #ifdef __cpp_lib_is_implicit_lifetime
         static_assert(std::is_implicit_lifetime_v<wl::Wmessage_size_t>);
+
         static_assert(std::is_implicit_lifetime_v<wl::Wobject<wl::generic_object>>);
         static_assert(std::is_implicit_lifetime_v<wl::Wopcode<wl::generic_object>>);
 #endif
@@ -63,12 +65,17 @@ namespace wl {
     };
 
     // Message which is being constructed from NUM.
-    while (NUM_begin != unparsed_messages_.end()) {
+    while (NUM_begin != buff.end()) {
         const auto msg = parse_NUM();
         co_yield msg;
         const auto tot_size = sizeof(message_header<generic_object>) + msg.arguments.size();
-        std::ranges::advance(NUM_begin, tot_size, unparsed_messages_.end());
+        std::ranges::advance(NUM_begin, tot_size, buff.end());
     }
+    co_return;
+}
+
+[[nodiscard]] auto message_parser::message_generator() -> std::generator<const parsed_message&> {
+    return parsed_message_generator(unparsed_messages_);
 }
 
 } // namespace wl

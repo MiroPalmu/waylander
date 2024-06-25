@@ -15,6 +15,19 @@
 namespace ger {
 namespace wl {
 
+/// Parse messages from \p buff one at a time.
+///
+/// One at a time means that the next unparsed message is parsed when begin is
+/// invoked from the retruned generator or when it is advaced.
+///
+/// Assumes that bytes int \p buff will form a correct Wayland wire format messages.
+/// Throws if a partial message is detected.
+///
+/// Data pointed by \p buff is assumed to stay unchanched and within its liftime
+/// throughout the lifetime of gnerator the coroutine state object.
+[[nodiscard]] auto parsed_message_generator(const std::span<const std::byte> buff)
+    -> std::generator<const parsed_message&>;
+
 class message_parser {
     sstd::byte_vec unparsed_messages_;
 
@@ -22,6 +35,7 @@ class message_parser {
     [[nodiscard]] constexpr message_parser(const std::span<const std::byte> input)
         : unparsed_messages_(input.begin(), input.end()) {}
 
+    /// Returned generator can not outlive message_parser pointed by this pointer.
     [[nodiscard]] auto message_generator() -> std::generator<const parsed_message&>;
 };
 
