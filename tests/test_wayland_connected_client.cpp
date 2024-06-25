@@ -3,8 +3,8 @@
 /// These test do not try to use the possible Wayland compositor socket present on the system.
 
 #include <algorithm>
+#include <thread>
 #include <array>
-#include <barrier>
 #include <filesystem>
 #include <future>
 #include <ranges>
@@ -201,8 +201,6 @@ int main() {
 
         const auto obj = client.reserve_object_id<shell_surface>();
 
-        auto send_one_byte = std::barrier(2);
-
         auto _ = std::async(std::launch::async, [&] {
             auto buff = message_buffer{};
             for (auto _ : std::ranges::iota_view(0, number_of_events)) {
@@ -211,8 +209,9 @@ int main() {
             const auto data      = buff.release_data();
             const auto data_span = std::span{ data };
             for (const auto i : std::ranges::iota_view(0uz, data_span.size())) {
-                send_one_byte.arrive_and_wait();
                 server_sock.write(data_span.subspan(i, 1));
+                using namespace std::chrono_literals;
+                std::this_thread::sleep_for(1ms);
             }
         });
 
@@ -221,7 +220,6 @@ int main() {
 
         auto all_events_recved = [&] { return events_recved == number_of_events; };
         while (not all_events_recved()) {
-            send_one_byte.arrive_and_wait();
             auto msg_parser = client.recv_events();
             auto msg_gen    = msg_parser.message_generator();
 

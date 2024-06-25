@@ -23,6 +23,7 @@ class connected_client {
     gnu::local_stream_socket server_sock_;
     Wuint::integral_type next_new_id_{ 2 };
     message_buffer request_buff_{};
+    /// Allways assumed that the data never begins at middle of message, only at a beginning.
     sstd::byte_vec recv_buff_{};
 
   public:
@@ -47,6 +48,12 @@ class connected_client {
     [[nodiscard]] constexpr bool has_registered_requests(this auto&& self) noexcept {
         return not self.request_buff_.empty();
     }
+
+    /// Receive non-zero amount of data to recv_buff_.
+    void recv_more_data();
+
+    /// Inspect recv_buff_ and get bytes from beginning that are checked to form whole messages.
+    [[nodiscard]] auto get_recd_bytes_forming_whole_messages() -> std::span<const std::byte>;
 
     /// Read non-zero amount of bytes and return parser with all whole messages received.
     [[nodiscard]] auto recv_events() -> message_parser;
