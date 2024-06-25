@@ -4,10 +4,10 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <vector>
 
 #include "gnu_utils/local_stream_socket.hpp"
 #include "wayland/message_buffer.hpp"
+#include "wayland/message_overload_set.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
@@ -25,6 +25,33 @@ class connected_client {
     message_buffer request_buff_{};
     /// Allways assumed that the data never begins at middle of message, only at a beginning.
     sstd::byte_vec recv_buff_{};
+
+    /// Represents prepeared work to receive and visit messages.
+    class recvis_closure {
+        friend connected_client;
+        connected_client& parent_obj_ref_;
+        message_overload_set& mos_;
+
+        [[nodiscard]] recvis_closure(connected_client& parent_obj_ref, message_overload_set& mos)
+            : parent_obj_ref_{ parent_obj_ref },
+              mos_{ mos } {}
+
+        recvis_closure(const recvis_closure&)            = delete;
+        recvis_closure(recvis_closure&&)                 = delete;
+        recvis_closure& operator=(const recvis_closure&) = delete;
+        recvis_closure& operator=(recvis_closure&&)      = delete;
+
+        /// Receive and visit events until given (object id, opcode)-pair.
+        void until(const Wobject<generic_object>, const Wopcode<generic_object>);
+
+      public:
+
+        /// Receive and visit events until \p obj_id receives message \p Msg.
+        template<typename Msg, interface W>
+        void until(const Wobject<W> obj_id) && {
+            until({ obj_id.value }, { Msg::opcode.value });
+        }
+    };
 
   public:
     /// Connected to socket at \p socket.
@@ -57,6 +84,8 @@ class connected_client {
 
     /// Read non-zero amount of bytes and return parser with all whole messages received.
     [[nodiscard]] auto recv_events() -> message_parser;
+
+    auto recv_and_visit_events(message_overload_set&) -> recvis_closure;
 };
 
 } // namespace wl

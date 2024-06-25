@@ -3,19 +3,21 @@
 /// These test do not try to use the possible Wayland compositor socket present on the system.
 
 #include <algorithm>
-#include <thread>
 #include <array>
 #include <filesystem>
 #include <future>
 #include <ranges>
+#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
 #include "byte_vec.hpp"
 #include "gnu_utils/local_stream_socket.hpp"
+#include "wayland/message_buffer.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/message_utils.hpp"
+#include "wayland/message_visitor.hpp"
 #include "wayland/protocol.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
@@ -230,5 +232,76 @@ int main() {
             }
         }
         expect(events_recved == number_of_events);
+    };
+
+    wl_tag / "connected_client can visit messages until spesific one"_test = [&] {
+        // Secenario setup:
+
+        using wl_display   = protocols::wl_display;
+        using get_registry = wl_display::request::get_registry;
+        using wl_registry  = protocols::wl_registry;
+        using bind         = wl_registry::request::bind;
+
+        constexpr auto registry_obj = Wobject<wl_registry>{ 42 };
+        constexpr auto display_obj  = Wobject<wl_display>{ 55 };
+
+        // Assume that message_[parser|buffer] works and construct messages:
+        //
+        // 1. display_obj: get_registry{ 1 }
+        // 2. registry_obj: bind{ 2, "abc", 42, 3 }
+        // 3. display_obj: get_registry{ 4 }
+        // 4. registry_obj: bind{ 5, "def", 43, 6 }
+        // 5. global_display_object: get_registry{ 7 }
+        // 6. display_obj: get_registry{ 8 }
+        auto events = [&] {
+            auto buff = message_buffer{};
+            buff.append(display_obj, get_registry{ .registry{ 1 } });
+            buff.append(registry_obj,
+                        bind{ .name{ 2 },
+                              .new_id_interface{ u8"abc" },
+                              .new_id_interface_version{ 42 },
+                              .id{ 3 } });
+            buff.append(display_obj, get_registry{ .registry{ 4 } });
+            buff.append(registry_obj,
+                        bind{ .name{ 5 },
+                              .new_id_interface{ u8"def" },
+                              .new_id_interface_version{ 43 },
+                              .id{ 6 } });
+            buff.append(global_display_object, get_registry{ .registry{ 7 } });
+            buff.append(display_obj, get_registry{ .registry{ 8 } });
+            return buff.release_data();
+        }();
+
+        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+
+        auto _ = std::async(std::launch::async, [&] { server_sock.write(events); });
+
+        // Actual tests:
+
+        auto client = connected_client{ std::move(client_sock) };
+
+        auto request_count = 0uz;
+        auto event_count   = 0uz;
+
+        auto ov = message_overload_set{};
+
+        wl_tag / "messages without overloads are skipped"_test = [&] {
+            client.recv_and_visit_events(ov).until<bind>(registry_obj);
+            expect(request_count == 0);
+            expect(event_count == 0);
+        };
+
+        ov.add_overload<get_registry>(display_obj, [&](auto) { ++request_count; });
+        ov.add_overload<bind>(registry_obj, [&](auto) { ++event_count; });
+
+        client.recv_and_visit_events(ov).until<get_registry>(global_display_object);
+        expect(request_count == 1);
+        expect(event_count == 1);
+
+        wl_tag / "the specified 'until message' takes priority over overloads"_test = [&] {
+            client.recv_and_visit_events(ov).until<get_registry>(display_obj);
+            expect(request_count == 1);
+            expect(event_count == 1);
+        };
     };
 }

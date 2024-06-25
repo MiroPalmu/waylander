@@ -9,6 +9,8 @@
 #include "byte_vec.hpp"
 #include "gnu_utils/local_stream_socket.hpp"
 
+#include "wayland/message_parser.hpp"
+#include "wayland/message_visitor.hpp"
 #include "wayland/protocol.hpp"
 
 namespace ger {
@@ -112,6 +114,54 @@ try_next_msg:
     recv_buff_.erase(recv_buff_.begin(),
                      std::ranges::next(recv_buff_.begin(), bytes_to_parse.size()));
     return parser;
+}
+
+void connected_client::recvis_closure::until(const Wobject<generic_object> until_obj_id,
+                                             const Wopcode<generic_object> until_opcode) {
+try_again:
+    const auto bytes_to_parse = parent_obj_ref_.get_recd_bytes_forming_whole_messages();
+    auto parsed_messages      = parsed_message_generator(bytes_to_parse);
+
+    auto total_num_parsed_messages   = 0uz;
+    auto total_parsed_argument_bytes = 0uz;
+
+    for (const auto& msg : parsed_messages) {
+        ++total_num_parsed_messages;
+        total_parsed_argument_bytes += msg.arguments.size();
+
+        if (msg.object_id == until_obj_id and msg.opcode == until_opcode) {
+            /// Found "until message".
+            const auto total_parsed_bytes =
+                sizeof(message_header<generic_object>) * total_num_parsed_messages
+                + total_parsed_argument_bytes;
+
+            parent_obj_ref_.recv_buff_.erase(
+                parent_obj_ref_.recv_buff_.begin(),
+                std::ranges::next(parent_obj_ref_.recv_buff_.begin(), total_parsed_bytes));
+
+            return;
+        }
+
+        const auto ov_res = mos_.overload_resolution(msg.object_id, msg.opcode);
+
+        // Skip messages without overloads.
+        if (ov_res.has_value()) { std::invoke(ov_res.value(), msg.arguments); }
+    }
+
+    // "Until message" was not found from already recevided whole messages.
+
+    // Erease visited messages.
+    parent_obj_ref_.recv_buff_.erase(
+        parent_obj_ref_.recv_buff_.begin(),
+        std::ranges::next(parent_obj_ref_.recv_buff_.begin(), bytes_to_parse.size()));
+
+    parent_obj_ref_.recv_more_data();
+    goto try_again;
+}
+
+auto connected_client::recv_and_visit_events(message_overload_set& mos)
+    -> connected_client::recvis_closure {
+    return recvis_closure(*this, mos);
 }
 
 } // namespace wl
