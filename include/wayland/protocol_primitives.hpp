@@ -55,6 +55,16 @@ struct Wobject {
     [[nodiscard]] constexpr operator Wnew_id<T>(this auto&& self) {
         return { self.value };
     }
+
+    /// Reserve new id from client, assign it to this object and return copy of it.
+    ///
+    /// To prevent inclusion of connected_client, it is forward declared.
+    /// This means that its members can not be used, so this function
+    /// has to be defined after connected_client is defined.
+    ///
+    /// So, to use this function one has to include connected_client as well.
+    /// As that header will always include this one, there is no problem with order of includes.
+    Wobject<WObj> reserve_id(class connected_client& client);
 };
 
 template<interface WObj = generic_object>

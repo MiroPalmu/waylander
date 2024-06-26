@@ -45,7 +45,6 @@ class connected_client {
         void until(const Wobject<generic_object>, const Wopcode<generic_object>);
 
       public:
-
         /// Receive and visit events until \p obj_id receives message \p Msg.
         template<typename Msg, interface W>
         void until(const Wobject<W> obj_id) && {
@@ -87,6 +86,12 @@ class connected_client {
 
     auto recv_and_visit_events(message_overload_set&) -> recvis_closure;
 };
+
+/// See decleration.
+template<interface T>
+Wobject<T> Wobject<T>::reserve_id(connected_client& client) {
+    return *this = client.reserve_object_id<T>();
+}
 
 } // namespace wl
 } // namespace ger

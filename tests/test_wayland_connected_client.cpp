@@ -35,22 +35,55 @@ int main() {
         expect(nothrow([&] { auto _ = connected_client{ std::move(client_sock) }; }));
     };
 
-    wl_tag / "connected_client can reserve object id"_test = [] {
+    wl_tag / "connected_client can reserve object id"_test = [&] {
         auto [client_sock, _] = ger::gnu::open_local_stream_socket_pair();
         auto client           = connected_client{ std::move(client_sock) };
         const auto id1        = client.reserve_object_id<protocols::wl_display>();
         const auto id2        = client.reserve_object_id<protocols::wl_touch>();
         const auto id3        = client.reserve_object_id();
 
-        expect(std::same_as<Wobject<protocols::wl_display>, std::remove_cvref_t<decltype(id1)>>);
-        expect(std::same_as<Wobject<protocols::wl_touch>, std::remove_cvref_t<decltype(id2)>>);
-        expect(std::same_as<Wobject<generic_object>, std::remove_cvref_t<decltype(id3)>>);
-        expect(id1 == id1);
-        expect(id1 != id2);
-        expect(id1 != id3);
-        expect(id2 == id2);
-        expect(id2 != id3);
-        expect(id3 == id3);
+        Wobject<protocols::wl_shell> id4;
+
+        wl_tag / "reservation can be done using Wobject<...>::reserve"_test = [&] {
+            const auto id4_copy = id4.reserve_id(client);
+            expect(id4 == id4_copy);
+        };
+
+        const auto id5 = client.reserve_object_id<protocols::wl_shell>();
+
+        wl_tag / "which types are correct"_test = [&] {
+            const auto type_test = []<typename T, typename ExpectedInterface>(
+                                       const T&,
+                                       std::type_identity<ExpectedInterface>) -> bool {
+                return std::same_as<T, Wobject<ExpectedInterface>>;
+            };
+
+            expect(type_test(id1, std::type_identity<protocols::wl_display>{}));
+            expect(type_test(id2, std::type_identity<protocols::wl_touch>{}));
+            expect(type_test(id3, std::type_identity<generic_object>{}));
+            // Redundant test, as type of id4 is not deduced.
+            expect(type_test(id4, std::type_identity<protocols::wl_shell>{}));
+            expect(type_test(id5, std::type_identity<protocols::wl_shell>{}));
+        };
+
+        wl_tag / "which are monotonically increasing"_test = [&] {
+            expect(global_display_object.value == 1);
+            expect(id1.value == 2);
+            expect(id2.value == 3);
+            expect(id3.value == 4);
+            expect(id4.value == 5);
+            expect(id5.value == 6);
+        };
+
+        wl_tag / "which are comparable with eachother"_test = [&] {
+            expect(id1 == id1);
+            expect(id1 != id2);
+            expect(id1 != id3);
+            expect(id2 == id2);
+            expect(id2 != id3);
+            expect(id3 == id3);
+            expect(id4 != id5);
+        };
     };
 
     wl_tag / "connected_client can register requests"_test = [] {
