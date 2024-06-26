@@ -31,13 +31,11 @@ int main() {
 
     auto ov = ger::wl::message_overload_set{};
     ov.add_overload<global_t>(registery, [&](const global_t& msg) {
-        std::println("registery global event:");
-        std::println("    name: {}", msg.name.value);
-        // wonky stuff:
-        std::println("    interface: {}",
+        std::println("{} version {}: {}",
+                     msg.name.value,
+                     msg.version.value,
                      std::string_view(reinterpret_cast<char const*>(msg.interface.data()),
                                       msg.interface.size()));
-        std::println("    version: {}", msg.version.value);
     });
     ov.add_overload<fatal_error_t>(ger::wl::global_display_object, [&](const auto& err) {
         std::println("Received global display object error event:");
@@ -61,6 +59,6 @@ int main() {
         std::exit(1);
     });
 
-    std::println("Receiving events:\n");
+    std::println("Registry globals:");
     client.recv_and_visit_events(ov).until<done_t>(sync_callback);
 }
