@@ -154,6 +154,10 @@ int main() {
                 reinterpret_cast<std::byte const*>(mock_msg_with_str.message.data()),
                 mock_msg_with_str.message.size());
             expect(std::ranges::equal(str_in_buff, expected_str));
+
+            const auto expected_null_from_buff =
+                released_data[index_of_msg_size_byte + sizeof(size) + size - 1];
+            expect(expected_null_from_buff == std::byte{ 0 });
         };
     };
 

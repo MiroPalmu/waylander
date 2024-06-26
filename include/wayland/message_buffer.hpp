@@ -56,7 +56,7 @@ class message_buffer {
                             str.size());
 
                 // null delimiter
-                buff_.back() = std::byte{ 0 };
+                buff_[buff_size_before + element_size_without_pad - 1uz] = std::byte{ 0 };
 
                 msg_total_size += element_size;
             },
