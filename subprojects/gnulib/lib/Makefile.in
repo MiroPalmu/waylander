@@ -48,10 +48,12 @@
 #  --macro-prefix=gl \
 #  close \
 #  connect \
+#  ftruncate \
 #  full-read \
 #  full-write \
 #  mkfifo \
 #  open \
+#  passfd \
 #  pipe2-safer \
 #  socket
 
@@ -137,17 +139,18 @@ host_triplet = @host@
 @GL_COND_OBJ_DUP2_TRUE@am__append_3 = dup2.c
 @GL_COND_OBJ_FCNTL_TRUE@am__append_4 = fcntl.c
 @GL_COND_OBJ_FSTAT_TRUE@am__append_5 = fstat.c
-@GL_COND_OBJ_GETDTABLESIZE_TRUE@am__append_6 = getdtablesize.c
-@GL_COND_OBJ_MKFIFO_TRUE@am__append_7 = mkfifo.c
-@GL_COND_OBJ_MSVC_INVAL_TRUE@am__append_8 = msvc-inval.c
-@GL_COND_OBJ_MSVC_NOTHROW_TRUE@am__append_9 = msvc-nothrow.c
-@GL_COND_OBJ_OPEN_TRUE@am__append_10 = open.c
-@GL_COND_OBJ_PIPE_TRUE@am__append_11 = pipe.c
-@GL_COND_OBJ_RAISE_TRUE@am__append_12 = raise.c
-@GL_COND_OBJ_READ_TRUE@am__append_13 = read.c
-@GL_COND_OBJ_SOCKET_TRUE@am__append_14 = socket.c
-@GL_COND_OBJ_STAT_TRUE@am__append_15 = stat.c
-@GL_COND_OBJ_WRITE_TRUE@am__append_16 = write.c
+@GL_COND_OBJ_FTRUNCATE_TRUE@am__append_6 = ftruncate.c
+@GL_COND_OBJ_GETDTABLESIZE_TRUE@am__append_7 = getdtablesize.c
+@GL_COND_OBJ_MKFIFO_TRUE@am__append_8 = mkfifo.c
+@GL_COND_OBJ_MSVC_INVAL_TRUE@am__append_9 = msvc-inval.c
+@GL_COND_OBJ_MSVC_NOTHROW_TRUE@am__append_10 = msvc-nothrow.c
+@GL_COND_OBJ_OPEN_TRUE@am__append_11 = open.c
+@GL_COND_OBJ_PIPE_TRUE@am__append_12 = pipe.c
+@GL_COND_OBJ_RAISE_TRUE@am__append_13 = raise.c
+@GL_COND_OBJ_READ_TRUE@am__append_14 = read.c
+@GL_COND_OBJ_SOCKET_TRUE@am__append_15 = socket.c
+@GL_COND_OBJ_STAT_TRUE@am__append_16 = stat.c
+@GL_COND_OBJ_WRITE_TRUE@am__append_17 = write.c
 subdir = lib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/00gnulib.m4 \
@@ -158,7 +161,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/00gnulib.m4 \
 	$(top_srcdir)/m4/extensions.m4 \
 	$(top_srcdir)/m4/extern-inline.m4 $(top_srcdir)/m4/fcntl-o.m4 \
 	$(top_srcdir)/m4/fcntl.m4 $(top_srcdir)/m4/fcntl_h.m4 \
-	$(top_srcdir)/m4/fstat.m4 $(top_srcdir)/m4/getdtablesize.m4 \
+	$(top_srcdir)/m4/fstat.m4 $(top_srcdir)/m4/ftruncate.m4 \
+	$(top_srcdir)/m4/getdtablesize.m4 \
 	$(top_srcdir)/m4/gnulib-common.m4 \
 	$(top_srcdir)/m4/gnulib-comp.m4 \
 	$(top_srcdir)/m4/include_next.m4 $(top_srcdir)/m4/largefile.m4 \
@@ -166,23 +170,25 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/00gnulib.m4 \
 	$(top_srcdir)/m4/mkfifo.m4 $(top_srcdir)/m4/mode_t.m4 \
 	$(top_srcdir)/m4/msvc-inval.m4 \
 	$(top_srcdir)/m4/msvc-nothrow.m4 $(top_srcdir)/m4/multiarch.m4 \
-	$(top_srcdir)/m4/off_t.m4 $(top_srcdir)/m4/open-cloexec.m4 \
+	$(top_srcdir)/m4/off64_t.m4 $(top_srcdir)/m4/off_t.m4 \
+	$(top_srcdir)/m4/open-cloexec.m4 \
 	$(top_srcdir)/m4/open-slash.m4 $(top_srcdir)/m4/open.m4 \
-	$(top_srcdir)/m4/pathmax.m4 $(top_srcdir)/m4/pipe.m4 \
-	$(top_srcdir)/m4/pipe2.m4 $(top_srcdir)/m4/raise.m4 \
-	$(top_srcdir)/m4/read.m4 $(top_srcdir)/m4/safe-read.m4 \
-	$(top_srcdir)/m4/safe-write.m4 $(top_srcdir)/m4/signal_h.m4 \
-	$(top_srcdir)/m4/socketlib.m4 $(top_srcdir)/m4/sockets.m4 \
-	$(top_srcdir)/m4/socklen.m4 $(top_srcdir)/m4/ssize_t.m4 \
-	$(top_srcdir)/m4/stat-time.m4 $(top_srcdir)/m4/stat.m4 \
-	$(top_srcdir)/m4/stdalign.m4 $(top_srcdir)/m4/stddef_h.m4 \
-	$(top_srcdir)/m4/stdint.m4 $(top_srcdir)/m4/sys_socket_h.m4 \
+	$(top_srcdir)/m4/passfd.m4 $(top_srcdir)/m4/pathmax.m4 \
+	$(top_srcdir)/m4/pipe.m4 $(top_srcdir)/m4/pipe2.m4 \
+	$(top_srcdir)/m4/raise.m4 $(top_srcdir)/m4/read.m4 \
+	$(top_srcdir)/m4/safe-read.m4 $(top_srcdir)/m4/safe-write.m4 \
+	$(top_srcdir)/m4/signal_h.m4 $(top_srcdir)/m4/socketlib.m4 \
+	$(top_srcdir)/m4/sockets.m4 $(top_srcdir)/m4/socklen.m4 \
+	$(top_srcdir)/m4/ssize_t.m4 $(top_srcdir)/m4/stat-time.m4 \
+	$(top_srcdir)/m4/stat.m4 $(top_srcdir)/m4/stdalign.m4 \
+	$(top_srcdir)/m4/stddef_h.m4 $(top_srcdir)/m4/stdint.m4 \
+	$(top_srcdir)/m4/sys_socket_h.m4 \
 	$(top_srcdir)/m4/sys_stat_h.m4 $(top_srcdir)/m4/sys_types_h.m4 \
 	$(top_srcdir)/m4/sys_uio_h.m4 $(top_srcdir)/m4/time_h.m4 \
 	$(top_srcdir)/m4/unistd-safer.m4 $(top_srcdir)/m4/unistd_h.m4 \
-	$(top_srcdir)/m4/warn-on-use.m4 $(top_srcdir)/m4/wchar_t.m4 \
-	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/m4/write.m4 \
-	$(top_srcdir)/m4/zzgnulib.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/warn-on-use.m4 $(top_srcdir)/m4/wint_t.m4 \
+	$(top_srcdir)/m4/write.m4 $(top_srcdir)/m4/zzgnulib.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(noinst_HEADERS) \
@@ -201,46 +207,49 @@ libgnu_a_AR = $(AR) $(ARFLAGS)
 am__DEPENDENCIES_1 =
 am__libgnu_a_SOURCES_DIST = binary-io.h binary-io.c cloexec.c close.c \
 	connect.c dup2.c fcntl.c fd-hook.c fd-safer-flag.c \
-	dup-safer-flag.c fstat.c full-read.h full-read.c full-write.h \
-	full-write.c getdtablesize.c idx.h malloca.c mkfifo.c \
-	msvc-inval.c msvc-nothrow.c open.c pipe.c pipe2.c \
-	pipe2-safer.c raise.c read.c safe-read.c safe-write.c socket.c \
-	sockets.h sockets.c stat.c stat-time.c sys_socket.c unistd.c \
-	dup-safer.c fd-safer.c pipe-safer.c write.c
+	dup-safer-flag.c fstat.c ftruncate.c full-read.h full-read.c \
+	full-write.h full-write.c getdtablesize.c idx.h malloca.c \
+	mkfifo.c msvc-inval.c msvc-nothrow.c open.c passfd.c pipe.c \
+	pipe2.c pipe2-safer.c raise.c read.c safe-read.c safe-write.c \
+	socket.c sockets.h sockets.c stat.c stat-time.c sys_socket.c \
+	unistd.c dup-safer.c fd-safer.c pipe-safer.c write.c
 @GL_COND_OBJ_CLOSE_TRUE@am__objects_1 = libgnu_a-close.$(OBJEXT)
 @GL_COND_OBJ_CONNECT_TRUE@am__objects_2 = libgnu_a-connect.$(OBJEXT)
 @GL_COND_OBJ_DUP2_TRUE@am__objects_3 = libgnu_a-dup2.$(OBJEXT)
 @GL_COND_OBJ_FCNTL_TRUE@am__objects_4 = libgnu_a-fcntl.$(OBJEXT)
 @GL_COND_OBJ_FSTAT_TRUE@am__objects_5 = libgnu_a-fstat.$(OBJEXT)
-@GL_COND_OBJ_GETDTABLESIZE_TRUE@am__objects_6 = libgnu_a-getdtablesize.$(OBJEXT)
-@GL_COND_OBJ_MKFIFO_TRUE@am__objects_7 = libgnu_a-mkfifo.$(OBJEXT)
-@GL_COND_OBJ_MSVC_INVAL_TRUE@am__objects_8 =  \
+@GL_COND_OBJ_FTRUNCATE_TRUE@am__objects_6 =  \
+@GL_COND_OBJ_FTRUNCATE_TRUE@	libgnu_a-ftruncate.$(OBJEXT)
+@GL_COND_OBJ_GETDTABLESIZE_TRUE@am__objects_7 = libgnu_a-getdtablesize.$(OBJEXT)
+@GL_COND_OBJ_MKFIFO_TRUE@am__objects_8 = libgnu_a-mkfifo.$(OBJEXT)
+@GL_COND_OBJ_MSVC_INVAL_TRUE@am__objects_9 =  \
 @GL_COND_OBJ_MSVC_INVAL_TRUE@	libgnu_a-msvc-inval.$(OBJEXT)
-@GL_COND_OBJ_MSVC_NOTHROW_TRUE@am__objects_9 = libgnu_a-msvc-nothrow.$(OBJEXT)
-@GL_COND_OBJ_OPEN_TRUE@am__objects_10 = libgnu_a-open.$(OBJEXT)
-@GL_COND_OBJ_PIPE_TRUE@am__objects_11 = libgnu_a-pipe.$(OBJEXT)
-@GL_COND_OBJ_RAISE_TRUE@am__objects_12 = libgnu_a-raise.$(OBJEXT)
-@GL_COND_OBJ_READ_TRUE@am__objects_13 = libgnu_a-read.$(OBJEXT)
-@GL_COND_OBJ_SOCKET_TRUE@am__objects_14 = libgnu_a-socket.$(OBJEXT)
-@GL_COND_OBJ_STAT_TRUE@am__objects_15 = libgnu_a-stat.$(OBJEXT)
-@GL_COND_OBJ_WRITE_TRUE@am__objects_16 = libgnu_a-write.$(OBJEXT)
+@GL_COND_OBJ_MSVC_NOTHROW_TRUE@am__objects_10 = libgnu_a-msvc-nothrow.$(OBJEXT)
+@GL_COND_OBJ_OPEN_TRUE@am__objects_11 = libgnu_a-open.$(OBJEXT)
+@GL_COND_OBJ_PIPE_TRUE@am__objects_12 = libgnu_a-pipe.$(OBJEXT)
+@GL_COND_OBJ_RAISE_TRUE@am__objects_13 = libgnu_a-raise.$(OBJEXT)
+@GL_COND_OBJ_READ_TRUE@am__objects_14 = libgnu_a-read.$(OBJEXT)
+@GL_COND_OBJ_SOCKET_TRUE@am__objects_15 = libgnu_a-socket.$(OBJEXT)
+@GL_COND_OBJ_STAT_TRUE@am__objects_16 = libgnu_a-stat.$(OBJEXT)
+@GL_COND_OBJ_WRITE_TRUE@am__objects_17 = libgnu_a-write.$(OBJEXT)
 am_libgnu_a_OBJECTS = libgnu_a-binary-io.$(OBJEXT) \
 	libgnu_a-cloexec.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) libgnu_a-fd-hook.$(OBJEXT) \
 	libgnu_a-fd-safer-flag.$(OBJEXT) \
 	libgnu_a-dup-safer-flag.$(OBJEXT) $(am__objects_5) \
-	libgnu_a-full-read.$(OBJEXT) libgnu_a-full-write.$(OBJEXT) \
-	$(am__objects_6) libgnu_a-malloca.$(OBJEXT) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11) libgnu_a-pipe2.$(OBJEXT) \
-	libgnu_a-pipe2-safer.$(OBJEXT) $(am__objects_12) \
-	$(am__objects_13) libgnu_a-safe-read.$(OBJEXT) \
-	libgnu_a-safe-write.$(OBJEXT) $(am__objects_14) \
-	libgnu_a-sockets.$(OBJEXT) $(am__objects_15) \
+	$(am__objects_6) libgnu_a-full-read.$(OBJEXT) \
+	libgnu_a-full-write.$(OBJEXT) $(am__objects_7) \
+	libgnu_a-malloca.$(OBJEXT) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11) libgnu_a-passfd.$(OBJEXT) \
+	$(am__objects_12) libgnu_a-pipe2.$(OBJEXT) \
+	libgnu_a-pipe2-safer.$(OBJEXT) $(am__objects_13) \
+	$(am__objects_14) libgnu_a-safe-read.$(OBJEXT) \
+	libgnu_a-safe-write.$(OBJEXT) $(am__objects_15) \
+	libgnu_a-sockets.$(OBJEXT) $(am__objects_16) \
 	libgnu_a-stat-time.$(OBJEXT) libgnu_a-sys_socket.$(OBJEXT) \
 	libgnu_a-unistd.$(OBJEXT) libgnu_a-dup-safer.$(OBJEXT) \
 	libgnu_a-fd-safer.$(OBJEXT) libgnu_a-pipe-safer.$(OBJEXT) \
-	$(am__objects_16)
+	$(am__objects_17)
 libgnu_a_OBJECTS = $(am_libgnu_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -265,13 +274,14 @@ am__depfiles_remade = ./$(DEPDIR)/libgnu_a-binary-io.Po \
 	./$(DEPDIR)/libgnu_a-fcntl.Po ./$(DEPDIR)/libgnu_a-fd-hook.Po \
 	./$(DEPDIR)/libgnu_a-fd-safer-flag.Po \
 	./$(DEPDIR)/libgnu_a-fd-safer.Po ./$(DEPDIR)/libgnu_a-fstat.Po \
+	./$(DEPDIR)/libgnu_a-ftruncate.Po \
 	./$(DEPDIR)/libgnu_a-full-read.Po \
 	./$(DEPDIR)/libgnu_a-full-write.Po \
 	./$(DEPDIR)/libgnu_a-getdtablesize.Po \
 	./$(DEPDIR)/libgnu_a-malloca.Po ./$(DEPDIR)/libgnu_a-mkfifo.Po \
 	./$(DEPDIR)/libgnu_a-msvc-inval.Po \
 	./$(DEPDIR)/libgnu_a-msvc-nothrow.Po \
-	./$(DEPDIR)/libgnu_a-open.Po \
+	./$(DEPDIR)/libgnu_a-open.Po ./$(DEPDIR)/libgnu_a-passfd.Po \
 	./$(DEPDIR)/libgnu_a-pipe-safer.Po \
 	./$(DEPDIR)/libgnu_a-pipe.Po \
 	./$(DEPDIR)/libgnu_a-pipe2-safer.Po \
@@ -577,6 +587,7 @@ GL_GNULIB_TIME_R = @GL_GNULIB_TIME_R@
 GL_GNULIB_TIME_RZ = @GL_GNULIB_TIME_RZ@
 GL_GNULIB_TRUNCATE = @GL_GNULIB_TRUNCATE@
 GL_GNULIB_TTYNAME_R = @GL_GNULIB_TTYNAME_R@
+GL_GNULIB_TZNAME = @GL_GNULIB_TZNAME@
 GL_GNULIB_TZSET = @GL_GNULIB_TZSET@
 GL_GNULIB_UNISTD_H_GETOPT = @GL_GNULIB_UNISTD_H_GETOPT@
 GL_GNULIB_UNISTD_H_NONBLOCKING = @GL_GNULIB_UNISTD_H_NONBLOCKING@
@@ -641,6 +652,7 @@ HAVE_MKNOD = @HAVE_MKNOD@
 HAVE_MKNODAT = @HAVE_MKNODAT@
 HAVE_MSVC_INVALID_PARAMETER_HANDLER = @HAVE_MSVC_INVALID_PARAMETER_HANDLER@
 HAVE_NANOSLEEP = @HAVE_NANOSLEEP@
+HAVE_OFF64_T = @HAVE_OFF64_T@
 HAVE_OPENAT = @HAVE_OPENAT@
 HAVE_OS_H = @HAVE_OS_H@
 HAVE_PIPE = @HAVE_PIPE@
@@ -685,7 +697,6 @@ HAVE_UNLINKAT = @HAVE_UNLINKAT@
 HAVE_USLEEP = @HAVE_USLEEP@
 HAVE_UTIMENSAT = @HAVE_UTIMENSAT@
 HAVE_WCHAR_H = @HAVE_WCHAR_H@
-HAVE_WCHAR_T = @HAVE_WCHAR_T@
 HAVE_WINSOCK2_H = @HAVE_WINSOCK2_H@
 HAVE_WS2TCPIP_H = @HAVE_WS2TCPIP_H@
 INCLUDE_NEXT = @INCLUDE_NEXT@
@@ -731,6 +742,7 @@ NEXT_SYS_TYPES_H = @NEXT_SYS_TYPES_H@
 NEXT_SYS_UIO_H = @NEXT_SYS_UIO_H@
 NEXT_TIME_H = @NEXT_TIME_H@
 NEXT_UNISTD_H = @NEXT_UNISTD_H@
+NULLPTR_T_NEEDS_STDDEF = @NULLPTR_T_NEEDS_STDDEF@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -781,6 +793,7 @@ REPLACE_GETLOGIN_R = @REPLACE_GETLOGIN_R@
 REPLACE_GETPAGESIZE = @REPLACE_GETPAGESIZE@
 REPLACE_GETPASS = @REPLACE_GETPASS@
 REPLACE_GETPASS_FOR_GETPASS_GNU = @REPLACE_GETPASS_FOR_GETPASS_GNU@
+REPLACE_GETUSERSHELL = @REPLACE_GETUSERSHELL@
 REPLACE_GMTIME = @REPLACE_GMTIME@
 REPLACE_ISATTY = @REPLACE_ISATTY@
 REPLACE_LCHOWN = @REPLACE_LCHOWN@
@@ -833,6 +846,7 @@ SIG_ATOMIC_T_SUFFIX = @SIG_ATOMIC_T_SUFFIX@
 SIZE_T_SUFFIX = @SIZE_T_SUFFIX@
 STDCKDINT_H = @STDCKDINT_H@
 STDDEF_H = @STDDEF_H@
+STDDEF_NOT_IDEMPOTENT = @STDDEF_NOT_IDEMPOTENT@
 STDINT_H = @STDINT_H@
 STRIP = @STRIP@
 SYS_TIME_H_DEFINES_STRUCT_TIMESPEC = @SYS_TIME_H_DEFINES_STRUCT_TIMESPEC@
@@ -916,13 +930,13 @@ pkgdata_DATA =
 EXTRA_DIST = alloca.in.h assert.in.h verify.h cloexec.h w32sock.h \
 	errno.in.h fcntl.in.h fd-hook.h filename.h stat-w32.c \
 	stat-w32.h full-write.c limits.in.h malloca.h msvc-inval.h \
-	msvc-nothrow.h pathmax.h safe-read.h sys-limits.h safe-read.c \
-	safe-write.h sys-limits.h signal.in.h arg-nonnull.h c++defs.h \
-	warn-on-use.h w32sock.h w32sock.h stat-w32.c stat-w32.h \
-	stat-time.h intprops-internal.h stdckdint.in.h stddef.in.h \
-	stdint.in.h sys_socket.in.h sys_stat.in.h sys_types.in.h \
-	sys_uio.in.h time.in.h unistd.in.h unistd--.h unistd-safer.h \
-	xalloc-oversized.h
+	msvc-nothrow.h passfd.h pathmax.h safe-read.h sys-limits.h \
+	safe-read.c safe-write.h sys-limits.h signal.in.h \
+	arg-nonnull.h c++defs.h warn-on-use.h w32sock.h w32sock.h \
+	stat-w32.c stat-w32.h stat-time.h intprops-internal.h \
+	stdckdint.in.h stddef.in.h stdint.in.h sys_socket.in.h \
+	sys_stat.in.h sys_types.in.h sys_uio.in.h time.in.h \
+	unistd.in.h unistd--.h unistd-safer.h xalloc-oversized.h
 BUILT_SOURCES = $(ALLOCA_H) $(ASSERT_H) $(ERRNO_H) fcntl.h $(LIMITS_H) \
 	signal.h $(STDCKDINT_H) $(STDDEF_H) $(STDINT_H) sys/socket.h \
 	sys/stat.h sys/types.h sys/uio.h time.h unistd.h
@@ -943,14 +957,14 @@ AM_CPPFLAGS =
 AM_CFLAGS = 
 libgnu_a_SOURCES = binary-io.h binary-io.c cloexec.c $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) fd-hook.c \
-	fd-safer-flag.c dup-safer-flag.c $(am__append_5) full-read.h \
-	full-read.c full-write.h full-write.c $(am__append_6) idx.h \
-	malloca.c $(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) pipe2.c pipe2-safer.c \
-	$(am__append_12) $(am__append_13) safe-read.c safe-write.c \
-	$(am__append_14) sockets.h sockets.c $(am__append_15) \
-	stat-time.c sys_socket.c unistd.c dup-safer.c fd-safer.c \
-	pipe-safer.c $(am__append_16)
+	fd-safer-flag.c dup-safer-flag.c $(am__append_5) \
+	$(am__append_6) full-read.h full-read.c full-write.h \
+	full-write.c $(am__append_7) idx.h malloca.c $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) passfd.c \
+	$(am__append_12) pipe2.c pipe2-safer.c $(am__append_13) \
+	$(am__append_14) safe-read.c safe-write.c $(am__append_15) \
+	sockets.h sockets.c $(am__append_16) stat-time.c sys_socket.c \
+	unistd.c dup-safer.c fd-safer.c pipe-safer.c $(am__append_17)
 libgnu_a_CFLAGS = $(AM_CFLAGS) $(GL_CFLAG_GNULIB_WARNINGS)
 libgnu_a_LIBADD = $(gl_LIBOBJS)
 libgnu_a_DEPENDENCIES = $(gl_LIBOBJS)
@@ -1064,6 +1078,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-fd-safer-flag.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-fd-safer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-fstat.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-ftruncate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-full-read.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-full-write.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-getdtablesize.Po@am__quote@ # am--include-marker
@@ -1072,6 +1087,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-msvc-inval.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-msvc-nothrow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-open.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-passfd.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-pipe-safer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-pipe.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnu_a-pipe2-safer.Po@am__quote@ # am--include-marker
@@ -1249,6 +1265,20 @@ libgnu_a-fstat.obj: fstat.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-fstat.obj `if test -f 'fstat.c'; then $(CYGPATH_W) 'fstat.c'; else $(CYGPATH_W) '$(srcdir)/fstat.c'; fi`
 
+libgnu_a-ftruncate.o: ftruncate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-ftruncate.o -MD -MP -MF $(DEPDIR)/libgnu_a-ftruncate.Tpo -c -o libgnu_a-ftruncate.o `test -f 'ftruncate.c' || echo '$(srcdir)/'`ftruncate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnu_a-ftruncate.Tpo $(DEPDIR)/libgnu_a-ftruncate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ftruncate.c' object='libgnu_a-ftruncate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-ftruncate.o `test -f 'ftruncate.c' || echo '$(srcdir)/'`ftruncate.c
+
+libgnu_a-ftruncate.obj: ftruncate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-ftruncate.obj -MD -MP -MF $(DEPDIR)/libgnu_a-ftruncate.Tpo -c -o libgnu_a-ftruncate.obj `if test -f 'ftruncate.c'; then $(CYGPATH_W) 'ftruncate.c'; else $(CYGPATH_W) '$(srcdir)/ftruncate.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnu_a-ftruncate.Tpo $(DEPDIR)/libgnu_a-ftruncate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ftruncate.c' object='libgnu_a-ftruncate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-ftruncate.obj `if test -f 'ftruncate.c'; then $(CYGPATH_W) 'ftruncate.c'; else $(CYGPATH_W) '$(srcdir)/ftruncate.c'; fi`
+
 libgnu_a-full-read.o: full-read.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-full-read.o -MD -MP -MF $(DEPDIR)/libgnu_a-full-read.Tpo -c -o libgnu_a-full-read.o `test -f 'full-read.c' || echo '$(srcdir)/'`full-read.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnu_a-full-read.Tpo $(DEPDIR)/libgnu_a-full-read.Po
@@ -1360,6 +1390,20 @@ libgnu_a-open.obj: open.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='open.c' object='libgnu_a-open.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-open.obj `if test -f 'open.c'; then $(CYGPATH_W) 'open.c'; else $(CYGPATH_W) '$(srcdir)/open.c'; fi`
+
+libgnu_a-passfd.o: passfd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-passfd.o -MD -MP -MF $(DEPDIR)/libgnu_a-passfd.Tpo -c -o libgnu_a-passfd.o `test -f 'passfd.c' || echo '$(srcdir)/'`passfd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnu_a-passfd.Tpo $(DEPDIR)/libgnu_a-passfd.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='passfd.c' object='libgnu_a-passfd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-passfd.o `test -f 'passfd.c' || echo '$(srcdir)/'`passfd.c
+
+libgnu_a-passfd.obj: passfd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-passfd.obj -MD -MP -MF $(DEPDIR)/libgnu_a-passfd.Tpo -c -o libgnu_a-passfd.obj `if test -f 'passfd.c'; then $(CYGPATH_W) 'passfd.c'; else $(CYGPATH_W) '$(srcdir)/passfd.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnu_a-passfd.Tpo $(DEPDIR)/libgnu_a-passfd.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='passfd.c' object='libgnu_a-passfd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -c -o libgnu_a-passfd.obj `if test -f 'passfd.c'; then $(CYGPATH_W) 'passfd.c'; else $(CYGPATH_W) '$(srcdir)/passfd.c'; fi`
 
 libgnu_a-pipe.o: pipe.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnu_a_CFLAGS) $(CFLAGS) -MT libgnu_a-pipe.o -MD -MP -MF $(DEPDIR)/libgnu_a-pipe.Tpo -c -o libgnu_a-pipe.o `test -f 'pipe.c' || echo '$(srcdir)/'`pipe.c
@@ -1854,6 +1898,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libgnu_a-fd-safer-flag.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-fd-safer.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-fstat.Po
+	-rm -f ./$(DEPDIR)/libgnu_a-ftruncate.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-full-read.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-full-write.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-getdtablesize.Po
@@ -1862,6 +1907,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libgnu_a-msvc-inval.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-msvc-nothrow.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-open.Po
+	-rm -f ./$(DEPDIR)/libgnu_a-passfd.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe-safer.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe2-safer.Po
@@ -1935,6 +1981,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libgnu_a-fd-safer-flag.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-fd-safer.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-fstat.Po
+	-rm -f ./$(DEPDIR)/libgnu_a-ftruncate.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-full-read.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-full-write.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-getdtablesize.Po
@@ -1943,6 +1990,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libgnu_a-msvc-inval.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-msvc-nothrow.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-open.Po
+	-rm -f ./$(DEPDIR)/libgnu_a-passfd.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe-safer.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe.Po
 	-rm -f ./$(DEPDIR)/libgnu_a-pipe2-safer.Po
@@ -2140,9 +2188,10 @@ signal.h: signal.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 @GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
 @GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
 @GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''NEXT_STDDEF_H''@|$(NEXT_STDDEF_H)|g' \
-@GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''HAVE_MAX_ALIGN_T''@|$(HAVE_MAX_ALIGN_T)|g' \
-@GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''HAVE_WCHAR_T''@|$(HAVE_WCHAR_T)|g' \
+@GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''NULLPTR_T_NEEDS_STDDEF''@|$(NULLPTR_T_NEEDS_STDDEF)|g' \
+@GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''STDDEF_NOT_IDEMPOTENT''@|$(STDDEF_NOT_IDEMPOTENT)|g' \
 @GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''REPLACE_NULL''@|$(REPLACE_NULL)|g' \
+@GL_GENERATE_STDDEF_H_TRUE@	      -e 's|@''HAVE_MAX_ALIGN_T''@|$(HAVE_MAX_ALIGN_T)|g' \
 @GL_GENERATE_STDDEF_H_TRUE@	      $(srcdir)/stddef.in.h > $@-t
 @GL_GENERATE_STDDEF_H_TRUE@	$(AM_V_at)mv $@-t $@
 @GL_GENERATE_STDDEF_H_FALSE@stddef.h: $(top_builddir)/config.status
@@ -2297,6 +2346,7 @@ sys/types.h: sys_types.in.h $(top_builddir)/config.status
 	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
 	      -e 's|@''NEXT_SYS_TYPES_H''@|$(NEXT_SYS_TYPES_H)|g' \
 	      -e 's|@''WINDOWS_64_BIT_OFF_T''@|$(WINDOWS_64_BIT_OFF_T)|g' \
+	      -e 's|@''HAVE_OFF64_T''@|$(HAVE_OFF64_T)|g' \
 	      -e 's|@''WINDOWS_STAT_INODES''@|$(WINDOWS_STAT_INODES)|g' \
 	      $(srcdir)/sys_types.in.h > $@-t
 	$(AM_V_at)mv $@-t $@
@@ -2336,6 +2386,7 @@ time.h: time.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H) $(
 	      -e 's/@''GNULIB_TIMESPEC_GETRES''@/$(GL_GNULIB_TIMESPEC_GETRES)/g' \
 	      -e 's/@''GNULIB_TIME_R''@/$(GL_GNULIB_TIME_R)/g' \
 	      -e 's/@''GNULIB_TIME_RZ''@/$(GL_GNULIB_TIME_RZ)/g' \
+	      -e 's/@''GNULIB_TZNAME''@/$(GL_GNULIB_TZNAME)/g' \
 	      -e 's/@''GNULIB_TZSET''@/$(GL_GNULIB_TZSET)/g' \
 	      -e 's/@''GNULIB_MDA_TZSET''@/$(GL_GNULIB_MDA_TZSET)/g' \
 	      -e 's|@''HAVE_DECL_LOCALTIME_R''@|$(HAVE_DECL_LOCALTIME_R)|g' \
@@ -2544,6 +2595,7 @@ unistd.h: unistd.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's|@''REPLACE_GETPAGESIZE''@|$(REPLACE_GETPAGESIZE)|g' \
 	      -e 's|@''REPLACE_GETPASS''@|$(REPLACE_GETPASS)|g' \
 	      -e 's|@''REPLACE_GETPASS_FOR_GETPASS_GNU''@|$(REPLACE_GETPASS_FOR_GETPASS_GNU)|g' \
+	      -e 's|@''REPLACE_GETUSERSHELL''@|$(REPLACE_GETUSERSHELL)|g' \
 	      -e 's|@''REPLACE_ISATTY''@|$(REPLACE_ISATTY)|g' \
 	      -e 's|@''REPLACE_LCHOWN''@|$(REPLACE_LCHOWN)|g' \
 	      -e 's|@''REPLACE_LINK''@|$(REPLACE_LINK)|g' \
