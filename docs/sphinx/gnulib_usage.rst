@@ -76,6 +76,16 @@ Used Gnulib modules
       - close
     * - fpathconf
       - no subtitue module available
+    * - ftruncate
+      - ftruncate
+    * - (gnulib only)
+      - passfd
+    * - shm_open
+      - no subtitue module available
+    * - shm_unlink
+      - no subtitue module available
+    * - munmap
+      - no subtitue module available
 
 For more information on :code:`*-safer` modules, see
 Gnulib manual 17.10 Handling closed standard file descriptors.
