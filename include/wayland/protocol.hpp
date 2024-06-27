@@ -4,9 +4,12 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <utility>
 
 #include "gnu_utils/local_stream_socket.hpp"
 #include "wayland/message_buffer.hpp"
+#include "wayland/message_intrperter.hpp"
 #include "wayland/message_overload_set.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/protocol_primitives.hpp"
@@ -42,13 +45,30 @@ class connected_client {
         recvis_closure& operator=(recvis_closure&&)      = delete;
 
         /// Receive and visit events until given (object id, opcode)-pair.
-        void until(const Wobject<generic_object>, const Wopcode<generic_object>);
+        ///
+        /// Invokes the given function with the payload of the "until" message.
+        void until(const Wobject<generic_object>,
+                   const Wopcode<generic_object>,
+                   const std::move_only_function<void(std::span<const std::byte>) const>);
 
       public:
         /// Receive and visit events until \p obj_id receives message \p Msg.
         template<typename Msg, interface W>
         void until(const Wobject<W> obj_id) && {
-            until({ obj_id.value }, { Msg::opcode.value });
+            until({ obj_id.value }, { Msg::opcode.value }, {});
+        }
+
+        /// Receive and visit events until \p obj_id receives message \p Msg.
+        ///
+        /// Invokes the given function with the payload of the "until" message.
+        template<typename Msg, interface W>
+        void until(const Wobject<W> obj_id, std::invocable<Msg> auto&& callback_arg) && {
+            until({ obj_id.value },
+                  { Msg::opcode.value },
+                  [callback = std::forward<decltype(callback_arg)>(callback_arg)](
+                      const std::span<const std::byte> payload) {
+                      std::invoke(callback, interpert_message_payload<Msg>(payload));
+                  });
         }
     };
 

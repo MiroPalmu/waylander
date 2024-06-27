@@ -116,8 +116,10 @@ try_next_msg:
     return parser;
 }
 
-void connected_client::recvis_closure::until(const Wobject<generic_object> until_obj_id,
-                                             const Wopcode<generic_object> until_opcode) {
+void connected_client::recvis_closure::until(
+    const Wobject<generic_object> until_obj_id,
+    const Wopcode<generic_object> until_opcode,
+    const std::move_only_function<void(std::span<const std::byte>) const> callback) {
 try_again:
     const auto bytes_to_parse = parent_obj_ref_.get_recd_bytes_forming_whole_messages();
     auto parsed_messages      = parsed_message_generator(bytes_to_parse);
@@ -131,6 +133,9 @@ try_again:
 
         if (msg.object_id == until_obj_id and msg.opcode == until_opcode) {
             /// Found "until message".
+
+            if (callback) { callback(msg.arguments); }
+
             const auto total_parsed_bytes =
                 sizeof(message_header<generic_object>) * total_num_parsed_messages
                 + total_parsed_argument_bytes;

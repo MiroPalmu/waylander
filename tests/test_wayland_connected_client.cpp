@@ -319,9 +319,16 @@ int main() {
         auto ov = message_overload_set{};
 
         wl_tag / "messages without overloads are skipped"_test = [&] {
-            client.recv_and_visit_events(ov).until<bind>(registry_obj);
-            expect(request_count == 0);
-            expect(event_count == 0);
+            wl_tag / "the spesific message can be used"_test = [&] {
+                client.recv_and_visit_events(ov).until<bind>(registry_obj, [](const bind& msg) {
+                    expect(msg.name == 2);
+                    expect(msg.new_id_interface == u8"abc");
+                    expect(msg.new_id_interface_version == 42);
+                    expect(msg.id == 3);
+                });
+                expect(request_count == 0);
+                expect(event_count == 0);
+            };
         };
 
         ov.add_overload<get_registry>(display_obj, [&](auto) { ++request_count; });
