@@ -39,10 +39,12 @@
 #  --macro-prefix=gl \
 #  close \
 #  connect \
+#  ftruncate \
 #  full-read \
 #  full-write \
 #  mkfifo \
 #  open \
+#  passfd \
 #  pipe2-safer \
 #  socket
 
@@ -51,10 +53,12 @@ gl_LOCAL_DIR([])
 gl_MODULES([
   close
   connect
+  ftruncate
   full-read
   full-write
   mkfifo
   open
+  passfd
   pipe2-safer
   socket
 ])

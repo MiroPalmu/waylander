@@ -61,6 +61,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module fd-safer-flag:
   # Code from module filename:
   # Code from module fstat:
+  # Code from module ftruncate:
   # Code from module full-read:
   # Code from module full-write:
   # Code from module gen-header:
@@ -76,6 +77,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module msvc-nothrow:
   # Code from module multiarch:
   # Code from module open:
+  # Code from module passfd:
   # Code from module pathmax:
   # Code from module pipe-posix:
   # Code from module pipe2:
@@ -103,6 +105,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module sys_socket:
   # Code from module sys_stat:
   # Code from module sys_types:
+  AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
   # Code from module sys_uio:
   # Code from module time-h:
   # Code from module unistd:
@@ -173,6 +176,13 @@ AC_DEFUN([gl_INIT],
     gl_PREREQ_FSTAT
   ])
   gl_SYS_STAT_MODULE_INDICATOR([fstat])
+  gl_FUNC_FTRUNCATE
+  gl_CONDITIONAL([GL_COND_OBJ_FTRUNCATE],
+                 [test $HAVE_FTRUNCATE = 0 || test $REPLACE_FTRUNCATE = 1])
+  AM_COND_IF([GL_COND_OBJ_FTRUNCATE], [
+    gl_PREREQ_FTRUNCATE
+  ])
+  gl_UNISTD_MODULE_INDICATOR([ftruncate])
   gl_FUNC_GETDTABLESIZE
   gl_CONDITIONAL([GL_COND_OBJ_GETDTABLESIZE],
                  [test $HAVE_GETDTABLESIZE = 0 || test $REPLACE_GETDTABLESIZE = 1])
@@ -203,6 +213,7 @@ AC_DEFUN([gl_INIT],
     gl_PREREQ_OPEN
   ])
   gl_FCNTL_MODULE_INDICATOR([open])
+  gl_PASSFD
   gl_PATHMAX
   gl_FUNC_PIPE
   gl_CONDITIONAL([GL_COND_OBJ_PIPE], [test $HAVE_PIPE = 0])
@@ -494,6 +505,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/fd-safer.c
   lib/filename.h
   lib/fstat.c
+  lib/ftruncate.c
   lib/full-read.c
   lib/full-read.h
   lib/full-write.c
@@ -510,6 +522,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/msvc-nothrow.c
   lib/msvc-nothrow.h
   lib/open.c
+  lib/passfd.c
+  lib/passfd.h
   lib/pathmax.h
   lib/pipe-safer.c
   lib/pipe.c
@@ -564,6 +578,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fcntl.m4
   m4/fcntl_h.m4
   m4/fstat.m4
+  m4/ftruncate.m4
   m4/getdtablesize.m4
   m4/gnulib-common.m4
   m4/include_next.m4
@@ -575,10 +590,12 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/msvc-inval.m4
   m4/msvc-nothrow.m4
   m4/multiarch.m4
+  m4/off64_t.m4
   m4/off_t.m4
   m4/open-cloexec.m4
   m4/open-slash.m4
   m4/open.m4
+  m4/passfd.m4
   m4/pathmax.m4
   m4/pid_t.m4
   m4/pipe.m4
@@ -607,7 +624,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/unistd-safer.m4
   m4/unistd_h.m4
   m4/warn-on-use.m4
-  m4/wchar_t.m4
   m4/wint_t.m4
   m4/write.m4
   m4/zzgnulib.m4
