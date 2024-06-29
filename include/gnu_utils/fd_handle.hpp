@@ -100,6 +100,8 @@ class fd_handle {
     friend auto open_local_stream_socket_connected_to(const std::filesystem::path&)
         -> local_stream_socket;
 
+    friend class memory_block;
+
     /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
     ///
     /// If PIPE_BUF is defined return it, else return fpathconf(fd_, PIPE_BUF),

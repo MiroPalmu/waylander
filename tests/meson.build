@@ -22,6 +22,7 @@ unit_tests = [
     'test_wayland_system_utils',
     'test_gnu_pipe',
     'test_gnu_fd_handle',
+    'test_gnu_memory_block',
     'test_gnu_local_stream_socket',
     'test_sstd_math',
     'test_sstd_type_list',
