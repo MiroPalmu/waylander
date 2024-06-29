@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstddef>
+#include <span>
+
 #include "gnu_utils/fd_handle.hpp"
 #include "sstd.hpp"
 
@@ -15,6 +18,7 @@ class memory_block : private memory_block_fd {
     [[nodiscard]] explicit memory_block();
 
     using memory_block_fd::truncate;
+    using memory_block_fd::map;
 };
 
 } // namespace gnu
