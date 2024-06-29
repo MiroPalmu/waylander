@@ -7,10 +7,12 @@
 #include "full-read.h"
 #include "full-write.h"
 #include "safe-read.h"
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <cerrno>
 #include <cstddef>
+#include <format>
 #include <stdexcept>
 #include <string_view>
 #include <utility>
@@ -86,6 +88,13 @@ auto fd_handle::get_PIPE_BUF() const -> unsigned long {
 }
 
 void close_fd_handle(fd_handle& x) { x.close(); }
+
+void fd_handle::truncate(const std::size_t size) {
+    if (not std::in_range<off_t>(size)) {
+        throw std::runtime_error{ std::format("Requested size {} does not fit into off_t.", size) };
+    }
+    if (-1 == gnulib::ftruncate(fd_, size)) { sstd::throw_generic_system_error(); }
+}
 
 } // namespace gnu
 } // namespace ger

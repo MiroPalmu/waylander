@@ -77,6 +77,9 @@ class fd_handle {
     /// zero for EOF and throws if error occurs.
     [[nodiscard]] auto read_some(const std::span<std::byte> where_to_read) -> std::size_t;
 
+    /// Calls ftruncate(...) on the file descriptors. Throws on failure.
+    void truncate(const std::size_t);
+
     /// Opens posix pipe (i.e. file descriptor IN for reading and OUT for writing).
     ///
     /// From returned tuple fd_handle at index 0 is the read end of the pipe (IN) and
