@@ -7,6 +7,7 @@
 #include "full-read.h"
 #include "full-write.h"
 #include "safe-read.h"
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -94,6 +95,18 @@ void fd_handle::truncate(const std::size_t size) {
         throw std::runtime_error{ std::format("Requested size {} does not fit into off_t.", size) };
     }
     if (-1 == gnulib::ftruncate(fd_, size)) { sstd::throw_generic_system_error(); }
+}
+
+void unmap(const std::span<std::byte> mem) {
+    if (-1 == ::munmap(static_cast<void*>(mem.data()), mem.size())) {
+        sstd::throw_generic_system_error();
+    }
+}
+
+[[nodiscard]] auto fd_handle::map(const std::size_t length) -> mapped_memory {
+    auto* const mapped = ::mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
+    if (mapped == MAP_FAILED) { sstd::throw_generic_system_error(); }
+    return mapped_memory(std::span<std::byte>(static_cast<std::byte*>(mapped), length));
 }
 
 } // namespace gnu

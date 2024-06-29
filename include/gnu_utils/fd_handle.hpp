@@ -5,6 +5,8 @@
 #include <span>
 #include <tuple>
 
+#include "sstd.hpp"
+
 namespace ger {
 namespace gnu {
 
@@ -15,6 +17,10 @@ class local_stream_socket;
 
 using fd_native_type             = int;
 static constexpr auto invalid_fd = fd_native_type{ -1 };
+
+/// Unmaps memory specified by a span. Throws on failure.
+void unmap(const std::span<std::byte>);
+using mapped_memory = sstd::unique_handle<std::span<std::byte>, unmap>;
 
 /// Throwing wrapper for executing libc calls on file descriptors.
 ///
@@ -79,6 +85,9 @@ class fd_handle {
 
     /// Calls ftruncate(...) on the file descriptors. Throws on failure.
     void truncate(const std::size_t);
+
+    /// Maps \p length bytes from beginning of the file descriptor as non-executable shared memory.
+    [[nodiscard]] auto map(const std::size_t length) -> mapped_memory;
 
     /// Opens posix pipe (i.e. file descriptor IN for reading and OUT for writing).
     ///
