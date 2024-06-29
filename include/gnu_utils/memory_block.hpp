@@ -13,6 +13,8 @@ class memory_block : private memory_block_fd {
   public:
     /// Create block of memory via shm_open(...).
     [[nodiscard]] explicit memory_block();
+
+    using memory_block_fd::truncate;
 };
 
 } // namespace gnu
