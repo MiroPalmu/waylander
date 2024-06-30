@@ -14,6 +14,7 @@ namespace gnu {
 class in_pipe;
 class out_pipe;
 class local_stream_socket;
+class fd_ref;
 
 using fd_native_type             = int;
 static constexpr auto invalid_fd = fd_native_type{ -1 };
@@ -114,6 +115,10 @@ class fd_handle {
 
     friend class memory_block;
 
+    template<std::size_t buff_arr_len, std::size_t buff_fd_len>
+        requires(buff_arr_len != 0)
+    friend struct local_socket_msg;
+
     /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
     ///
     /// If PIPE_BUF is defined return it, else return fpathconf(fd_, PIPE_BUF),
@@ -138,10 +143,27 @@ class fd_handle {
     // Moveable:
     [[nodiscard]] fd_handle(fd_handle&&);
     fd_handle& operator=(fd_handle&&);
+
     // Not copyable:
     fd_handle(const fd_handle&)            = delete;
     fd_handle& operator=(const fd_handle&) = delete;
+
+    /// Make reference to this object represented by fd_ref.
+    operator fd_ref();
 };
+
+/// Semantically a pointer to a fd_handle.
+class fd_ref {
+    fd_native_type fd_;
+
+    friend class fd_handle;
+    template<std::size_t buff_slots, std::size_t fd_slots>
+        requires(buff_slots != 0)
+    friend class local_socket_msg;
+};
+
+static_assert(sizeof(fd_native_type) == sizeof(fd_handle));
+static_assert(sizeof(fd_native_type) == sizeof(fd_ref));
 
 /// Simple closer function, which just calls \p x.close().
 void close_fd_handle(fd_handle& x);

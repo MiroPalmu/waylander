@@ -28,6 +28,12 @@ namespace gnu {
 [[nodiscard]] fd_handle::fd_handle(fd_handle&&) = default;
 fd_handle& fd_handle::operator=(fd_handle&&)    = default;
 
+fd_handle::operator fd_ref() {
+    auto x = fd_ref{};
+    x.fd_  = fd_;
+    return x;
+}
+
 void fd_handle::write(const std::span<const std::byte> what_to_write) {
     const auto number_of_bytes_written =
         ::full_write(fd_, what_to_write.data(), what_to_write.size());

@@ -19,6 +19,7 @@ class memory_block : private memory_block_fd {
 
     using memory_block_fd::truncate;
     using memory_block_fd::map;
+    using memory_block_fd::operator gnu::fd_ref;
 };
 
 } // namespace gnu
