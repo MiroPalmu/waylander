@@ -95,6 +95,10 @@ Note that some modules uses :code:`*-safer` modules indirectly.
 Guilander user POV requirements
 -------------------------------
 
+.. note::
+
+    Put this requirement to hold until C++ modules can implement it cleanly.
+
 .. #) creates ordered list.
 
 #) Guilander headers do not define any C preprocessor macros.
