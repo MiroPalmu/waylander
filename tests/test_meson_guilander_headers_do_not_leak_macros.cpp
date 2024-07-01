@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <boost/ut.hpp> // import boost.ut;
 
 /// @file This test file assumes that this executable is compiled with meson as follows:
@@ -15,7 +17,7 @@ int main() {
     using namespace boost::ut;
     cfg<override> = { .tag = { "meson" } };
 
-    /// Heuristic for tests that guilander headers do not leak gnulib macros.
+    /// Heuristic for tests that guilander headers do not leak some of gnulib macros.
     tag("meson") / "gnu_utils/pipe.hpp does not define write or read macros"_test = [] {
 #ifdef write
         expect(false);

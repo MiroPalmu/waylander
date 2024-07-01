@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <boost/ut.hpp> // import boost.ut;
 
 /// @file What is tested here?

@@ -7,10 +7,11 @@ project(
 
 add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
 
-gnulib = subproject('gnulib')
+gnulib_proj = subproject('gnulib')
+gnulib_dep = gnulib_proj.get_variable('gnulib_dep')
 
 guilander_dependencies = [
-    gnulib.get_variable('gnulib_dep'),
+    gnulib_dep,
 ]
 
 guilander_source_files = []
@@ -28,7 +29,8 @@ guilander_lib = static_library(
 
 guilander_dep = declare_dependency(
     include_directories : include_directories('include'),
-    link_with: guilander_lib,
+    dependencies : gnulib_dep,
+    link_with : guilander_lib,
 )
 
 # Tests has to come after guiladner_lib as they use it as meson dependency.

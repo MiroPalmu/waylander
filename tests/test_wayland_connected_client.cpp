@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <boost/ut.hpp> // import boost.ut;
 
 /// These test do not try to use the possible Wayland compositor socket present on the system.

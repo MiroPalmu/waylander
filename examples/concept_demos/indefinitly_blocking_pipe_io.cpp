@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <array>
 #include <csignal>
 #include <cstddef>

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <boost/ut.hpp> // import boost.ut;
 
 // These are for make_named_socket.
