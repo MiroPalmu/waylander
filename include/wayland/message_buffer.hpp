@@ -8,6 +8,7 @@
 #include <ranges>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include "byte_vec.hpp"
 #include "type_utils.hpp"
@@ -19,10 +20,11 @@ namespace wl {
 
 class message_buffer {
     sstd::byte_vec buff_{};
+    std::vector<Wfd> fd_buff_{};
 
   public:
     /// True if buffer does not contains any data.
-    constexpr bool empty() { return buff_.empty(); }
+    constexpr bool empty() { return buff_.empty() and fd_buff_.empty(); }
 
     template<interface WObj, message_for_inteface<WObj> Message>
     constexpr void append(const Wobject<WObj> obj, const Message& msg) {
@@ -83,6 +85,7 @@ class message_buffer {
                             arr.size());
                 msg_total_size += element_size;
             },
+            [&](const Wfd& fd) { fd_buff_.push_back(fd); },
             [&]<typename P>(const P& p) {
                 constexpr auto pad          = sstd::round_upto_multiple_of<4>(sizeof(P));
                 constexpr auto element_size = sizeof(P) + pad;
@@ -113,6 +116,10 @@ class message_buffer {
 
     constexpr auto release_data() -> sstd::byte_vec {
         return std::exchange(buff_, sstd::byte_vec{});
+    };
+
+    constexpr auto release_fds() -> std::vector<Wfd> {
+        return std::exchange(fd_buff_, std::vector<Wfd>{});
     };
 };
 

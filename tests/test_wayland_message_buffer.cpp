@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "gnu_utils/memory_block.hpp"
 #include "sstd.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/message_parser.hpp"
@@ -320,5 +321,33 @@ int main() {
                 mock_msg_with_array.keys.size());
             expect(std::ranges::equal(array_in_buff, mock_msg_with_array.keys));
         };
+    };
+
+    wl_tag / "message_buffer queues given Wfd"_test = [] {
+        // Scenario setup:
+
+        using wl_shm             = wl::protocols::wl_shm;
+        const auto shm_object_id = wl::Wobject<wl_shm>{ 2u };
+        auto mem                 = gnu::memory_block{};
+        const auto mem_ref       = gnu::fd_ref{ mem };
+        const auto mock_msg_with_fd =
+            wl_shm::request::create_pool{ .id{ 42u }, .fd{ mem_ref }, .size{ 10 } };
+
+        // Actual tests:
+
+        auto buff = wl::message_buffer{};
+        buff.append(shm_object_id, mock_msg_with_fd);
+
+        expect(not buff.empty());
+        std::ignore = buff.release_data();
+        expect(not buff.empty()) << "Should contain queued file descriptor.";
+        auto fd_vec = buff.release_fds();
+        expect(buff.empty());
+
+        expect(fatal(fd_vec.size() == 1));
+        // This test is little lacking as it does not test if the queued fd is actually
+        // the one that was given to the test. This because Guilander does not support
+        // receiving Wfd primitives at the moment, so there is no utility to do anything
+        // with a Wfd object.
     };
 }
