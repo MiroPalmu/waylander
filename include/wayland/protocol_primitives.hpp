@@ -11,7 +11,7 @@
 #include <type_traits>
 
 #include "bit_fiddling.hpp"
-#include "linux_utils/file_descriptor.hpp"
+#include "gnu_utils/fd_handle.hpp"
 
 namespace ger {
 namespace wl {
@@ -81,7 +81,10 @@ struct Warray : std::span<const std::byte> {
     /// The type used to store length of the string in Wire format.
     using size_type = std::uint32_t;
 };
-struct Wfd {};
+
+struct Wfd {
+    gnu::fd_ref value;
+};
 
 struct Wmessage_size_t {
     using integral_type = std::uint16_t;
