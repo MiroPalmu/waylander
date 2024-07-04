@@ -3,6 +3,7 @@
 #include <config.h>
 
 #include <generator>
+#include <span>
 #include <stdexcept>
 #include <utility>
 
@@ -24,8 +25,23 @@ namespace wl {
     : server_sock_{ std::move(server_sock) } {};
 
 void connected_client::flush_registered_requests() {
-    const auto data_to_write = request_buff_.release_data();
-    server_sock_.write(data_to_write);
+    auto data_to_write = request_buff_.release_data();
+    auto fds_to_write  = request_buff_.release_fds();
+
+    // Assume that there is more bytes to send than file descriptors.
+    assert(data_to_write.size() > fds_to_write.size());
+
+    // Then send each fd along one byte.
+    auto bytes_written = 0uz;
+    for (const auto& fd : fds_to_write) {
+        auto msg =
+            gnu::local_socket_msg<1, 1>{ std::span{ data_to_write }.subspan(bytes_written, 1),
+                                         fd.value };
+        bytes_written += server_sock_.send(msg);
+    }
+
+    // Finally send rest of the data.
+    server_sock_.write(std::span{ data_to_write }.subspan(bytes_written));
 };
 
 void connected_client::recv_more_data() {

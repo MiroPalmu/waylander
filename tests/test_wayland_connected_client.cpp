@@ -15,7 +15,9 @@
 #include <utility>
 
 #include "byte_vec.hpp"
+#include "gnu_utils/fd_handle.hpp"
 #include "gnu_utils/local_stream_socket.hpp"
+#include "gnu_utils/memory_block.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/message_utils.hpp"
@@ -168,6 +170,48 @@ int main() {
             expect(recv_msg.object_id == global_display_object);
             expect(recv_msg.opcode == decltype(request)::opcode);
         }
+    };
+
+    wl_tag / "connected_client can flush registered requests with file descriptors"_test = [] {
+        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto client                     = connected_client{ std::move(client_sock) };
+
+        auto mem                = ger::gnu::memory_block{};
+        constexpr auto mem_size = 10uz;
+        mem.truncate(mem_size);
+        for (auto& x : mem.map(mem_size)) { x = std::byte{ 10 }; }
+
+        using wl_shm             = protocols::wl_shm;
+        const auto shm_object_id = Wobject<wl_shm>{ 2u };
+        const auto mem_ref       = ger::gnu::fd_ref{ mem };
+        const auto mock_msg_with_fd =
+            wl_shm::request::create_pool{ .id{ 42u }, .fd{ mem_ref }, .size{ 10 } };
+
+        constexpr auto msg_size = sizeof(message_header<wl_shm>) + sizeof(mock_msg_with_fd.id)
+                                  + sizeof(mock_msg_with_fd.size);
+        static_assert(msg_size % 4 == 0);
+
+        auto recd_fd_opt_future = std::async(std::launch::async, [&] {
+            auto recv_buff = ger::sstd::byte_vec(msg_size);
+            auto msg       = ger::gnu::local_socket_msg<1, 1>{ std::span{ recv_buff } };
+            std::ignore    = server_sock.recv(msg);
+            auto [fd_opt]  = msg.get_fd_handles();
+            return fd_opt;
+        });
+
+        expect(not client.has_registered_requests());
+        client.register_request(shm_object_id, mock_msg_with_fd);
+        expect(client.has_registered_requests());
+
+        client.flush_registered_requests();
+        expect(not client.has_registered_requests());
+
+        auto fd_opt = recd_fd_opt_future.get();
+        expect(fatal(fd_opt.has_value()));
+
+        auto fd = std::move(fd_opt).value();
+        expect(std::ranges::all_of(fd.map(mem_size),
+                                   [](const auto b) { return b == std::byte{ 10 }; }));
     };
 
     wl_tag / "connected_client can be default constructed"_test = [] {
