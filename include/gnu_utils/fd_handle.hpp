@@ -13,6 +13,11 @@ namespace gnu {
 // Forward declerations
 class in_pipe;
 class out_pipe;
+
+template<std::size_t buff_slots, std::size_t fd_slots>
+    requires(buff_slots != 0)
+class local_socket_msg;
+
 class local_stream_socket;
 class fd_ref;
 
@@ -114,10 +119,11 @@ class fd_handle {
         -> local_stream_socket;
 
     friend class memory_block;
+    friend class local_stream_socket;
 
-    template<std::size_t buff_arr_len, std::size_t buff_fd_len>
-        requires(buff_arr_len != 0)
-    friend struct local_socket_msg;
+    template<std::size_t buff_slots, std::size_t fd_slots>
+        requires(buff_slots != 0)
+    friend class local_socket_msg;
 
     /// Maximum number of bytes that is guaranteed to be atomic when writing to a pipe.
     ///
