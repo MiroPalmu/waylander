@@ -6,7 +6,6 @@ Welcome to Guilander documentation!
    :caption: Contents:
 
    scope
-   fd_design
    xml_to_cpp
    gnulib_usage
    developing_guidelines
