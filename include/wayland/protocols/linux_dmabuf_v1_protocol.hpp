@@ -2,7 +2,7 @@
 
 /// @file
 /// linux_dmabuf_v1 xml protocol
-
+///
 /// Copyright © 2014, 2015 Collabora, Ltd.
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a

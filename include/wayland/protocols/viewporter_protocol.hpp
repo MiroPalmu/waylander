@@ -2,7 +2,7 @@
 
 /// @file
 /// viewporter xml protocol
-
+///
 /// Copyright © 2013-2016 Collabora, Ltd.
 ///
 /// Permission is hereby granted, free of charge, to any person obtaining a

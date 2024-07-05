@@ -79,7 +79,7 @@
 /// compositor-specific policy when a tool can be removed. Common approaches
 /// will likely include some form of removing a tool when all tablets the
 /// tool was used on are removed.
-
+///
 /// Copyright 2014 © Stephen "Lyude" Chandler Paul
 /// Copyright 2015-2016 © Red Hat, Inc.
 ///
