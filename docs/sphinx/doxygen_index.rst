@@ -1,3 +1,5 @@
+.. This page is diabled until Breathe supports C++ explicit this object argument.
+
 Doxygen Index
 =============
 

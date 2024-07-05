@@ -9,7 +9,9 @@ Welcome to Guilander documentation!
    xml_to_cpp
    gnulib_usage
    developing_guidelines
-   doxygen_index
+
+.. Disabled, see: doxygen_index.rst
+.. doxygen_index
 
 
 Index and search
