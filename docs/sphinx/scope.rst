@@ -1,7 +1,7 @@
 Scope of Guildander
 ===================
 
-Guilander gloas
+Guilander goals
 ---------------
 
 - C++ impelementation of Wayland protocol for clients.
