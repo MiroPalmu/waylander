@@ -1,0 +1,6 @@
+Issues and pull requests are welcome.
+
+See docs/sphinx/developing_guidelines.rst
+and the git log to get idea of commit message conventions.
+
+Currently the CI is lacking a lot.
