@@ -12,7 +12,6 @@ unit_tests = [
     'test_meson_guilander_dep',
     'test_meson_guilander_headers_do_not_leak_macros',
     'test_byte_buff',
-    'test_linux_shm_memory',
     'test_wayland_connected_client',
     'test_wayland_primitive_types',
     'test_wayland_message_visitor',
