@@ -19,7 +19,7 @@
 
 project = '@PROJECT@'
 # Year has to be updated manually
-copyright = '2023, @AUTHOR@'
+copyright = '2024, @AUTHOR@'
 author = '@AUTHOR@'
 
 # The full version, including alpha/beta/rc tags
