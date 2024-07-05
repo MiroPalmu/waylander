@@ -17,10 +17,12 @@ doxygen_config_data = configuration_data({
     'VERSION' : meson.project_version(),
     # In Doxygen.in:
     #   INPUT = "@INPUT@"
-    # so we just have to seperate sources with ' '
+    # also:
+    #   RECURSIVE = YES
+    # so we just have to give different directories separated with ' '
     'INPUT' : '" "'.join([
         meson.project_source_root() + '/src',
-        meson.project_source_root() + '/include'
+        meson.project_source_root() + '/include',
     ]),
     'OUTPUT_DIRECTORY' : doxygen_output_dir
 })
