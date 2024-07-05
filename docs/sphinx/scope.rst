@@ -23,19 +23,6 @@ Guilander non-goals
     - Slippery slope to add asyc features in sstd or similar.
 - Abstracts syscalls from different operating systems.
 
-.. note::
-
-    Previously there was recommendation that:
-
-    ::
-
-        Only abstract just enough
-        that spesific usecase is behind raii. (*)
-
-    but with more though I think this is anti-pattern(?),
-    as it leads to clunky abstractions.
-    See operating system requirements for more discussion.
-
 Operating system requirements
 -----------------------------
 
