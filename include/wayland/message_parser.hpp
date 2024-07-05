@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Implements parsing Wayland protocol messages from raw bytes.
+/// @file
+/// Implements parsing Wayland protocol messages from raw bytes.
 
 #include <cstddef>
 #include <generator>

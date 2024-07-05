@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Implements interpretation of raw bytes based on object id and opcode.
+/// @file
+/// Implements interpretation of raw bytes based on object id and opcode.
 
 #include <algorithm>
 #include <concepts>

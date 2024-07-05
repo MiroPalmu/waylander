@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Defines mapping from Wayland protocol primitives to C++.
+/// @file
+/// Defines mapping from Wayland protocol primitives to C++.
 
 #include <bit>
 #include <climits>

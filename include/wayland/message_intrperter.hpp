@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Implements logic to interpert Wayland wire format payloads.
+/// @file
+/// Implements logic to interpert Wayland wire format payloads.
 
 #include <cstddef>
 #include <cstring>

@@ -1,7 +1,5 @@
 #include <config.h>
 
-/// @file Implementations of utilities for inspecting the surrounding system.
-
 #include <cstddef>
 #include <filesystem>
 #include <format>

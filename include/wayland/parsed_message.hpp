@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Declares vocabulary type parsed_message.
+/// @file
+/// Declares vocabulary type parsed_message.
 
 #include <cstddef>
 #include <span>

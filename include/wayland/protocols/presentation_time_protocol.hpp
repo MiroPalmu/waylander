@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: presentation_time
 
-/// @file presentation_time xml protocol
+/// @file
+/// presentation_time xml protocol
 
 /// Copyright © 2013-2014 Collabora, Ltd.
 ///

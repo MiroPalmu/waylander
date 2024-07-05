@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Utilities for handling Wayland messages.
+/// @file
+/// Utilities for handling Wayland messages.
 
 #include <concepts>
 #include <type_traits>

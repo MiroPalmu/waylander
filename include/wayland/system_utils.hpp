@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Utilities for inspecting the surrounding system.
+/// @file
+/// Utilities for inspecting the surrounding system.
 
 #include <filesystem>
 

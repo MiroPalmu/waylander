@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Implements storage of overloads/listeners/callbacks/... for messages.
+/// @file
+/// Implements storage of overloads/listeners/callbacks/... for messages.
 
 #include <concepts>
 #include <cstddef>

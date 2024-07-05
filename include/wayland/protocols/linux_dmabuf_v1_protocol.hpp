@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: linux_dmabuf_v1
 
-/// @file linux_dmabuf_v1 xml protocol
+/// @file
+/// linux_dmabuf_v1 xml protocol
 
 /// Copyright © 2014, 2015 Collabora, Ltd.
 ///

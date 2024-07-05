@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: xdg_shell
 
-/// @file xdg_shell xml protocol
+/// @file
+/// xdg_shell xml protocol
 
 /// Copyright © 2008-2013 Kristian Høgsberg
 /// Copyright © 2013      Rafael Antognolli

@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Implements container of Wayland protocol messages.
+/// @file
+/// Implements container of Wayland protocol messages.
 
 #include <cassert>
 #include <cstddef>

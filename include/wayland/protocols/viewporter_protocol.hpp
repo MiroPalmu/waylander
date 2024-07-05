@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: viewporter
 
-/// @file viewporter xml protocol
+/// @file
+/// viewporter xml protocol
 
 /// Copyright © 2013-2016 Collabora, Ltd.
 ///

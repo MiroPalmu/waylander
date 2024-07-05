@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file supplement to namespace std
+/// @file
+/// Supplement library to namespace std.
 
 #include <concepts>
 #include <source_location>

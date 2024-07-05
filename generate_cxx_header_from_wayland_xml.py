@@ -322,9 +322,9 @@ class wl_protocol:
         content: str = f"// Generated from Wayland xml protocol: {self.name}\n\n"
 
         if self.description:
-            content += self.description.as_sphinx_comment("@file ") + "\n"
+            content += self.description.as_sphinx_comment("@file\n/// ") + "\n"
         else:
-            content += f"/// @file {self.name} xml protocol\n\n"
+            content += f"/// @file\n/// {self.name} xml protocol\n\n"
 
         if self.copyright:
             content += commentify(self.copyright) + "\n"

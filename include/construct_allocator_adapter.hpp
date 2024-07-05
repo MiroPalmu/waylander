@@ -1,6 +1,7 @@
 #pragma once
 
-/// @file Allocator adaptor to customize how allocator constructs objects (A::construct).
+/// @file
+/// Allocator adaptor to customize how allocator constructs objects (A::construct).
 ///
 /// Below is discussion on std::vector::resize, which is one use case for customizing
 /// allocator construction.

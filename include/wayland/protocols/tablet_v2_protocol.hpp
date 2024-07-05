@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: tablet_v2
 
-/// @file Wayland protocol for graphics tablets
+/// @file
+/// Wayland protocol for graphics tablets
 ///
 /// This description provides a high-level overview of the interplay between
 /// the interfaces defined this protocol. For details, see the protocol

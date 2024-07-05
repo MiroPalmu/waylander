@@ -2,7 +2,8 @@
 
 #include <boost/ut.hpp> // import boost.ut;
 
-/// @file This test file assumes that this executable is compiled with meson as follows:
+/// @file
+/// This test file assumes that this executable is compiled with meson as follows:
 ///
 ///     executable(
 ///         "...",

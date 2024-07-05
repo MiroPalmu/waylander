@@ -1,6 +1,7 @@
 // Generated from Wayland xml protocol: wayland
 
-/// @file wayland xml protocol
+/// @file
+/// wayland xml protocol
 
 /// Copyright © 2008-2011 Kristian Høgsberg
 /// Copyright © 2010-2011 Intel Corporation
