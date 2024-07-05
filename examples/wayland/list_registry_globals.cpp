@@ -4,7 +4,7 @@
 #include <print>
 
 #include "wayland/message_visitor.hpp"
-#include "wayland/protocol.hpp"
+#include "wayland/connected_client.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 
 using wl_display   = ger::wl::protocols::wl_display;

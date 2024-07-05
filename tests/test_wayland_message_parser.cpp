@@ -11,7 +11,7 @@
 
 #include "bit_fiddling.hpp"
 #include "wayland/message_parser.hpp"
-#include "wayland/protocol.hpp"
+#include "wayland/connected_client.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 

@@ -15,7 +15,7 @@
 #include "gnu_utils/memory_block.hpp"
 #include "wayland/message_visitor.hpp"
 #include "wayland/parsed_message.hpp"
-#include "wayland/protocol.hpp"
+#include "wayland/connected_client.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 #include "wayland/protocols/xdg_shell_protocol.hpp"
 

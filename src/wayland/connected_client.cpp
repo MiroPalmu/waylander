@@ -1,5 +1,3 @@
-/// @file Implements wl::compsitor
-
 #include <config.h>
 
 #include <generator>
@@ -12,7 +10,7 @@
 
 #include "wayland/message_parser.hpp"
 #include "wayland/message_visitor.hpp"
-#include "wayland/protocol.hpp"
+#include "wayland/connected_client.hpp"
 
 namespace ger {
 namespace wl {
