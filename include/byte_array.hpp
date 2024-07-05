@@ -11,20 +11,20 @@
 #include <vector>
 
 namespace ger {
-namespace bit {
+namespace sstd {
 
 template<std::size_t N, typename... I>
 concept total_memory_usage_is = (N == (0 + ... + sizeof(I)));
 
 /// Stores bytes in std::array with native endianness
 template<std::size_t N>
-class byte_buff {
+class byte_array {
     std::array<std::byte, N> data_{};
 
   public:
     template<std::unsigned_integral... I>
         requires total_memory_usage_is<N, I...>
-    [[nodiscard]] constexpr byte_buff(const I... message) {
+    [[nodiscard]] constexpr byte_array(const I... message) {
         auto pos = std::size_t{ 0 };
 
         auto write_bytes_to_pos = [&]<std::size_t... Bytes>(const std::unsigned_integral auto x,
@@ -46,7 +46,7 @@ class byte_buff {
     template<typename... T>
         requires total_memory_usage_is<N, T...> and (std::is_trivially_copyable_v<T> and ...)
                  and (not(std::unsigned_integral<T> and ...))
-    [[nodiscard]] byte_buff(const T&... message) {
+    [[nodiscard]] byte_array(const T&... message) {
         auto pos = std::size_t{ 0 };
 
         [[maybe_unused]] auto write_and_increment_pos = [&]<typename U>(const U& x) {
@@ -61,12 +61,12 @@ class byte_buff {
         return self.data_;
     }
 
-    [[nodiscard]] friend constexpr bool operator==(const byte_buff& lhs,
-                                                   const byte_buff& rhs) = default;
+    [[nodiscard]] friend constexpr bool operator==(const byte_array& lhs,
+                                                   const byte_array& rhs) = default;
 };
 
 template<std::unsigned_integral... I>
-byte_buff(I...) -> byte_buff<(0 + ... + sizeof(I))>;
+byte_array(I...) -> byte_array<(0 + ... + sizeof(I))>;
 
-} // namespace bit
+} // namespace sstd
 } // namespace ger

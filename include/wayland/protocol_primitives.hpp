@@ -10,7 +10,6 @@
 #include <string_view>
 #include <type_traits>
 
-#include "bit_fiddling.hpp"
 #include "gnu_utils/fd_handle.hpp"
 
 namespace ger {

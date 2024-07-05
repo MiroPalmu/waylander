@@ -9,9 +9,9 @@
 #include <stdexcept>
 #include <vector>
 
-#include "bit_fiddling.hpp"
-#include "wayland/message_parser.hpp"
+#include "byte_array.hpp"
 #include "wayland/connected_client.hpp"
+#include "wayland/message_parser.hpp"
 #include "wayland/protocol_primitives.hpp"
 #include "wayland/protocols/wayland_protocol.hpp"
 
@@ -57,7 +57,7 @@ int main() {
                                                                { 12u });
         constexpr auto msg         = get_registery{ 2u };
         constexpr auto garbage_msg = 42u;
-        auto get_registery_request = bit::byte_buff<16>{ header, msg, garbage_msg };
+        auto get_registery_request = sstd::byte_array<16>{ header, msg, garbage_msg };
 
         auto parser       = wl::message_parser{ get_registery_request.bytes() };
         auto gen          = parser.message_generator();
@@ -74,7 +74,7 @@ int main() {
                                                                get_registery::opcode,
                                                                { 5u });
         constexpr auto msg         = get_registery{ 2u };
-        auto get_registery_request = bit::byte_buff<12>{ header, msg };
+        auto get_registery_request = sstd::byte_array<12>{ header, msg };
 
         auto parser = wl::message_parser{ get_registery_request.bytes() };
         auto gen    = parser.message_generator();
@@ -89,7 +89,7 @@ int main() {
                                                                get_registery::opcode,
                                                                { 12u });
         constexpr auto msg         = get_registery{ 2u };
-        auto get_registery_request = bit::byte_buff<12>{ header, msg };
+        auto get_registery_request = sstd::byte_array<12>{ header, msg };
 
         auto parser       = wl::message_parser{ get_registery_request.bytes() };
         auto gen          = parser.message_generator();
@@ -139,7 +139,7 @@ int main() {
                                                          std::byte{ '\0' } };
 
         // clang-format off
-        auto messages_AB = bit::byte_buff<header_A.size.value + header_B.size.value>{
+        auto messages_AB = sstd::byte_array<header_A.size.value + header_B.size.value>{
             header_A,
             msg_A,
             header_B,

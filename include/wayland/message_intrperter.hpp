@@ -3,6 +3,7 @@
 /// @file Implements logic to interpert Wayland wire format paylaods.
 
 #include <cstddef>
+#include <cstring>
 #include <span>
 #include <tuple>
 #include <utility>
