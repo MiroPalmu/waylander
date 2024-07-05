@@ -1,7 +1,7 @@
 #pragma once
 
 #define GNULIB_NAMESPACE gnulib
-/// Assume config.h is already included where this header is used.
+// Assume config.h is already included where this header is used.
 #include <sys/socket.h>
 
 #include <algorithm>

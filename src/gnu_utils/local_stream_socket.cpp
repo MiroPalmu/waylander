@@ -1,10 +1,10 @@
 #include <config.h>
 
-/// Required to make gnulib not define macros for libc functions.
-///
-/// For more information see guilander sphinx docs: Usage of Gnulib.
+// Required to make gnulib not define macros for libc functions.
+//
+// For more information see guilander sphinx docs: Usage of Gnulib.
 #define GNULIB_NAMESPACE gnulib
-/// For O_CLOEXEC macro and fd_safer_flag.
+// For O_CLOEXEC macro and fd_safer_flag.
 #include "unistd-safer.h"
 #include <fcntl.h>
 #include <sys/socket.h>
