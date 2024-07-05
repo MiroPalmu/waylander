@@ -2,7 +2,7 @@
 
 #include <boost/ut.hpp> // import boost.ut;
 
-/// @file What is tested here?
+/// @file fd_handle testing.
 ///
 /// As fd_handle is not uspposed to be used on its own,
 /// it is not directly tested any more that is here.

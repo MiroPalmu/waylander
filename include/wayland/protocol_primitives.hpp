@@ -1,6 +1,6 @@
 #pragma once
 
-/// @file Contains primitives used in protocol.hpp implementation.
+/// @file Defines mapping from Wayland protocol primitives to C++.
 
 #include <bit>
 #include <climits>

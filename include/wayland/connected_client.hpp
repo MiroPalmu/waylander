@@ -1,6 +1,6 @@
 #pragma once
 
-/// @file Contains stuff related to Wayland protocol
+/// @file Implements Wayland client side communication.
 
 #include <cstdint>
 #include <filesystem>
