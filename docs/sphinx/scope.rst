@@ -9,9 +9,6 @@ Guilander goals
     - async model
 - Give example usecase:
     - print all globals
-    - write ascii
-    - draw ascii box
-    - ascii grid
 
 Guilander non-goals
 -------------------
