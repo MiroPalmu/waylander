@@ -11,7 +11,7 @@ Wayland primitives
      - Guilander data type
    * - :code:`int`
      - :code:`ger::wl::Wint`
-   * - :code:`int`
+   * - :code:`uint`
      - :code:`ger::wl::Wuint`
    * - :code:`fixed`
      - :code:`ger::wl::Wfixed`
