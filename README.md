@@ -133,3 +133,7 @@ meson setup build && ninja -C build test
 
 Guilander comes with all `stable` Wayland protocols (`include/wayland/protocols/*_protocol.hpp`),
 which are generated using `xml-protocol-tool`.
+
+# Author
+
+Miro Palmu, email@miropalmu.cc
