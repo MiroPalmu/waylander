@@ -20,7 +20,9 @@ project(
     default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++26']
 )
 
-add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
+if not meson.is_subproject()
+    add_global_arguments('-fconcepts-diagnostics-depth=10', language : 'cpp')
+endif
 
 gnulib_proj = subproject('gnulib')
 gnulib_dep = gnulib_proj.get_variable('gnulib_dep')
