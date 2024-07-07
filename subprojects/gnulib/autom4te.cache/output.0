@@ -608,7 +608,7 @@ PACKAGE_STRING='gnulib-modules-to-meson 0.0.1'
 PACKAGE_BUGREPORT='email@miropalmu.cc'
 PACKAGE_URL=''
 
-ac_unique_file="lib/full-read.h"
+ac_unique_file="handle_for_meson.c"
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
