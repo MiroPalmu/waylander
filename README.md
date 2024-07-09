@@ -47,7 +47,7 @@ approximately following C++ code from the previous XML (`include/wayland/protoco
 
 ```cpp
 struct wl_display {
-    enum class error error : Wint::integral_type {
+    enum class error : Wint::integral_type {
         /// server couldn't find object
         Einvalid_object = 0,
         /// method doesn't exist on the specified interface or malformed request
