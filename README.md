@@ -95,6 +95,8 @@ For simple listing of Wayland registry globals, see `examples/list_registry_glob
 For more complex example, see `examples/wayland/display_static_picture.cpp`
 which implements Wayland client to display static picture of a Sierpinski's Carpet.
 
+![Showcase of display static picture example](.display_static_picture_showcase.gif)
+
 # Status
 
 Currently, Guilander is considered to be in an alpha stage,
