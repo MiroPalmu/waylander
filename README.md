@@ -107,6 +107,7 @@ which means that some features are missing, and it might go through large change
 - [ ] Receiving events which contain file descriptors.
 - [ ] Versioned protocols (atm version numbers from XML are ignored).
 - [ ] `Wfixed` utilities.
+- [ ] Linux DMA-BUF supporting abstractions (like namespace gnu).
 
 # Building
 
