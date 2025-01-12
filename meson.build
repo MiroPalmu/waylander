@@ -17,6 +17,7 @@ project(
     'guilander',
     'cpp',
     version: '0.1.0',
+    meson_version: '>= 1.4.0',
     default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++26']
 )
 
@@ -61,7 +62,7 @@ if compdb.found() and meson.backend() == 'ninja'
         command: [
             files('.generate_compile_commands_json_with_headers.sh'),
             meson.project_build_root(),
-            meson.source_root(),
+            meson.project_source_root(),
         ],
         install: false,
         build_always_stale: true,
