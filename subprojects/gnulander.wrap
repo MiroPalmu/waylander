@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/MiroPalmu/gnulander.git
+revision = v0.2.0
+depth = 1
