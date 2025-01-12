@@ -142,22 +142,16 @@ int main() {
         // Possible UB depending on CWG1997 [1], as by above b now references the new object
         // and CWG1997 is not resolved as of 2024-05-06.
         // [1] https://cplusplus.github.io/CWG/issues/1997.html
-        expect(b == std::byte{ 2 });
-
-        // To make sure there is not lingering UB after CWG1997 is resolved,
-        // make this test fail after check_interval has passed after date of_checking_CHW1997.
-        using namespace std::chrono_literals;
-        using namespace std::chrono;
-        constexpr auto check_interval = months{ 4 };
-        constexpr auto date_of_checking_CWH1997 =
-            year_month_day(2024y, std::chrono::May, 6d); // Update me.
-        const auto date_of_next_CWH1997_check = date_of_checking_CWH1997 + check_interval;
-        const auto date_now                   = year_month_day{ floor<days>(system_clock::now()) };
-        const auto CHW1997_should_be_checked  = date_now > date_of_next_CWH1997_check;
-        expect(not CHW1997_should_be_checked)
-            << std::format("Date of next check of CWG1997 is {} and today is {}!",
-                           date_of_next_CWH1997_check,
-                           date_now);
+        //
+        // Update 2025-01-12 from additional note to CWG1997:
+        //
+        // > According to the resolution of issue 2721,
+        // > storage for the elements of buf is considered reused
+        // > and thus the lifetime of those elements ends when the allocation function returns.
+        // > Out-of-lifetime objects cannot hold values.
+        //
+        // i.e. following test is UB and can not be done.
+        // expect(b == std::byte{ 2 });
     };
 
     tag("sstd") / "by default std::vector::resize zeroes out std::byte (value-init)"_test = [] {
