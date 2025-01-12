@@ -47,33 +47,34 @@ guilander_dep = declare_dependency(
     dependencies : [gnulander_dep],
 )
 
-# Tests has to come after guiladner_lib as they use it as meson dependency.
-subdir('tests')
-subdir('examples')
+if not meson.is_subproject()
+    # Tests has to come after guiladner_lib as they use it as meson dependency.
+    subdir('tests')
+    subdir('examples')
 
-# compile_commands.json stuff:
-compdb = find_program('compdb', required : false)
+    # compile_commands.json stuff:
+    compdb = find_program('compdb', required : false)
 
-if compdb.found() and meson.backend() == 'ninja'
-    message('Custom target compdb added for generating compile_commands.json entries for headers')
-    custom_target(
-        'compdb',
-        output: 'compdb',
-        command: [
-            files('.generate_compile_commands_json_with_headers.sh'),
-            meson.project_build_root(),
-            meson.project_source_root(),
-        ],
-        install: false,
-        build_always_stale: true,
-    )
-else
-    message('Skipping custom target compdb for greating compile_commands.json entries for headers due to:')
-    if not compdb.found()
-        message('- missing compdb (compdb can be installed with: pip install compdb)')
-    endif
-    if meson.backend() != 'ninja'
-        message('- ninja is not meson backend (only backend that generates compile_commands.json)')
+    if compdb.found() and meson.backend() == 'ninja'
+        message('Custom target compdb added for generating compile_commands.json entries for headers')
+        custom_target(
+            'compdb',
+            output: 'compdb',
+            command: [
+                files('.generate_compile_commands_json_with_headers.sh'),
+                meson.project_build_root(),
+                meson.project_source_root(),
+            ],
+            install: false,
+            build_always_stale: true,
+        )
+    else
+        message('Skipping custom target compdb for greating compile_commands.json entries for headers due to:')
+        if not compdb.found()
+            message('- missing compdb (compdb can be installed with: pip install compdb)')
+        endif
+        if meson.backend() != 'ninja'
+            message('- ninja is not meson backend (only backend that generates compile_commands.json)')
+        endif
     endif
 endif
-
