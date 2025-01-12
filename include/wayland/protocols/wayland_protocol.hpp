@@ -360,6 +360,15 @@ struct wl_subsurface {
     struct event {
     };
 };
+struct wl_fixes {
+    struct request {
+        struct destroy;
+        struct destroy_registry;
+    };
+
+    struct event {
+    };
+};
 /// global error values
 ///
 /// These errors are global and can be emitted in response to any
@@ -2202,6 +2211,9 @@ struct wl_surface::request::damage_buffer {
 /// x and y, combined with the new surface size define in which
 /// directions the surface's size changes.
 ///
+/// The exact semantics of wl_surface.offset are role-specific. Refer to
+/// the documentation of specific roles for more information.
+///
 /// Surface location offset is double-buffered state, see
 /// wl_surface.commit.
 ///
@@ -2873,11 +2885,21 @@ enum class wl_keyboard::keymap_format : Wint::integral_type {
 /// physical key state
 ///
 /// Describes the physical state of a key that produced the key event.
+///
+/// Since version 10, the key can be in a "repeated" pseudo-state which
+/// means the same as "pressed", but is used to signal repetition in the
+/// key event.
+///
+/// The key may only enter the repeated state after entering the pressed
+/// state and before entering the released state. This event may be
+/// generated multiple times while the key is down.
 enum class wl_keyboard::key_state : Wint::integral_type {
     /// key is not pressed
     Ereleased = 0,
     /// key is pressed
-    Epressed = 1
+    Epressed = 1,
+    /// key was repeated
+    Erepeated = 2
 };
 
 /// release the keyboard object
@@ -2915,6 +2937,9 @@ struct wl_keyboard::event::keymap {
 /// the surface argument and the keys currently logically down to the keys
 /// in the keys argument. The compositor must not send this event if the
 /// wl_keyboard already had an active surface immediately before this event.
+///
+/// Clients should not use the list of pressed keys to emulate key-press
+/// events. The order of keys in the list is unspecified.
 struct wl_keyboard::event::enter {
     static constexpr Wopcode<wl_keyboard> opcode{ 1 };
     /// serial number of the enter event
@@ -2965,6 +2990,11 @@ struct wl_keyboard::event::leave {
 /// compositor must not send this event if state is pressed (resp. released)
 /// and the key was already logically down (resp. was not logically down)
 /// immediately before this event.
+///
+/// Since version 10, compositors may send key events with the "repeated"
+/// key state when a wl_keyboard.repeat_info event with a rate argument of
+/// 0 has been received. This allows the compositor to take over the
+/// responsibility of key repetition.
 struct wl_keyboard::event::key {
     static constexpr Wopcode<wl_keyboard> opcode{ 3 };
     /// serial number of the key event
@@ -3632,6 +3662,28 @@ struct wl_subsurface::request::set_sync {
 /// the cached state is applied on set_desync.
 struct wl_subsurface::request::set_desync {
     static constexpr Wopcode<wl_subsurface> opcode{ 5 };
+};
+
+/// destroys this object
+struct wl_fixes::request::destroy {
+    static constexpr Wopcode<wl_fixes> opcode{ 0 };
+};
+
+/// destroy a wl_registry
+///
+/// This request destroys a wl_registry object.
+///
+/// The client should no longer use the wl_registry after making this
+/// request.
+///
+/// The compositor will emit a wl_display.delete_id event with the object ID
+/// of the registry and will no longer emit any events on the registry. The
+/// client should re-use the object ID once it receives the
+/// wl_display.delete_id event.
+struct wl_fixes::request::destroy_registry {
+    static constexpr Wopcode<wl_fixes> opcode{ 1 };
+    /// the registry to destroy
+    Wobject<wl_registry> registry;
 };
 
 } // namespace protocols

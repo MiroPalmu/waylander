@@ -219,9 +219,12 @@ struct wp_presentation_feedback::event::sync_output {
 /// targeting the next few vblanks. If such prediction cannot
 /// usefully be done, the argument is zero.
 ///
-/// If the output does not have a constant refresh rate, explicit
-/// video mode switches excluded, then the refresh argument must
-/// be zero.
+/// For version 2 and later, if the output does not have a constant
+/// refresh rate, explicit video mode switches excluded, then the
+/// refresh argument must be either an appropriate rate picked by the
+/// compositor (e.g. fastest rate), or 0 if no such rate exists.
+/// For version 1, if the output does not have a constant refresh rate,
+/// the refresh argument must be zero.
 ///
 /// The 64-bit value combined from seq_hi and seq_lo is the value
 /// of the output's vertical retrace counter when the content

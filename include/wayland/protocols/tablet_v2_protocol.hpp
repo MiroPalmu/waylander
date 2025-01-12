@@ -1143,7 +1143,7 @@ struct zwp_tablet_pad_group_v2::event::done {
 /// indices start at 0.
 ///
 /// Switching modes is compositor-dependent. The compositor may provide
-/// visual cues to the client about the mode, e.g. by toggling LEDs on
+/// visual cues to the user about the mode, e.g. by toggling LEDs on
 /// the tablet device. Mode-switching may be software-controlled or
 /// controlled by one or more physical buttons. For example, on a Wacom
 /// Intuos Pro, the button inside the ring may be assigned to switch
