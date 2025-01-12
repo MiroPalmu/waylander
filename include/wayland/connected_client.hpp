@@ -23,7 +23,7 @@
 #include <functional>
 #include <utility>
 
-#include "gnu_utils/local_stream_socket.hpp"
+#include "gnulander/local_stream_socket.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/message_intrperter.hpp"
 #include "wayland/message_overload_set.hpp"
@@ -39,7 +39,7 @@ static constexpr auto global_display_object = Wobject<protocols::wl_display>{ 1 
 
 /// Represents one connected client by wrapping the Wayland socket.
 class connected_client {
-    gnu::local_stream_socket server_sock_;
+    gnulander::local_stream_socket server_sock_;
     Wuint::integral_type next_new_id_{ 2 };
     message_buffer request_buff_{};
     /// Allways assumed that the data never begins at middle of message, only at a beginning.
@@ -93,7 +93,7 @@ class connected_client {
     [[nodiscard]] connected_client(const std::filesystem::path& socket = wayland_socket_path());
 
     /// Uses given \p socket as the compositor socket.
-    [[nodiscard]] connected_client(gnu::local_stream_socket&& socket);
+    [[nodiscard]] connected_client(gnulander::local_stream_socket&& socket);
 
     template<typename T = generic_object>
     [[nodiscard]] auto reserve_object_id() -> Wobject<T> {

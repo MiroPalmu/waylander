@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
 
 #include <boost/ut.hpp> // import boost.ut;
 
@@ -26,7 +25,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "gnu_utils/memory_block.hpp"
+#include "gnulander/memory_block.hpp"
 #include "sstd.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/message_parser.hpp"
@@ -343,8 +342,8 @@ int main() {
 
         using wl_shm             = wl::protocols::wl_shm;
         const auto shm_object_id = wl::Wobject<wl_shm>{ 2u };
-        auto mem                 = gnu::memory_block{};
-        const auto mem_ref       = gnu::fd_ref{ mem };
+        auto mem                 = gnulander::memory_block{};
+        const auto mem_ref       = gnulander::fd_ref{ mem };
         const auto mock_msg_with_fd =
             wl_shm::request::create_pool{ .id{ 42u }, .fd{ mem_ref }, .size{ 10 } };
 

@@ -26,7 +26,7 @@
 #include <string_view>
 #include <type_traits>
 
-#include "gnu_utils/fd_handle.hpp"
+#include "gnulander/fd_handle.hpp"
 
 namespace ger {
 namespace wl {
@@ -98,7 +98,7 @@ struct Warray : std::span<const std::byte> {
 };
 
 struct Wfd {
-    gnu::fd_ref value;
+    gnulander::fd_ref value;
 };
 
 struct Wmessage_size_t {

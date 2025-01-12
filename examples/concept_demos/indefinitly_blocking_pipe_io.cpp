@@ -13,20 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
-
 #include <array>
 #include <csignal>
 #include <cstddef>
 #include <print>
 #include <span>
 
-#include "gnu_utils/pipe.hpp"
+#include "gnulander/pipe.hpp"
 
 int main() {
     std::signal(SIGINT, [](int) { std::println("SIGINT is ignored."); });
 
-    [[maybe_unused]] auto [in, out] = ger::gnu::open_pipe();
+    [[maybe_unused]] auto [in, out] = gnulander::open_pipe();
     auto some_data                  = std::array<std::byte, 5>{};
 
     std::print("Reading... ");

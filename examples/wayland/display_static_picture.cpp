@@ -13,8 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
-
 #include <algorithm>
 #include <concepts>
 #include <cstdint>
@@ -27,7 +25,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "gnu_utils/memory_block.hpp"
+#include "gnulander/memory_block.hpp"
 #include "wayland/message_visitor.hpp"
 #include "wayland/parsed_message.hpp"
 #include "wayland/connected_client.hpp"
@@ -71,8 +69,8 @@ struct StaticPicture {
     // Member data:
 
     int width, height;
-    ger::gnu::memory_block buff;
-    ger::gnu::mapped_memory bytes;
+    gnulander::memory_block buff;
+    gnulander::mapped_memory bytes;
 
     [[nodiscard]] StaticPicture(const int width_arg, const int height_arg)
         : width{ width_arg },
@@ -80,7 +78,7 @@ struct StaticPicture {
           buff{
 
               [&] {
-                  auto mem = ger::gnu::memory_block{};
+                  auto mem = gnulander::memory_block{};
                   mem.truncate(bytes_required());
                   return mem;
               }()
@@ -238,7 +236,7 @@ class static_picture_window {
 
         const auto shm_pool_obj_id = client_.reserve_object_id<wl_shm_pool>();
         const auto create_pool     = wl_shm_create_pool{ .id   = shm_pool_obj_id,
-                                                         .fd   = { ger::gnu::fd_ref{ picture_.buff } },
+                                                         .fd   = { gnulander::fd_ref{ picture_.buff } },
                                                          .size = picture_.bytes_required() };
         const auto create_buffer =
             wl_shm_pool_create_buffer{ .id     = buffer_obj_id_.reserve_id(client_),

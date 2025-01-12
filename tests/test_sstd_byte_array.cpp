@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
 
 #include <boost/ut.hpp> // import boost.ut;
 

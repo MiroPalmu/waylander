@@ -13,15 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
-
 #include <generator>
 #include <span>
 #include <stdexcept>
 #include <utility>
 
 #include "byte_vec.hpp"
-#include "gnu_utils/local_stream_socket.hpp"
+#include "gnulander/local_stream_socket.hpp"
 
 #include "wayland/message_parser.hpp"
 #include "wayland/message_visitor.hpp"
@@ -31,10 +29,10 @@ namespace ger {
 namespace wl {
 
 [[nodiscard]] connected_client::connected_client(const std::filesystem::path& socket)
-    : server_sock_{ gnu::open_local_stream_socket_connected_to(socket) } {}
+    : server_sock_{ gnulander::open_local_stream_socket_connected_to(socket) } {}
 
 [[nodiscard]] connected_client::connected_client(
-    [[maybe_unused]] gnu::local_stream_socket&& server_sock)
+    [[maybe_unused]] gnulander::local_stream_socket&& server_sock)
     : server_sock_{ std::move(server_sock) } {};
 
 void connected_client::flush_registered_requests() {
@@ -48,7 +46,7 @@ void connected_client::flush_registered_requests() {
     auto bytes_written = 0uz;
     for (const auto& fd : fds_to_write) {
         auto msg =
-            gnu::local_socket_msg<1, 1>{ std::span{ data_to_write }.subspan(bytes_written, 1),
+            gnulander::local_socket_msg<1, 1>{ std::span{ data_to_write }.subspan(bytes_written, 1),
                                          fd.value };
         bytes_written += server_sock_.send(msg);
     }

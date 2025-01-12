@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <config.h>
 
 #include <boost/ut.hpp> // import boost.ut;
 
@@ -30,9 +29,9 @@
 #include <utility>
 
 #include "byte_vec.hpp"
-#include "gnu_utils/fd_handle.hpp"
-#include "gnu_utils/local_stream_socket.hpp"
-#include "gnu_utils/memory_block.hpp"
+#include "gnulander/fd_handle.hpp"
+#include "gnulander/local_stream_socket.hpp"
+#include "gnulander/memory_block.hpp"
 #include "wayland/message_buffer.hpp"
 #include "wayland/message_parser.hpp"
 #include "wayland/message_utils.hpp"
@@ -50,12 +49,12 @@ int main() {
     cfg<override> = { .tag = { "wayland" } };
 
     wl_tag / "connected_client object can be constructed from already connected socket"_test = [] {
-        auto [client_sock, _] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, _] = gnulander::open_local_stream_socket_pair();
         expect(nothrow([&] { auto _ = connected_client{ std::move(client_sock) }; }));
     };
 
     wl_tag / "connected_client can reserve object id"_test = [&] {
-        auto [client_sock, _] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, _] = gnulander::open_local_stream_socket_pair();
         auto client           = connected_client{ std::move(client_sock) };
         const auto id1        = client.reserve_object_id<protocols::wl_display>();
         const auto id2        = client.reserve_object_id<protocols::wl_touch>();
@@ -106,7 +105,7 @@ int main() {
     };
 
     wl_tag / "connected_client can register requests"_test = [] {
-        auto [client_sock, _] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, _] = gnulander::open_local_stream_socket_pair();
         auto client           = connected_client{ std::move(client_sock) };
 
         using namespace protocols;
@@ -136,7 +135,7 @@ int main() {
     };
 
     wl_tag / "connected_client can flush registered requests without file descriptors"_test = [] {
-        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, server_sock] = gnulander::open_local_stream_socket_pair();
         auto client                     = connected_client{ std::move(client_sock) };
 
         using namespace protocols;
@@ -188,17 +187,17 @@ int main() {
     };
 
     wl_tag / "connected_client can flush registered requests with file descriptors"_test = [] {
-        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, server_sock] = gnulander::open_local_stream_socket_pair();
         auto client                     = connected_client{ std::move(client_sock) };
 
-        auto mem                = ger::gnu::memory_block{};
+        auto mem                = gnulander::memory_block{};
         constexpr auto mem_size = 10uz;
         mem.truncate(mem_size);
         for (auto& x : mem.map(mem_size)) { x = std::byte{ 10 }; }
 
         using wl_shm             = protocols::wl_shm;
         const auto shm_object_id = Wobject<wl_shm>{ 2u };
-        const auto mem_ref       = ger::gnu::fd_ref{ mem };
+        const auto mem_ref       = gnulander::fd_ref{ mem };
         const auto mock_msg_with_fd =
             wl_shm::request::create_pool{ .id{ 42u }, .fd{ mem_ref }, .size{ 10 } };
 
@@ -208,7 +207,7 @@ int main() {
 
         auto recd_fd_opt_future = std::async(std::launch::async, [&] {
             auto recv_buff = ger::sstd::byte_vec(msg_size);
-            auto msg       = ger::gnu::local_socket_msg<1, 1>{ std::span{ recv_buff } };
+            auto msg       = gnulander::local_socket_msg<1, 1>{ std::span{ recv_buff } };
             std::ignore    = server_sock.recv(msg);
             auto [fd_opt]  = msg.get_fd_handles();
             return fd_opt;
@@ -251,7 +250,7 @@ int main() {
         // Send this many events from server.
         constexpr auto number_of_events = 14;
 
-        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, server_sock] = gnulander::open_local_stream_socket_pair();
         auto client                     = connected_client{ std::move(client_sock) };
 
         const auto obj = client.reserve_object_id<shell_surface>();
@@ -292,7 +291,7 @@ int main() {
         // Send this many events from server.
         constexpr auto number_of_events = 14;
 
-        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, server_sock] = gnulander::open_local_stream_socket_pair();
         auto client                     = connected_client{ std::move(client_sock) };
 
         const auto obj = client.reserve_object_id<shell_surface>();
@@ -366,7 +365,7 @@ int main() {
             return buff.release_data();
         }();
 
-        auto [client_sock, server_sock] = ger::gnu::open_local_stream_socket_pair();
+        auto [client_sock, server_sock] = gnulander::open_local_stream_socket_pair();
 
         auto _ = std::async(std::launch::async, [&] { server_sock.write(events); });
 

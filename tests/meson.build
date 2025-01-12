@@ -22,8 +22,6 @@ test_dependencies += guilander_dep
 # List of tests that can run in parallel
 unit_tests = [
     'test_unit_test',
-    'test_meson_guilander_dep',
-    'test_meson_guilander_headers_do_not_leak_macros',
     'test_wayland_connected_client',
     'test_wayland_primitive_types',
     'test_wayland_message_visitor',
@@ -31,10 +29,6 @@ unit_tests = [
     'test_wayland_message_parser',
     'test_wayland_message_utils',
     'test_wayland_system_utils',
-    'test_gnu_pipe',
-    'test_gnu_fd_handle',
-    'test_gnu_memory_block',
-    'test_gnu_local_stream_socket',
     'test_sstd_math',
     'test_sstd_type_list',
     'test_sstd_byte_array',
