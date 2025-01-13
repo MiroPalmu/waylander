@@ -18,7 +18,11 @@ project(
     'cpp',
     version: '0.2.0',
     meson_version: '>= 1.4.0',
-    default_options : ['warning_level=3', 'werror=true', 'optimization=3', 'cpp_std=c++26']
+    default_options : [
+      'warning_level=3',
+      'werror=true',
+      'cpp_std=c++26',
+    ],
 )
 
 if not meson.is_subproject()
