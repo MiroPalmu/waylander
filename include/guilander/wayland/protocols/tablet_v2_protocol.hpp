@@ -120,8 +120,7 @@ struct zwp_tablet_manager_v2 {
         struct destroy;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct zwp_tablet_seat_v2 {
     struct request {

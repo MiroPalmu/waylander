@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-
 #include <boost/ut.hpp> // import boost.ut;
 
 #include "guilander/sstd.hpp"
-
 
 int main() {
     using namespace boost::ut;
@@ -37,5 +35,4 @@ int main() {
         expect(0_i == sstd::round_upto_multiple_of<4>(8));
         expect(3_i == sstd::round_upto_multiple_of<4>(9));
     };
-
 }

@@ -72,8 +72,7 @@ struct xdg_positioner {
         struct set_parent_configure;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct xdg_surface {
     enum class error : Wint::integral_type;
@@ -232,26 +231,26 @@ enum class xdg_positioner::error : Wint::integral_type {
 };
 
 enum class xdg_positioner::anchor : Wint::integral_type {
-    Enone = 0,
-    Etop = 1,
-    Ebottom = 2,
-    Eleft = 3,
-    Eright = 4,
-    Etop_left = 5,
-    Ebottom_left = 6,
-    Etop_right = 7,
+    Enone         = 0,
+    Etop          = 1,
+    Ebottom       = 2,
+    Eleft         = 3,
+    Eright        = 4,
+    Etop_left     = 5,
+    Ebottom_left  = 6,
+    Etop_right    = 7,
     Ebottom_right = 8
 };
 
 enum class xdg_positioner::gravity : Wint::integral_type {
-    Enone = 0,
-    Etop = 1,
-    Ebottom = 2,
-    Eleft = 3,
-    Eright = 4,
-    Etop_left = 5,
-    Ebottom_left = 6,
-    Etop_right = 7,
+    Enone         = 0,
+    Etop          = 1,
+    Ebottom       = 2,
+    Eleft         = 3,
+    Eright        = 4,
+    Etop_left     = 5,
+    Ebottom_left  = 6,
+    Etop_right    = 7,
     Ebottom_right = 8
 };
 
@@ -475,7 +474,7 @@ struct xdg_positioner::request::set_reactive {
     static constexpr Wopcode<xdg_positioner> opcode{ 7 };
 };
 
-/// 
+///
 ///
 /// Set the parent window geometry the compositor should use when
 /// positioning the popup. The compositor may use this information to
@@ -682,14 +681,14 @@ enum class xdg_toplevel::error : Wint::integral_type {
 /// These values are used to indicate which edge of a surface
 /// is being dragged in a resize operation.
 enum class xdg_toplevel::resize_edge : Wint::integral_type {
-    Enone = 0,
-    Etop = 1,
-    Ebottom = 2,
-    Eleft = 4,
-    Etop_left = 5,
-    Ebottom_left = 6,
-    Eright = 8,
-    Etop_right = 9,
+    Enone         = 0,
+    Etop          = 1,
+    Ebottom       = 2,
+    Eleft         = 4,
+    Etop_left     = 5,
+    Ebottom_left  = 6,
+    Eright        = 8,
+    Etop_right    = 9,
     Ebottom_right = 10
 };
 

@@ -49,8 +49,7 @@ struct wp_presentation {
 struct wp_presentation_feedback {
     enum class kind : Wuint::integral_type;
 
-    struct request {
-    };
+    struct request {};
 
     struct event {
         struct sync_output;

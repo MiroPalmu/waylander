@@ -62,8 +62,7 @@ struct wl_registry {
     };
 };
 struct wl_callback {
-    struct request {
-    };
+    struct request {};
 
     struct event {
         struct done;
@@ -75,8 +74,7 @@ struct wl_compositor {
         struct create_region;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_shm_pool {
     struct request {
@@ -85,8 +83,7 @@ struct wl_shm_pool {
         struct resize;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_shm {
     enum class error : Wint::integral_type;
@@ -171,8 +168,7 @@ struct wl_data_device_manager {
         struct get_data_device;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_shell {
     enum class error : Wint::integral_type;
@@ -181,8 +177,7 @@ struct wl_shell {
         struct get_shell_surface;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_shell_surface {
     enum class resize : Wuint::integral_type;
@@ -331,8 +326,7 @@ struct wl_region {
         struct subtract;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_subcompositor {
     enum class error : Wint::integral_type;
@@ -342,8 +336,7 @@ struct wl_subcompositor {
         struct get_subsurface;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_subsurface {
     enum class error : Wint::integral_type;
@@ -357,8 +350,7 @@ struct wl_subsurface {
         struct set_desync;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wl_fixes {
     struct request {
@@ -366,8 +358,7 @@ struct wl_fixes {
         struct destroy_registry;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 /// global error values
 ///
@@ -782,17 +773,17 @@ enum class wl_shm::format : Wint::integral_type {
     /// [63:0]   A3:A2:Y3:Cr0:Y2:A1:A0:Y1:Cb0:Y0  1:1:10:10:10:1:1:10:10:10 little endian
     Ey0l2 = 843853913,
     /// [63:0]   X3:X2:Y3:Cr0:Y2:X1:X0:Y1:Cb0:Y0  1:1:10:10:10:1:1:10:10:10 little endian
-    Ex0l2 = 843853912,
-    Eyuv420_8bit = 942691673,
+    Ex0l2         = 843853912,
+    Eyuv420_8bit  = 942691673,
     Eyuv420_10bit = 808539481,
-    Exrgb8888_a8 = 943805016,
-    Exbgr8888_a8 = 943800920,
-    Ergbx8888_a8 = 943806546,
-    Ebgrx8888_a8 = 943806530,
-    Ergb888_a8 = 943798354,
-    Ebgr888_a8 = 943798338,
-    Ergb565_a8 = 943797586,
-    Ebgr565_a8 = 943797570,
+    Exrgb8888_a8  = 943805016,
+    Exbgr8888_a8  = 943800920,
+    Ergbx8888_a8  = 943806546,
+    Ebgrx8888_a8  = 943806530,
+    Ergb888_a8    = 943798354,
+    Ebgr888_a8    = 943798338,
+    Ergb565_a8    = 943797586,
+    Ebgr565_a8    = 943797570,
     /// non-subsampled Cr:Cb plane
     Env24 = 875714126,
     /// non-subsampled Cb:Cr plane

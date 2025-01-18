@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <algorithm>
@@ -68,7 +67,7 @@ int main() {
         using get_registery        = wl_display::request::get_registry;
         constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
                                                                get_registery::opcode,
-                                                               { 12u });
+                                                                    { 12u });
         constexpr auto msg         = get_registery{ 2u };
         constexpr auto garbage_msg = 42u;
         auto get_registery_request = sstd::byte_array<16>{ header, msg, garbage_msg };
@@ -86,7 +85,7 @@ int main() {
         using get_registery        = wl_display::request::get_registry;
         constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
                                                                get_registery::opcode,
-                                                               { 5u });
+                                                                    { 5u });
         constexpr auto msg         = get_registery{ 2u };
         auto get_registery_request = sstd::byte_array<12>{ header, msg };
 
@@ -101,7 +100,7 @@ int main() {
         using get_registery        = wl_display::request::get_registry;
         constexpr auto header      = wl::message_header<wl_display>(wl::global_display_object,
                                                                get_registery::opcode,
-                                                               { 12u });
+                                                                    { 12u });
         constexpr auto msg         = get_registery{ 2u };
         auto get_registery_request = sstd::byte_array<12>{ header, msg };
 

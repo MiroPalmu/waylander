@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-
 #include <boost/ut.hpp> // import boost.ut;
 
 #include <concepts>
@@ -82,9 +81,9 @@ int main() {
 
     tag("sstd") / "type_list::fold_left can be used to accumulate integral constants"_test = [] {
         using integrals   = sstd::type_list<sstd::numeral_t<1>,
-                                          sstd::numeral_t<42>,
-                                          sstd::numeral_t<0>,
-                                          sstd::numeral_t<100>>;
+                                            sstd::numeral_t<42>,
+                                            sstd::numeral_t<0>,
+                                            sstd::numeral_t<100>>;
         using binary_op   = decltype([](auto Lhs, auto Rhs) {
             return sstd::numeral_t<decltype(Lhs)::value + decltype(Rhs)::value>{};
         });

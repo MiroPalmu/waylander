@@ -27,9 +27,9 @@
 #include <vector>
 
 #include "guilander/byte_vec.hpp"
+#include "guilander/sstd.hpp"
 #include "guilander/type_utils.hpp"
 #include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/sstd.hpp"
 
 namespace ger {
 namespace wl {

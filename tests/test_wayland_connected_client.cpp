@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-
 #include <boost/ut.hpp> // import boost.ut;
 
 /// These test do not try to use the possible Wayland compositor socket present on the system.
@@ -33,11 +32,11 @@
 #include "gnulander/memory_block.hpp"
 
 #include "guilander/byte_vec.hpp"
+#include "guilander/wayland/connected_client.hpp"
 #include "guilander/wayland/message_buffer.hpp"
 #include "guilander/wayland/message_parser.hpp"
 #include "guilander/wayland/message_utils.hpp"
 #include "guilander/wayland/message_visitor.hpp"
-#include "guilander/wayland/connected_client.hpp"
 #include "guilander/wayland/protocol_primitives.hpp"
 #include "guilander/wayland/protocols/wayland_protocol.hpp"
 

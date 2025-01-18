@@ -42,8 +42,7 @@ struct wp_viewporter {
         struct get_viewport;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 struct wp_viewport {
     enum class error : Wint::integral_type;
@@ -54,8 +53,7 @@ struct wp_viewport {
         struct set_destination;
     };
 
-    struct event {
-    };
+    struct event {};
 };
 enum class wp_viewporter::error : Wint::integral_type {
     /// the surface already has a viewport object associated

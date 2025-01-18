@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-
 #include <boost/ut.hpp> // import boost.ut;
 
 #include "guilander/wayland/message_utils.hpp"
@@ -122,7 +121,7 @@ int main() {
         constexpr auto payload_size  = wl::message_payload_size(message);
         constexpr auto expected_size = sizeof(message.registry);
 
-        expect(constant<expected_size == payload_size>);
+        expect(constant < expected_size == payload_size >);
     };
 
     wl_tag / "message_payload_size is calculated correctly for empty static message"_test = [] {
@@ -138,7 +137,7 @@ int main() {
         constexpr auto payload_size  = wl::message_payload_size(message);
         constexpr auto expected_size = 0uz;
 
-        expect(constant<expected_size == payload_size>);
+        expect(constant < expected_size == payload_size >);
     };
 
     wl_tag / "message_payload_size is calculated correctly for long static message"_test = [] {
@@ -159,6 +158,6 @@ int main() {
         constexpr auto expected_size = sizeof(message.id) + sizeof(message.offset)
                                        + sizeof(message.width) + sizeof(message.height)
                                        + sizeof(message.stride) + sizeof(message.format);
-        expect(constant<expected_size == payload_size>);
+        expect(constant < expected_size == payload_size >);
     };
 }
