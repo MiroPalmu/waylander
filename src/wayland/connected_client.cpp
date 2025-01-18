@@ -18,12 +18,12 @@
 #include <stdexcept>
 #include <utility>
 
-#include "byte_vec.hpp"
 #include "gnulander/local_stream_socket.hpp"
 
-#include "wayland/message_parser.hpp"
-#include "wayland/message_visitor.hpp"
-#include "wayland/connected_client.hpp"
+#include "guilander/byte_vec.hpp"
+#include "guilander/wayland/connected_client.hpp"
+#include "guilander/wayland/message_parser.hpp"
+#include "guilander/wayland/message_visitor.hpp"
 
 namespace ger {
 namespace wl {
@@ -47,7 +47,7 @@ void connected_client::flush_registered_requests() {
     for (const auto& fd : fds_to_write) {
         auto msg =
             gnulander::local_socket_msg<1, 1>{ std::span{ data_to_write }.subspan(bytes_written, 1),
-                                         fd.value };
+                                               fd.value };
         bytes_written += server_sock_.send(msg);
     }
 

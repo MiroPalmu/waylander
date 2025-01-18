@@ -22,12 +22,12 @@
 #include <span>
 #include <vector>
 
-#include "sstd.hpp"
-#include "wayland/message_parser.hpp"
-#include "wayland/message_visitor.hpp"
-#include "wayland/connected_client.hpp"
-#include "wayland/protocol_primitives.hpp"
-#include "wayland/protocols/wayland_protocol.hpp"
+#include "guilander/sstd.hpp"
+#include "guilander/wayland/message_parser.hpp"
+#include "guilander/wayland/message_visitor.hpp"
+#include "guilander/wayland/connected_client.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
+#include "guilander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;

@@ -26,12 +26,12 @@
 #include <utility>
 
 #include "gnulander/memory_block.hpp"
-#include "sstd.hpp"
-#include "wayland/message_buffer.hpp"
-#include "wayland/message_parser.hpp"
-#include "wayland/connected_client.hpp"
-#include "wayland/protocol_primitives.hpp"
-#include "wayland/protocols/wayland_protocol.hpp"
+#include "guilander/sstd.hpp"
+#include "guilander/wayland/message_buffer.hpp"
+#include "guilander/wayland/message_parser.hpp"
+#include "guilander/wayland/connected_client.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
+#include "guilander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;

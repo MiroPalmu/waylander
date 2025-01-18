@@ -18,8 +18,8 @@
 
 #include <concepts>
 
-#include "wayland/protocol_primitives.hpp"
-#include "wayland/protocols/wayland_protocol.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
+#include "guilander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;

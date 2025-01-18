@@ -26,11 +26,11 @@
 #include <utility>
 
 #include "gnulander/memory_block.hpp"
-#include "wayland/message_visitor.hpp"
-#include "wayland/parsed_message.hpp"
-#include "wayland/connected_client.hpp"
-#include "wayland/protocols/wayland_protocol.hpp"
-#include "wayland/protocols/xdg_shell_protocol.hpp"
+#include "guilander/wayland/connected_client.hpp"
+#include "guilander/wayland/message_visitor.hpp"
+#include "guilander/wayland/parsed_message.hpp"
+#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "guilander/wayland/protocols/xdg_shell_protocol.hpp"
 
 struct StaticPicture {
     // Definitions:

@@ -27,8 +27,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include "wayland/message_intrperter.hpp"
-#include "wayland/protocol_primitives.hpp"
+#include "guilander/wayland/message_intrperter.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
 
 namespace ger {
 namespace wl {

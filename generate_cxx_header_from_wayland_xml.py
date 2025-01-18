@@ -345,7 +345,7 @@ class wl_protocol:
 
         content += "#pragma once\n\n"
 
-        content += '#include "wayland/protocol_primitives.hpp"\n\n'
+        content += '#include "guilander/wayland/protocol_primitives.hpp"\n\n'
 
         content += "namespace ger {\n"
         content += "namespace wl {\n"

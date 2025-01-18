@@ -31,7 +31,7 @@
 
 #pragma once
 
-#include "wayland/protocol_primitives.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
 
 namespace ger {
 namespace wl {

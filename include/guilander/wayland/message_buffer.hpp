@@ -26,10 +26,10 @@
 #include <utility>
 #include <vector>
 
-#include "byte_vec.hpp"
-#include "type_utils.hpp"
-#include "wayland/protocol_primitives.hpp"
-#include <sstd.hpp>
+#include "guilander/byte_vec.hpp"
+#include "guilander/type_utils.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
+#include "guilander/sstd.hpp"
 
 namespace ger {
 namespace wl {

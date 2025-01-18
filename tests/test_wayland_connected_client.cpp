@@ -28,17 +28,18 @@
 #include <type_traits>
 #include <utility>
 
-#include "byte_vec.hpp"
 #include "gnulander/fd_handle.hpp"
 #include "gnulander/local_stream_socket.hpp"
 #include "gnulander/memory_block.hpp"
-#include "wayland/message_buffer.hpp"
-#include "wayland/message_parser.hpp"
-#include "wayland/message_utils.hpp"
-#include "wayland/message_visitor.hpp"
-#include "wayland/connected_client.hpp"
-#include "wayland/protocol_primitives.hpp"
-#include "wayland/protocols/wayland_protocol.hpp"
+
+#include "guilander/byte_vec.hpp"
+#include "guilander/wayland/message_buffer.hpp"
+#include "guilander/wayland/message_parser.hpp"
+#include "guilander/wayland/message_utils.hpp"
+#include "guilander/wayland/message_visitor.hpp"
+#include "guilander/wayland/connected_client.hpp"
+#include "guilander/wayland/protocol_primitives.hpp"
+#include "guilander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;

@@ -15,25 +15,13 @@
 
 #pragma once
 
-/// @file
-/// Declares vocabulary type parsed_message.
-
-#include <cstddef>
-#include <span>
-
-#include "wayland/protocol_primitives.hpp"
+#include "guilander/construct_allocator_adapter.hpp"
 
 namespace ger {
-namespace wl {
-
-/// Parsed Wayland message from raw bytes.
-///
-/// Note that by reading the raw bytes, there is not enough information to determine the type of the object.
-struct parsed_message {
-    wl::Wobject<wl::generic_object> object_id;
-    wl::Wopcode<wl::generic_object> opcode;
-    std::span<const std::byte> arguments;
-};
-
-} // namespace wl
+namespace sstd {
+using byte_vec_alloc =
+    sstd::allocator::construct_allocator_adapter<sstd::allocator::default_init_construct,
+                                                 std::byte>;
+using byte_vec = std::vector<std::byte, byte_vec_alloc>;
+} // namespace sstd
 } // namespace ger

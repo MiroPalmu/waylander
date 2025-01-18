@@ -23,8 +23,8 @@
 #include <functional>
 #include <utility>
 
-#include "wayland/message_overload_set.hpp"
-#include "wayland/parsed_message.hpp"
+#include "guilander/wayland/message_overload_set.hpp"
+#include "guilander/wayland/parsed_message.hpp"
 
 namespace ger {
 namespace wl {
