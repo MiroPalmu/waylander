@@ -15,7 +15,7 @@
 
 #include <boost/ut.hpp> // import boost.ut;
 
-#include "guilander/sstd.hpp"
+#include "waylander/sstd.hpp"
 
 int main() {
     using namespace boost::ut;

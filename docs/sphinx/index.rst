@@ -1,4 +1,4 @@
-Welcome to Guilander documentation!
+Welcome to waylander documentation!
 ===================================
 
 .. toctree::

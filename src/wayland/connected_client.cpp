@@ -20,10 +20,10 @@
 
 #include "gnulander/local_stream_socket.hpp"
 
-#include "guilander/byte_vec.hpp"
-#include "guilander/wayland/connected_client.hpp"
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/message_visitor.hpp"
+#include "waylander/byte_vec.hpp"
+#include "waylander/wayland/connected_client.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/message_visitor.hpp"
 
 namespace ger {
 namespace wl {

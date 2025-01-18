@@ -22,11 +22,11 @@
 #include <stdexcept>
 #include <vector>
 
-#include "guilander/byte_array.hpp"
-#include "guilander/wayland/connected_client.hpp"
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/byte_array.hpp"
+#include "waylander/wayland/connected_client.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
 
 /// Tests if `{ span } == { { subspan }, ... }`
 constexpr auto is_beginning_subspan(const std::span<const std::byte> span,

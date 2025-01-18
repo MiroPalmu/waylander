@@ -24,10 +24,10 @@
 #include <tuple>
 #include <utility>
 
-#include "guilander/sstd.hpp"
-#include "guilander/type_utils.hpp"
-#include "guilander/wayland/message_utils.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
+#include "waylander/sstd.hpp"
+#include "waylander/type_utils.hpp"
+#include "waylander/wayland/message_utils.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
 
 namespace ger {
 namespace wl {

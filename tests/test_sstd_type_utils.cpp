@@ -19,7 +19,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include "guilander/type_utils.hpp"
+#include "waylander/type_utils.hpp"
 
 /// Note that nullary template template parameters are impossible, see sstd::arity_of_template_is.
 template<typename>

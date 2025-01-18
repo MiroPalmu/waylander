@@ -345,7 +345,7 @@ class wl_protocol:
 
         content += "#pragma once\n\n"
 
-        content += '#include "guilander/wayland/protocol_primitives.hpp"\n\n'
+        content += '#include "waylander/wayland/protocol_primitives.hpp"\n\n'
 
         content += "namespace ger {\n"
         content += "namespace wl {\n"
@@ -646,7 +646,7 @@ def main(argv0: str, argv_rest: list[str], temp_dir: str):
                 prog=argv0,
         description="""    - clones wayland-protocols repo to "${TMPDIR:-/tmp}"
     - parses xml from the repo
-    - generates Guilander protocol headers
+    - generates waylander protocol headers
 
     If $TMPDIR is not usable defaults to /tmp""",
                 exit_on_error=True,
@@ -665,7 +665,7 @@ def main(argv0: str, argv_rest: list[str], temp_dir: str):
     parser.add_argument(
         "destination-dir",
         type=str,
-        help="Path of a destination directory for the generated Guilander headers.",
+        help="Path of a destination directory for the generated headers.",
     )
 
     parser.add_argument(

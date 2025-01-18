@@ -1,7 +1,7 @@
 Scope of Guildander
 ===================
 
-Guilander goals
+Waylander goals
 ---------------
 
 - C++ impelementation of Wayland protocol for clients.
@@ -10,7 +10,7 @@ Guilander goals
 - Give example usecase:
     - print all globals
 
-Guilander non-goals
+Waylander non-goals
 -------------------
 
 - Event loop implementation.
@@ -23,12 +23,12 @@ Guilander non-goals
 Operating system requirements
 -----------------------------
 
-Guilander is tested only for Linux.
+Waylander is tested only for Linux.
 
 Syscall abstraction requirements
 --------------------------------
 
-Guilanded syscall abstractions have to be comprehensive enough,
+Waylander syscall abstractions have to be comprehensive enough,
 that there is confidence to use them in testing the Waylanad IPC mechanism.
 
 This include following usecases:

@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <type_traits>
 
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
 
 namespace ger {
 namespace wl {

@@ -14,7 +14,7 @@
 # along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 project(
-    'guilander',
+    'waylander',
     'cpp',
     version: '0.2.0',
     meson_version: '>= 1.4.0',
@@ -32,22 +32,22 @@ endif
 gnulander_proj = subproject('gnulander')
 gnulander_dep = gnulander_proj.get_variable('gnulander_dep')
 
-guilander_source_files = []
+waylander_source_files = []
 
 # Subdirectors
 subdir('docs')
 subdir('src')
 
-guilander_lib = static_library(
-    'guilander',
-    guilander_source_files,
+waylander_lib = static_library(
+    'waylander',
+    waylander_source_files,
     include_directories : include_directories('include'),
     dependencies : [gnulander_dep],
 )
 
-guilander_dep = declare_dependency(
+waylander_dep = declare_dependency(
     include_directories : include_directories('include'),
-    link_with : guilander_lib,
+    link_with : waylander_lib,
     dependencies : [gnulander_dep],
 )
 

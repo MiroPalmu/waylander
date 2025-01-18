@@ -17,7 +17,7 @@ subproject('ut')
 
 test_dependencies = []
 test_dependencies += dependency('ut')
-test_dependencies += guilander_dep
+test_dependencies += waylander_dep
 
 # List of tests that can run in parallel
 unit_tests = [

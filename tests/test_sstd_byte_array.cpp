@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <ranges>
 
-#include "guilander/byte_array.hpp"
+#include "waylander/byte_array.hpp"
 
 static_assert(ger::sstd::total_memory_usage_is<0>);
 static_assert(ger::sstd::total_memory_usage_is<1, std::uint8_t>);

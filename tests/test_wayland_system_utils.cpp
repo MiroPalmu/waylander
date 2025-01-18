@@ -24,8 +24,8 @@
 #include <string>
 #include <tuple>
 
-#include "guilander/sstd.hpp"
-#include "guilander/wayland/system_utils.hpp"
+#include "waylander/sstd.hpp"
+#include "waylander/wayland/system_utils.hpp"
 
 namespace testing {
 

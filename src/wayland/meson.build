@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-guilander_source_files += files('connected_client.cpp')
-guilander_source_files += files('message_parser.cpp')
-guilander_source_files += files('system_utils.cpp')
-guilander_source_files += files('message_overload_set.cpp')
+waylander_source_files += files('connected_client.cpp')
+waylander_source_files += files('message_parser.cpp')
+waylander_source_files += files('system_utils.cpp')
+waylander_source_files += files('message_overload_set.cpp')

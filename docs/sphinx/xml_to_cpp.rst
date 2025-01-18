@@ -8,7 +8,7 @@ Wayland primitives
    :header-rows: 1
 
    * - Wayland data type
-     - Guilander data type
+     - Waylander data type
    * - :code:`int`
      - :code:`ger::wl::Wint`
    * - :code:`uint`
@@ -26,7 +26,7 @@ Wayland primitives
    * - :code:`fd`
      - :code:`ger::wl::Wfd`
 
-Guilander also defines following primitive data types:
+Waylander also defines following primitive data types:
 
 - :code:`ger::wl::Wmessage_size`
 - :code:`ger::wl::Woptcode<interface>`

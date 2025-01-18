@@ -1,19 +1,16 @@
 # Description
 
-Guilander is dependency free (*) C++26 Wayland client library
-for writing Wayland client applications.
+Waylander is free C++26 Wayland client library
+for doing Wayland client side communication.
 
 It encodes Wayland protocol to C++ type system by generating C++ headers from protocol XML,
 in which Wayland interfaces and messages are represented by types, built form set of primitives.
 Communication using the Wayland wire format is implemented
 using bleeding edge C++ compile time techniques based on the generated types.
 
-(*) Guilander uses some modules from source code library Gnulib,
-which means that they are bundled with Guilander itself.
+## Wayland XML to waylander C++ protocol header
 
-## Wayland XML to Guilander C++ protocol header
-
-To get an idea of how Guilander maps Wayland XML to C++ here is a part of `wl_display` interface:
+To get an idea of how waylander maps Wayland XML to C++ here is a part of `wl_display` interface:
 
 ```xml
 <interface name="wl_display" version="1">
@@ -42,7 +39,7 @@ To get an idea of how Guilander maps Wayland XML to C++ here is a part of `wl_di
 ```
 
 We can see that the interface `wl_display` contains a request `sync`, an event `error`
-and an enum `error`. Guilander comes with XML `xml-protocol-tool` which generates
+and an enum `error`. Waylander comes with XML `xml-protocol-tool` which generates
 approximately following C++ code from the previous XML (`include/wayland/protocols/wayland_protocol.hpp`):
 
 ```cpp
@@ -80,12 +77,12 @@ struct wl_display {
 }
 ```
 
-The types with `W` prefix are Guilander primitives,
+The types with `W` prefix are waylander primitives,
 which are defined in `include/wayland/protocol_primitives.hpp`.
 There is a one for each of the Wayland data types:
 `Wint`, `Wuint`, `Wfixed`, `Wstring`, `Wobject<interface>`,
 `Wnew_id<interface>`, `Warray` and `Wfd`.
-There is also three Guilander specific primitives:
+There is also three waylander specific primitives:
 `Wmessage_size`, `Wopcode<interface>` and `message_header<interface>`.
 
 ## Application examples
@@ -99,7 +96,7 @@ which implements Wayland client to display static picture of a Sierpinski's Carp
 
 # Status
 
-Currently, Guilander is considered to be in an alpha stage,
+Currently, waylander is considered to be in an alpha stage,
 which means that some features are missing, and it might go through large changes in the future.
 
 ## Todo
@@ -111,11 +108,11 @@ which means that some features are missing, and it might go through large change
 
 # Building
 
-Guilander uses Meson as build system and provides `guildander_dep` meson dependency
-for other projects to consume. At the moment this is the only way to consume Guilander.
+Waylander uses Meson as build system and provides `guildander_dep` meson dependency
+for other projects to consume. At the moment this is the only way to consume waylander.
 
 Because of the bleeding edge nature of the project currently only GCC 14.1.1 or newer
-is required to build Guilander.
+is required to build waylander.
 
 ## Examples
 
@@ -134,7 +131,7 @@ meson setup build && ninja -C build test
 
 ## Generated protocol headers
 
-Guilander comes with all `stable` Wayland protocols (`include/wayland/protocols/*_protocol.hpp`),
+Waylander comes with all `stable` Wayland protocols (`include/wayland/protocols/*_protocol.hpp`),
 which are generated using `xml-protocol-tool`.
 
 # Author

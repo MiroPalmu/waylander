@@ -15,9 +15,9 @@
 
 #include <boost/ut.hpp> // import boost.ut;
 
-#include "guilander/wayland/message_utils.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/wayland/message_utils.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
 
 using wl_display    = ger::wl::protocols::wl_display;
 using get_registery = wl_display::request::get_registry;

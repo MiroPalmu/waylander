@@ -18,7 +18,7 @@
 #include <concepts>
 #include <utility>
 
-#include "guilander/sstd.hpp"
+#include "waylander/sstd.hpp"
 
 struct mock_resource {
     bool is_active{ true };

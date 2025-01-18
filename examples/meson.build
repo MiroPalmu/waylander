@@ -28,7 +28,7 @@ foreach example_source : single_source_examples
     executable(
         example_name,
         example_source,
-        dependencies: [guilander_dep],
+        dependencies: [waylander_dep],
     )
     example_ordinal += 1
 endforeach

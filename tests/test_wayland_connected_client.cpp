@@ -31,14 +31,14 @@
 #include "gnulander/local_stream_socket.hpp"
 #include "gnulander/memory_block.hpp"
 
-#include "guilander/byte_vec.hpp"
-#include "guilander/wayland/connected_client.hpp"
-#include "guilander/wayland/message_buffer.hpp"
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/message_utils.hpp"
-#include "guilander/wayland/message_visitor.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/byte_vec.hpp"
+#include "waylander/wayland/connected_client.hpp"
+#include "waylander/wayland/message_buffer.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/message_utils.hpp"
+#include "waylander/wayland/message_visitor.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;

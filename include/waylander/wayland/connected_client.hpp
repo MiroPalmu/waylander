@@ -24,13 +24,13 @@
 #include <utility>
 
 #include "gnulander/local_stream_socket.hpp"
-#include "guilander/wayland/message_buffer.hpp"
-#include "guilander/wayland/message_intrperter.hpp"
-#include "guilander/wayland/message_overload_set.hpp"
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
-#include "guilander/wayland/system_utils.hpp"
+#include "waylander/wayland/message_buffer.hpp"
+#include "waylander/wayland/message_intrperter.hpp"
+#include "waylander/wayland/message_overload_set.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/wayland/system_utils.hpp"
 
 namespace ger {
 namespace wl {

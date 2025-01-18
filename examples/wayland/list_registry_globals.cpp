@@ -16,9 +16,9 @@
 #include <algorithm>
 #include <print>
 
-#include "guilander/wayland/connected_client.hpp"
-#include "guilander/wayland/message_visitor.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/wayland/connected_client.hpp"
+#include "waylander/wayland/message_visitor.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
 
 using wl_display   = ger::wl::protocols::wl_display;
 using wl_registery = ger::wl::protocols::wl_registry;

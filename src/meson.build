@@ -13,6 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
-guilander_source_files += files('sstd.cpp')
+waylander_source_files += files('sstd.cpp')
 
 subdir('wayland')

@@ -24,9 +24,9 @@
 #include <span>
 #include <vector>
 
-#include "guilander/byte_vec.hpp"
-#include "guilander/wayland/parsed_message.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
+#include "waylander/byte_vec.hpp"
+#include "waylander/wayland/parsed_message.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
 
 namespace ger {
 namespace wl {

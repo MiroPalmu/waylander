@@ -143,7 +143,7 @@ struct message_header {
 };
 
 // Sanity check primitive sizes.
-static_assert(CHAR_BIT == 8, "Guilander assumes std::byte to be 8 bits.");
+static_assert(CHAR_BIT == 8, "Waylander assumes std::byte to be 8 bits.");
 static_assert(sizeof(Wint) == 4);
 static_assert(sizeof(Wuint) == 4);
 static_assert(sizeof(Wfixed) == 4);

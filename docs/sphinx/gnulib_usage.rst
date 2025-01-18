@@ -38,7 +38,7 @@ and then just define macros that replace the "unsafe" functions with the safer o
 
 .. note::
 
-    Above is observation based on the current used modules in guilander.
+    Above is observation based on the current used modules in waylander.
     In these modules only :code:`<libc-header>--.h` header is :code:`unistd--.h`.
 
 These macros might not not be desired and :code:`<libc-header>-safer.h` should be included directly.
@@ -92,7 +92,7 @@ Gnulib manual 17.10 Handling closed standard file descriptors.
 
 Note that some modules uses :code:`*-safer` modules indirectly.
 
-Guilander user POV requirements
+Waylander user POV requirements
 -------------------------------
 
 .. note::
@@ -101,8 +101,8 @@ Guilander user POV requirements
 
 .. #) creates ordered list.
 
-#) Guilander headers do not define any C preprocessor macros.
-#) Application using guilander does not find any gnulib headers:
+#) Waylander headers do not define any C preprocessor macros.
+#) Application using waylander does not find any gnulib headers:
     #) :code:`config.h`
     #) libc replacement headers
     #) utility headers (e.g. :code:`safe-read.h` and :code:`unistd--.h`)

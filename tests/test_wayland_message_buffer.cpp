@@ -25,12 +25,12 @@
 #include <utility>
 
 #include "gnulander/memory_block.hpp"
-#include "guilander/sstd.hpp"
-#include "guilander/wayland/connected_client.hpp"
-#include "guilander/wayland/message_buffer.hpp"
-#include "guilander/wayland/message_parser.hpp"
-#include "guilander/wayland/protocol_primitives.hpp"
-#include "guilander/wayland/protocols/wayland_protocol.hpp"
+#include "waylander/sstd.hpp"
+#include "waylander/wayland/connected_client.hpp"
+#include "waylander/wayland/message_buffer.hpp"
+#include "waylander/wayland/message_parser.hpp"
+#include "waylander/wayland/protocol_primitives.hpp"
+#include "waylander/wayland/protocols/wayland_protocol.hpp"
 
 int main() {
     using namespace boost::ut;
@@ -359,7 +359,7 @@ int main() {
 
         expect(fatal(fd_vec.size() == 1));
         // This test is little lacking as it does not test if the queued fd is actually
-        // the one that was given to the test. This because Guilander does not support
+        // the one that was given to the test. This because waylander does not support
         // receiving Wfd primitives at the moment, so there is no utility to do anything
         // with a Wfd object.
     };
