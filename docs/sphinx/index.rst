@@ -7,7 +7,6 @@ Welcome to waylander documentation!
 
    scope
    xml_to_cpp
-   gnulib_usage
    developing_guidelines
 
 .. Disabled, see: doxygen_index.rst

@@ -25,10 +25,13 @@ Operating system requirements
 
 Waylander is tested only for Linux.
 
-Syscall abstraction requirements
---------------------------------
+System abstraction requirements
+-------------------------------
 
-Waylander syscall abstractions have to be comprehensive enough,
+.. note::
+    This became own library (guilander) which is now a dependency.
+
+Waylander system abstractions have to be comprehensive enough,
 that there is confidence to use them in testing the Waylanad IPC mechanism.
 
 This include following usecases:
