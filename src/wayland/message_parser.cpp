@@ -22,7 +22,7 @@
 #include "waylander/wayland/message_parser.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 [[nodiscard]] auto parsed_message_generator(const std::span<const std::byte> buff)
@@ -92,4 +92,4 @@ namespace wl {
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

@@ -28,7 +28,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -562,4 +562,4 @@ struct zwp_linux_dmabuf_feedback_v1::event::tranche_flags {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

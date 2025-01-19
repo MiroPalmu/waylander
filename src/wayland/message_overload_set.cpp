@@ -18,7 +18,8 @@
 
 #include "waylander/wayland/message_overload_set.hpp"
 
-std::size_t ger::wl::message_overload_set::key_t_hash::operator()(const key_t& key) const noexcept {
+std::size_t
+    waylander::wl::message_overload_set::key_t_hash::operator()(const key_t& key) const noexcept {
     using combined_t = std::size_t;
     static_assert(sizeof(combined_t) >= sizeof(key.first) + sizeof(key.second));
 
@@ -38,8 +39,8 @@ std::size_t ger::wl::message_overload_set::key_t_hash::operator()(const key_t& k
     return std::hash<std::size_t>{}(std::bit_cast<std::size_t>(combined));
 }
 
-auto ger::wl::message_overload_set::overload_resolution(const Wobject<generic_object> obj_id,
-                                                        const Wopcode<generic_object> opcode)
+auto waylander::wl::message_overload_set::overload_resolution(const Wobject<generic_object> obj_id,
+                                                              const Wopcode<generic_object> opcode)
     -> std::optional<std::reference_wrapper<erased_overload_t>> {
     const auto ov_resolution = overloads_.find({ obj_id, opcode });
     if (ov_resolution == overloads_.end()) {

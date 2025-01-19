@@ -25,7 +25,7 @@
 #include <variant>
 #include <vector>
 
-namespace ger {
+namespace waylander {
 namespace sstd {
 
 template<std::size_t N, typename... I>
@@ -84,4 +84,4 @@ template<std::unsigned_integral... I>
 byte_array(I...) -> byte_array<(0 + ... + sizeof(I))>;
 
 } // namespace sstd
-} // namespace ger
+} // namespace waylander

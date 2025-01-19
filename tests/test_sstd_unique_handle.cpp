@@ -41,7 +41,7 @@ void checked_free_er(mock_resource& x) {
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
     cfg<override> = { .tag = { "sstd" } };
 
     tag("sstd") / "unique_handle is not usable without resource"_test = [] {

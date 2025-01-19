@@ -30,7 +30,7 @@
 #include "waylander/wayland/message_intrperter.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// A tool to interpert parsed_message as a message type and pass it to correct overload (callback).
@@ -77,4 +77,4 @@ class message_overload_set {
 };
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

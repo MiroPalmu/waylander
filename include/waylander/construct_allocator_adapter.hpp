@@ -42,7 +42,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace ger {
+namespace waylander {
 namespace sstd {
 namespace allocator {
 
@@ -104,4 +104,4 @@ class construct_allocator_adapter : public A, private ConstructImpl {
 
 } // namespace allocator
 } // namespace sstd
-} // namespace ger
+} // namespace waylander

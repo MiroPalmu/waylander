@@ -28,7 +28,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -148,4 +148,4 @@ struct wp_viewport::request::set_destination {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

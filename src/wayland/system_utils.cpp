@@ -18,7 +18,7 @@
 #include <format>
 #include <stdexcept>
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 auto wayland_socket_path() -> std::filesystem::path {
@@ -50,4 +50,4 @@ auto wayland_socket_path() -> std::filesystem::path {
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

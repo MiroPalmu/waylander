@@ -32,7 +32,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -3679,4 +3679,4 @@ struct wl_fixes::request::destroy_registry {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

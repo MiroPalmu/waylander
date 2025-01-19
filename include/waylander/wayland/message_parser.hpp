@@ -28,7 +28,7 @@
 #include "waylander/wayland/parsed_message.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// Parse messages from \p buff one at a time.
@@ -56,4 +56,4 @@ class message_parser {
 };
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

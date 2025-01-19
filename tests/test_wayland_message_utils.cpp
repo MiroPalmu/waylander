@@ -19,19 +19,19 @@
 #include "waylander/wayland/protocol_primitives.hpp"
 #include "waylander/wayland/protocols/wayland_protocol.hpp"
 
-using wl_display    = ger::wl::protocols::wl_display;
+using wl_display    = waylander::wl::protocols::wl_display;
 using get_registery = wl_display::request::get_registry;
 
-using data_src      = ger::wl::protocols::wl_data_source;
-using data_src_dtro = ger::wl::protocols::wl_data_source;
+using data_src      = waylander::wl::protocols::wl_data_source;
+using data_src_dtro = waylander::wl::protocols::wl_data_source;
 
-using wl_shm        = ger::wl::protocols::wl_shm;
-using wl_shm_pool   = ger::wl::protocols::wl_shm_pool;
+using wl_shm        = waylander::wl::protocols::wl_shm;
+using wl_shm_pool   = waylander::wl::protocols::wl_shm_pool;
 using create_buffer = wl_shm_pool::request::create_buffer;
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
 
     static const auto wl_tag = tag("wayland");
     // Run wl_tag:

@@ -34,7 +34,7 @@
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
 
     static const auto wl_tag = tag("wayland");
     // Run wl_tag:

@@ -23,7 +23,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// Parsed Wayland message from raw bytes.
@@ -36,4 +36,4 @@ struct parsed_message {
 };
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

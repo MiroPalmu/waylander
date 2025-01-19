@@ -21,7 +21,7 @@
 
 #include "waylander/sstd.hpp"
 
-namespace ger {
+namespace waylander {
 namespace sstd {
 
 [[noreturn]] void throw_generic_system_error(const std::source_location loc) {
@@ -47,4 +47,4 @@ namespace sstd {
 }
 
 } // namespace sstd
-} // namespace ger
+} // namespace waylander

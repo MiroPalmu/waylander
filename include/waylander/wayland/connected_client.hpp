@@ -32,7 +32,7 @@
 #include "waylander/wayland/protocols/wayland_protocol.hpp"
 #include "waylander/wayland/system_utils.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 static constexpr auto global_display_object = Wobject<protocols::wl_display>{ 1 };
@@ -130,4 +130,4 @@ Wobject<T> Wobject<T>::reserve_id(connected_client& client) {
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

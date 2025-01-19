@@ -23,7 +23,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace ger {
+namespace waylander {
 namespace sstd {
 
 template<typename T>
@@ -108,4 +108,4 @@ constexpr auto round_upto_multiple_of(const std::integral auto x) {
 };
 
 } // namespace sstd
-} // namespace ger
+} // namespace waylander

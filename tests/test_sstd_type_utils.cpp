@@ -36,7 +36,7 @@ struct ternary_template {};
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
     cfg<override> = { .tag = { "sstd" } };
 
     tag("sstd") / "numeral_type<N> works as expected for usual cases"_test = [] {

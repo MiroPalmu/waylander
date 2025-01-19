@@ -20,7 +20,7 @@
 
 #include <filesystem>
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// Determines path of the Wayland socket, but does not check if it actually exits.
@@ -35,4 +35,4 @@ namespace wl {
 auto wayland_socket_path() -> std::filesystem::path;
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

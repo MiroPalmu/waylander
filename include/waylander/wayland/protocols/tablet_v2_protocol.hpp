@@ -108,7 +108,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -1328,4 +1328,4 @@ struct zwp_tablet_pad_v2::event::removed {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

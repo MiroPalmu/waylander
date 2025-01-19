@@ -31,7 +31,7 @@
 #include "waylander/type_utils.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 class message_buffer {
@@ -140,4 +140,4 @@ class message_buffer {
 };
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

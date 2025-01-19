@@ -35,7 +35,7 @@
 struct StaticPicture {
     // Definitions:
 
-    static constexpr auto color_format = ger::wl::protocols::wl_shm::format::Eargb8888;
+    static constexpr auto color_format = waylander::wl::protocols::wl_shm::format::Eargb8888;
     struct Pixel {
         std::uint8_t blue, green, red, alpha;
     };
@@ -88,17 +88,17 @@ struct StaticPicture {
 
 class static_picture_window {
     // Interfaces:
-    using wl_registry   = ger::wl::protocols::wl_registry;
-    using wl_display    = ger::wl::protocols::wl_display;
-    using wl_callback   = ger::wl::protocols::wl_callback;
-    using wl_shm        = ger::wl::protocols::wl_shm;
-    using wl_shm_pool   = ger::wl::protocols::wl_shm_pool;
-    using wl_buffer     = ger::wl::protocols::wl_buffer;
-    using wl_compositor = ger::wl::protocols::wl_compositor;
-    using wl_surface    = ger::wl::protocols::wl_surface;
-    using xdg_wm_base   = ger::wl::protocols::xdg_wm_base;
-    using xdg_surface   = ger::wl::protocols::xdg_surface;
-    using xdg_toplevel  = ger::wl::protocols::xdg_toplevel;
+    using wl_registry   = waylander::wl::protocols::wl_registry;
+    using wl_display    = waylander::wl::protocols::wl_display;
+    using wl_callback   = waylander::wl::protocols::wl_callback;
+    using wl_shm        = waylander::wl::protocols::wl_shm;
+    using wl_shm_pool   = waylander::wl::protocols::wl_shm_pool;
+    using wl_buffer     = waylander::wl::protocols::wl_buffer;
+    using wl_compositor = waylander::wl::protocols::wl_compositor;
+    using wl_surface    = waylander::wl::protocols::wl_surface;
+    using xdg_wm_base   = waylander::wl::protocols::xdg_wm_base;
+    using xdg_surface   = waylander::wl::protocols::xdg_surface;
+    using xdg_toplevel  = waylander::wl::protocols::xdg_toplevel;
 
     // Requests:
     using wl_display_sync              = wl_display::request::sync;
@@ -123,12 +123,12 @@ class static_picture_window {
     using xdg_surface_configure = xdg_surface::event::configure;
     using xdg_toplevel_close    = xdg_toplevel::event::close;
 
-    ger::wl::connected_client client_ = {};
+    waylander::wl::connected_client client_ = {};
 
     template<typename W>
-    using Wobject = ger::wl::Wobject<W>;
+    using Wobject = waylander::wl::Wobject<W>;
 
-    Wobject<wl_display> display_obj_id_ = { ger::wl::global_display_object };
+    Wobject<wl_display> display_obj_id_ = { waylander::wl::global_display_object };
     Wobject<wl_registry> registry_obj_id_;
     Wobject<wl_callback> sync_obj_id_;
     Wobject<wl_compositor> compositor_obj_id_;
@@ -143,7 +143,7 @@ class static_picture_window {
 
     /// Handels: wl_display:error
     auto fatal_error_overloads_() {
-        auto vis = ger::wl::message_overload_set{};
+        auto vis = waylander::wl::message_overload_set{};
         vis.add_overload<wl_display_error>(display_obj_id_, [](const wl_display_error& err) {
             const auto err_type_str = [&]() -> std::string {
                 switch (static_cast<wl_display::error>(err.code.value)) {
@@ -198,7 +198,7 @@ class static_picture_window {
         globals_binder.add_overload<wl_registry_global>(
             registry_obj_id_,
             [&](const wl_registry_global& msg) {
-                const auto id = [&]() -> std::optional<ger::wl::Wnew_id<>> {
+                const auto id = [&]() -> std::optional<waylander::wl::Wnew_id<>> {
                     if (msg.interface == u8"wl_shm") {
                         // wl_shm is a signleton so it is expected to find only one.
                         wl_shm_found = true;

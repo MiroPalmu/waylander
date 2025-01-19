@@ -33,20 +33,20 @@ namespace testing {
 auto setenv(const std::string& name, const std::string& val) {
     constexpr auto override_if_present = 1;
     const auto setenv_failed           = ::setenv(name.c_str(), val.c_str(), override_if_present);
-    if (setenv_failed) { ger::sstd::throw_generic_system_error(); }
+    if (setenv_failed) { waylander::sstd::throw_generic_system_error(); }
 }
 
 /// Testing utility to remove env variable \p name.
 auto unsetenv(const std::string& name) {
     const auto unsetenv_failed = ::unsetenv(name.c_str());
-    if (unsetenv_failed) { ger::sstd::throw_generic_system_error(); }
+    if (unsetenv_failed) { waylander::sstd::throw_generic_system_error(); }
 }
 
 } // namespace testing
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
 
     static const auto wl_tag = tag("wayland");
     // Run wl_tag:

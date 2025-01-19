@@ -347,7 +347,7 @@ class wl_protocol:
 
         content += '#include "waylander/wayland/protocol_primitives.hpp"\n\n'
 
-        content += "namespace ger {\n"
+        content += "namespace waylander {\n"
         content += "namespace wl {\n"
         content += "namespace protocols {\n\n"
 
@@ -364,7 +364,7 @@ class wl_protocol:
 
         content += "} // namespace protocols\n"
         content += "} // namespace wl\n"
-        content += "} // namespace ger\n"
+        content += "} // namespace waylander\n"
 
         filename = f"{path_prefix}{self.name}_protocol.hpp"
         with open(filename, "w") as file:

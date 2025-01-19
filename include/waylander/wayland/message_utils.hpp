@@ -26,7 +26,7 @@
 #include "waylander/type_utils.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 namespace {
@@ -88,4 +88,4 @@ constexpr auto message_payload_size(const Wmsg&) -> std::size_t {
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

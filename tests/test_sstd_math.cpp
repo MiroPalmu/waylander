@@ -19,7 +19,7 @@
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
     cfg<override> = { .tag = { "sstd" } };
 
     tag("sstd") / "round_upto_multiple_of<4>(N) is correct for N < 10"_test = [] {

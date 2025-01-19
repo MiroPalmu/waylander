@@ -25,7 +25,7 @@
 #include "waylander/wayland/message_parser.hpp"
 #include "waylander/wayland/message_visitor.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 [[nodiscard]] connected_client::connected_client(const std::filesystem::path& socket)
@@ -197,4 +197,4 @@ auto connected_client::recv_and_visit_events(message_overload_set& mos)
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

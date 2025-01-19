@@ -28,7 +28,7 @@
 
 #include "gnulander/fd_handle.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 template<typename T>
@@ -188,4 +188,4 @@ constexpr bool operator==(Lhs&& lhs, Rhs&& rhs) {
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

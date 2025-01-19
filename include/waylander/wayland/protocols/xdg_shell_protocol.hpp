@@ -33,7 +33,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -1414,4 +1414,4 @@ struct xdg_popup::event::repositioned {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

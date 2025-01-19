@@ -28,7 +28,7 @@
 
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 namespace protocols {
 
@@ -264,4 +264,4 @@ struct wp_presentation_feedback::event::discarded {
 
 } // namespace protocols
 } // namespace wl
-} // namespace ger
+} // namespace waylander

@@ -26,7 +26,7 @@
 #include "waylander/wayland/message_overload_set.hpp"
 #include "waylander/wayland/parsed_message.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// Invokes overload from \p mos corresponding to \p msg if present or invokes \p default_overload.
@@ -61,4 +61,4 @@ void message_visit(F&& default_overload,
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

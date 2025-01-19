@@ -29,7 +29,7 @@
 #include "waylander/wayland/message_utils.hpp"
 #include "waylander/wayland/protocol_primitives.hpp"
 
-namespace ger {
+namespace waylander {
 namespace wl {
 
 /// Interperts given bytes as Wayland wire format message payload.
@@ -102,4 +102,4 @@ constexpr auto interpert_message_payload(const std::span<const std::byte> payloa
 }
 
 } // namespace wl
-} // namespace ger
+} // namespace waylander

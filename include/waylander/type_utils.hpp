@@ -22,7 +22,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace ger {
+namespace waylander {
 namespace sstd {
 
 /// Instantiates template template parameters to get infromation about the template template.
@@ -1142,4 +1142,4 @@ constexpr auto to_tuple(const T& t) {
 }
 
 } // namespace sstd
-} // namespace ger
+} // namespace waylander

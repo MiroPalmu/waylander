@@ -22,11 +22,11 @@
 
 // short hand
 template<typename... T>
-using L = ger::sstd::type_list<T...>;
+using L = waylander::sstd::type_list<T...>;
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
     cfg<override> = { .tag = { "sstd" } };
 
     // type_list::map<...>:

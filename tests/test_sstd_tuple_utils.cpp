@@ -23,7 +23,7 @@
 
 int main() {
     using namespace boost::ut;
-    using namespace ger;
+    using namespace waylander;
     cfg<override> = { .tag = { "sstd" } };
 
     tag("sstd") / "to_tuple returns copy of a give object as a tuple"_test = [] {

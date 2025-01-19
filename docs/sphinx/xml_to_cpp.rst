@@ -10,27 +10,27 @@ Wayland primitives
    * - Wayland data type
      - Waylander data type
    * - :code:`int`
-     - :code:`ger::wl::Wint`
+     - :code:`waylander::wl::Wint`
    * - :code:`uint`
-     - :code:`ger::wl::Wuint`
+     - :code:`waylander::wl::Wuint`
    * - :code:`fixed`
-     - :code:`ger::wl::Wfixed`
+     - :code:`waylander::wl::Wfixed`
    * - :code:`string`
-     - :code:`ger::wl::Wstring`
+     - :code:`waylander::wl::Wstring`
    * - :code:`object`
-     - :code:`ger::wl::Wobject<interface>`
+     - :code:`waylander::wl::Wobject<interface>`
    * - :code:`new_id`
-     - :code:`ger::wl::Wnew_id<interface>`
+     - :code:`waylander::wl::Wnew_id<interface>`
    * - :code:`array`
-     - :code:`ger::wl::Warray`
+     - :code:`waylander::wl::Warray`
    * - :code:`fd`
-     - :code:`ger::wl::Wfd`
+     - :code:`waylander::wl::Wfd`
 
 Waylander also defines following primitive data types:
 
-- :code:`ger::wl::Wmessage_size`
-- :code:`ger::wl::Woptcode<interface>`
-- :code:`ger::wl::message_header<interface>`
+- :code:`waylander::wl::Wmessage_size`
+- :code:`waylander::wl::Woptcode<interface>`
+- :code:`waylander::wl::message_header<interface>`
 
 :code:`interface` template arguments are constrained s.t. it is required
 that they are types with following nested types:
@@ -53,13 +53,13 @@ Xml nodes
    * - copyright
      - comment in a protocol header
    * - interface
-     - struct :code:`ger::wl::protocols::<name of interface>`
+     - struct :code:`waylander::wl::protocols::<name of interface>`
    * - request
      - nested struct with args as data members
-       :code:`ger::wl::protocols::<name of interface>::request::<name of request>`
+       :code:`waylander::wl::protocols::<name of interface>::request::<name of request>`
    * - event
      - nested struct with args as data members
-       :code:`ger::wl::protocols::<name of interface>::event::<name of event>`
+       :code:`waylander::wl::protocols::<name of interface>::event::<name of event>`
    * - enum
      - nested enum class in interface struct
    * - entry

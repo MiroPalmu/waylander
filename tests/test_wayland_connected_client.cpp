@@ -42,7 +42,7 @@
 
 int main() {
     using namespace boost::ut;
-    using namespace ger::wl;
+    using namespace waylander::wl;
 
     static const auto wl_tag = tag("wayland");
     // Run wl_tag:
@@ -158,7 +158,7 @@ int main() {
         constexpr auto total_msg_size = msg_size * amount_of_msg;
 
         auto recv_data_fut = std::async(std::launch::async, [&] {
-            auto buff = ger::sstd::byte_vec(total_msg_size);
+            auto buff = waylander::sstd::byte_vec(total_msg_size);
             buff.resize(server_sock.read(buff));
             return buff;
         });
@@ -206,7 +206,7 @@ int main() {
         static_assert(msg_size % 4 == 0);
 
         auto recd_fd_opt_future = std::async(std::launch::async, [&] {
-            auto recv_buff = ger::sstd::byte_vec(msg_size);
+            auto recv_buff = waylander::sstd::byte_vec(msg_size);
             auto msg       = gnulander::local_socket_msg<1, 1>{ std::span{ recv_buff } };
             std::ignore    = server_sock.recv(msg);
             auto [fd_opt]  = msg.get_fd_handles();
