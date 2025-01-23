@@ -36,6 +36,8 @@ namespace wl {
     : server_sock_{ std::move(server_sock) } {};
 
 void connected_client::flush_registered_requests() {
+    if (request_buff_.empty()) return;
+
     auto data_to_write = request_buff_.release_data();
     auto fds_to_write  = request_buff_.release_fds();
 

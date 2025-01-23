@@ -228,6 +228,15 @@ int main() {
                                    [](const auto b) { return b == std::byte{ 10 }; }));
     };
 
+    wl_tag / "connected_client can flush empty set of registered requests"_test = [] {
+        auto [client_sock, _] = gnulander::open_local_stream_socket_pair();
+        auto client                     = connected_client{ std::move(client_sock) };
+
+        expect(not client.has_registered_requests());
+        client.flush_registered_requests();
+        expect(not client.has_registered_requests());
+    };
+
     wl_tag / "connected_client can be default constructed"_test = [] {
         const auto wayland_server_is_present = std::filesystem::is_socket(wayland_socket_path());
         expect(wayland_server_is_present) << "Working Wayland compositor is required for this test."
