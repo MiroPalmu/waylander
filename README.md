@@ -104,7 +104,9 @@ which means that some features are missing, and it might go through large change
 - [ ] Receiving events which contain file descriptors.
 - [ ] Versioned protocols (atm version numbers from XML are ignored).
 - [ ] `Wfixed` utilities.
-- [ ] Linux DMA-BUF supporting abstractions (like namespace gnu).
+- [ ] Linux DMA-BUF supporting abstractions.
+- [ ] Handle protocol name collisions with C++ keywords
+    - e.g. `zwlr_layer_shell_v1::get_layer_surface.namespace`
 
 # Building
 
