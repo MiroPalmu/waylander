@@ -17,13 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this file.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-
-def get_wayland_xml(wayland_xml_download_address: str = "https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml?inline=false") -> bytes:
-    import subprocess
-    curl_call = subprocess.run(["curl", wayland_xml_download_address], capture_output=True)
-    curl_call.check_returncode()
-    return curl_call.stdout
-
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
